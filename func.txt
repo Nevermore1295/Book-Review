@@ -11,3 +11,5 @@ writer
 - request thêm thông tin sách: tên, tác giả, thể loại, ảnh bìa, isbn,
 - thêm review
 
+homepage
+catalog
