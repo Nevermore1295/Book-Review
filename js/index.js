@@ -74,6 +74,7 @@ registerForm.addEventListener('submit', (e) => {
 })
 
 const loginForm = document.getElementById('login')
+console.log(loginForm)
 loginForm.addEventListener('submit', (e) => {
     e.preventDefault()
 
