@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js"
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js"
 import { getFirestore, collection, query, where, doc, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js"
 import { getStorage } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js"
 
@@ -85,6 +85,11 @@ loginForm.addEventListener('submit', (e) => {
     // Login user
     signInWithEmailAndPassword(auth, email, password).then(user => {
         console.log(`User ${user.user.displayName} successfully logged in`)
+        // Store the current UserId in local storage
+        //localStorage.setItem("currentUserId",JSON.stringify(user.user.id));
+        // app.updateCurrentUser(user.user)
+        // const uid = user.uid;
+
         // Reset form
         loginForm.reset()
     }).catch(err => {
@@ -92,3 +97,5 @@ loginForm.addEventListener('submit', (e) => {
         console.log(err.message)
     })
 })
+
+

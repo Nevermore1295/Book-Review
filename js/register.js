@@ -16,7 +16,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig)
 const auth = getAuth()
-const db = getFirestore()
+const db = getFirestore(app)
 const storage = getStorage()
 
 const registerForm = document.getElementById('register');
@@ -49,16 +49,17 @@ registerForm.addEventListener('submit', (e) => {
                 createUserWithEmailAndPassword(auth, email, password).then(cred => {
                     // Create data firestore
                     const initialData = {
-                        username: username.trim(),
-                        email: email.trim(),
-                        type: 'writer'
+                        user_name: username.trim(),
+                        user_email: email.trim(),
+                        user_password: password,
+                        user_authority:0,
+                        user_profile_picture:'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png',
+                        user_created_date: auth.currentUser.metadata.creationTime
                     }
-                    const docRef = doc(db, 'users', cred.user.uid)
+                    const docRef = doc(db, 'User', cred.user.uid)
                     setDoc(docRef, initialData, { merge: false })
                     console.log(`User ${username} successfully registered`)
-                    updateProfile(auth.currentUser, {
-                        displayName: username,
-                    })
+                    updateProfile(auth.currentUser, {displayName: username,})
                 }).then(() => {
                     // Reset form
                     registerForm.reset()
