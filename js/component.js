@@ -1,5 +1,5 @@
-export const component = {}
-component.navbar =`
+export const component = {};
+component.navbar = `
     <nav class="header navbar navbar-expand-lg shadow navbar-light bg-white">
         <div class="container">
             <a class="navbar-brand" href="homepage.html">BookReview</a>
@@ -11,24 +11,26 @@ component.navbar =`
                     </li>
                     <li class="dropdown">
                         <a class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                        Dropdown button
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><a class="dropdown-item" href="post.html">Action</a></li>
-                        <li><a class="dropdown-item" href="post.html">Another action</a></li>
-                        <li><a class="dropdown-item" href="post.html">Something else here</a></li>
-                        </ul>
+                              Collections
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                              <li><a class="dropdown-item" href="#">Action</a></li>
+                              <li><a class="dropdown-item" href="#">Another action</a></li>
+                              <li><a class="dropdown-item" href="#">Something else here</a></li>
+                              <li><a class="dropdown-item" href="#">Action</a></li>
+                              <li><a class="dropdown-item" href="#">Another action</a></li>
+                              <li><a class="dropdown-item" href="#">Something else here</a></li>
+                              <li><a class="dropdown-item" href="#">Action</a></li>
+                              <li><a class="dropdown-item" href="#">Another action</a></li>
+                              <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            </ul>
                     </li>
                     <li class="dropdown">
-                        <a class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                        Dropdown button
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                    </li>    
+                        <a href="">Search</a>
+                    </li>  
+                    <li class="dropdown">
+                        <a href="">About</a>
+                    </li>
                 </ul>
                 <div class="dropdown">
                         <!-- Button trigger modal -->
@@ -75,10 +77,9 @@ component.navbar =`
             </div>
         </div>
     </nav>
-`
+`;
 
-component.header =`
-    <!-- Page header with logo and tagline-->
+component.header = `
     <header class="py-5 bg-light border-bottom mb-4">
         <div class="container">
             <div class="text-center my-5">
@@ -87,8 +88,7 @@ component.header =`
             </div>
         </div>
     </header>
-`
-
+`;
 
 component.homepage = `
     <!-- Page content-->
@@ -209,7 +209,7 @@ component.homepage = `
             </div>
         </div>
     </div>
-`
+`;
 
 component.post = `
     <!-- Page content-->
@@ -334,41 +334,45 @@ component.post = `
     </div>
 `;
 
-component.register = `
-    <div class="navbar navbar-expand-lg navbar-light bg-white shadow">
+component.registerNavbar = `
+<div class="navbar navbar-expand-lg navbar-light bg-white shadow">
         <div class="container">
             <a class="navbar-brand" href="homepage.html">BookReview</a>
         </div>
     </div>
-    <div class="container d-flex align-items-center py-5 h-100 gradient-custom-3">
+`;
+
+
+component.register = `
+    <div class="container d-flex align-items-center py-5">
         <div class="container h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-12 col-md-9 col-lg-7 col-xl-6">
                     <div class="card" style="border-radius: 15px">
                         <div class="card-body p-5">
-                            <h2 class="text-uppercase text-center mb-5">
+                            <h2 class="text-uppercase text-center mb-4">
                                 Create an account
                             </h2>
 
                             <form id="register">
-                                <div class="form-outline mb-3">
+                                <div class="form-outline mb-2">
                                     <label class="form-label" for="form3Example1cg">Username</label>
-                                    <input type="text" id="username" class="form-control form-control-lg" />
+                                    <input type="text" id="username" class="form-control" />
                                 </div>
 
-                                <div class="form-outline mb-3">
+                                <div class="form-outline mb-2">
                                     <label class="form-label" for="form3Example3cg">Your Email</label>
-                                    <input type="email" id="email" class="form-control form-control-lg" />
+                                    <input type="email" id="email" class="form-control" />
                                 </div>
 
-                                <div class="form-outline mb-3">
+                                <div class="form-outline mb-2">
                                     <label class="form-label" for="form3Example4cg">Password</label>
-                                    <input type="password" id="password" class="form-control form-control-lg" />
+                                    <input type="password" id="password" class="form-control" />
                                 </div>
 
                                 <div class="form-outline mb-3">
                                     <label class="form-label" for="form3Example4cdg">Repeat your password</label>
-                                    <input type="password" id="pwconfirmation" class="form-control form-control-lg" />
+                                    <input type="password" id="pwconfirmation" class="form-control" />
                                 </div>
 
                                 <div class="form-check d-flex justify-content-center mb-4">
@@ -386,10 +390,11 @@ component.register = `
                                     </button>
                                 </div>
 
-                                <p class="text-center text-muted mt-5 mb-0">
-                                    Have already an account?
+                                <div class="d-flex justify-content-center flex-column flex-sm-row  text-center text-muted mt-4 mb-0">
+                                    <p>Have already an account?</p>
                                     <a href="#!" class="fw-bold text-body"><u>Login here</u></a>
-                                </p>
+                                </div>
+                                
                             </form>
                         </div>
                     </div>
@@ -397,22 +402,11 @@ component.register = `
             </div>
         </div>
     </div>
-    <footer class="py-5 bg-white shadow">
-        <div class="container">
-            <p class="m-0 text-center">Copyright &copy; Your Website 2023</p>
-        </div>
-    </footer>
-    <!-- Bootstrap core JS-->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Core theme JS-->
-    <script src="../js/scripts.js"></script>
-    <!-- Main script -->
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"
-        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
-    <script src="../js/register.js" type="module"></script>
+  
 `;
 
-component.previewpage = `
+component.reviewsearch = `
+
 `;
 
 component.footer = `
@@ -420,4 +414,4 @@ component.footer = `
     <footer class="py-5 bg-white shadow">
         <div class="container"><p class="m-0 text-center">Copyright &copy; Your Website 2023</p></div>
     </footer>
-`
+`;

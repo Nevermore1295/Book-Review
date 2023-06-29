@@ -23,4 +23,9 @@ body {
   background-color: RGBA(248, 249, 250);
 }
 
+a {
+  text-decoration: none !important;
+  color: black !important;
+}
+
 /*# sourceMappingURL=style.css.map */

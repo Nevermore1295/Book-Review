@@ -13,9 +13,9 @@ view.setScreen = (screenName) => {
             break;
         
         case 'registerScreen':
-            document.getElementById('app').innerHTML = component.navbar + component.header + component.register + component.footer;
+            document.getElementById('app').innerHTML = component.registerNavbar + component.register + component.footer;
             break;
     }
 }
 
-view.setScreen('postScreen');
+view.setScreen('homepageScreen');
