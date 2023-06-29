@@ -1,4 +1,0 @@
-collection chỉ có review (searchbar thường tìm book title)
-search query btn
-thêm about: about us and contact
-page footer

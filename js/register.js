@@ -51,7 +51,9 @@ registerForm.addEventListener('submit', (e) => {
                     const initialData = {
                         username: username.trim(),
                         email: email.trim(),
-                        type: 'writer'
+                        type: 'writer',
+                        status: 'created',
+                        dsiadhsakjd: '12355'
                     }
                     const docRef = doc(db, 'users', cred.user.uid)
                     setDoc(docRef, initialData, { merge: false })
@@ -92,3 +94,5 @@ registerForm.addEventListener('submit', (e) => {
 //         console.log(err.message)
 //     })
 // })
+
+
