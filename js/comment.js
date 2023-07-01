@@ -23,7 +23,7 @@ const storage = getStorage();
 
 const commentForm = document.getElementById('comment');
 console.log(commentForm);
-
+console.log(auth);
 commentForm.addEventListener('submit', (cf) =>{
     cf.preventDefault();
 
@@ -31,8 +31,9 @@ commentForm.addEventListener('submit', (cf) =>{
         const commentContent = document.getElementById('comment-content').value;
         console.log(commentContent);
 
-    // Get the user_id that is working in local storage - Request
-        const currentUserId = JSON.parse(localStorage.getItem("currentUserId"));
+    // Get the current User
+        const currentUser = auth.currentUser;
+        console.log(auth);
 
     // Get user info that is working
         // const q = query(collection(db, 'user'), where('user_id', '==', currentUserId))
