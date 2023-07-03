@@ -107,28 +107,3 @@ view.setScreen = (screenName) => {
 }
 
 view.setScreen();
-
-document.getElementsByTagName('body')[0].addEventListener('loadeddata',()=>{
-    console.log(view.currentScreen);
-    switch (view.currentScreen){
-        case 'homeScreen':
-            //Thêm sự kiện onclick chuyển trang
-            document.getElementById('navbar-brand').style.cursor = 'pointer';
-            document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
-            document.getElementById('register').style.cursor = 'pointer';
-            document.getElementById('register').addEventListener('click', () => view.setScreen('registerScreen'));            
-            break;
-
-        case 'reviewScreen':
-            //Thêm sự kiện onclick chuyển trang
-            document.getElementById('navbar-brand').style.cursor = 'pointer';
-            document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
-            break;
-        
-        case 'registerScreen':
-            //Thêm sự kiện onclick chuyển trang
-            document.getElementById('navbar-brand').style.cursor = 'pointer';
-            document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
-    }
-})
-  

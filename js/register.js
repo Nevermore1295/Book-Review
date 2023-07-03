@@ -71,24 +71,3 @@ registerForm.addEventListener('submit', (e) => {
     }
 })
 
-// const loginForm = document.getElementById('login')
-// console.log(loginForm)
-// loginForm.addEventListener('submit', (e) => {
-//     e.preventDefault()
-
-//     // Get user info
-//     const email = document.getElementById('email-login').value
-//     const password = document.getElementById('password-login').value
-
-//     // Login user
-//     signInWithEmailAndPassword(auth, email, password).then(user => {
-//         console.log(`User ${user.user.displayName} successfully logged in`)
-//         // Reset form
-//         loginForm.reset()
-//     }).catch(err => {
-//         // Catch error
-//         console.log(err.message)
-//     })
-// })
-
-

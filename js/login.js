@@ -19,59 +19,7 @@ const app = initializeApp(firebaseConfig)
 const auth = getAuth()
 const db = getFirestore()
 const storage = getStorage()
-// const registerForm = document.getElementById('register');
-// registerForm.addEventListener('submit', (e) => {
-//     e.preventDefault();
 
-//     // Get user info
-//     const username = document.getElementById('username').value
-//     const email = document.getElementById('email').value
-//     const password = document.getElementById('password').value
-//     const pwcf = document.getElementById('pwconfirmation').value
-
-//     // Register user
-//     if (username.trim() === '') {
-//         console.log('Missing username')
-//     } else if (username.trim().length < 6) {
-//         console.log('Username must be at least 6 characters')
-//     } else if (password !== pwcf) {
-//         console.log('Password and password confirmation must be the same')
-//     } else if (password === pwcf) {
-//         let exist = false
-//         const q = query(collection(db, 'users'), where('username', '==', username.trim()))
-//         getDocs(q).then(d => {
-//             d.forEach(data => {
-//                 if (data.exists) {
-//                     exist = true
-//                 }
-//             })
-//             if (!exist) {
-//                 createUserWithEmailAndPassword(auth, email, password).then(cred => {
-//                     // Create data firestore
-//                     const initialData = {
-//                         username: username.trim(),
-//                         email: email.trim(),
-//                         type: 'writer'
-//                     }
-//                     const docRef = doc(db, 'users', cred.user.uid)
-//                     setDoc(docRef, initialData, { merge: false })
-//                     console.log(`User ${username} successfully registered`)
-//                     updateProfile(auth.currentUser, {
-//                         displayName: username,
-//                     })
-//                 }).then(() => {
-//                     // Reset form
-//                     registerForm.reset()
-//                 }).catch(err => {
-//                     // Catch error
-//                     console.log(err.message)
-//                 })
-//             } else {
-//                 console.log("This username has already been taken")
-//             }
-//         })
-//     }
-// })
 
 export const loginForm = document.getElementById('login')
 console.log(loginForm)
