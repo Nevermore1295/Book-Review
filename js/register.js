@@ -19,7 +19,7 @@ const auth = getAuth()
 const db = getFirestore(app)
 const storage = getStorage()
 
-const registerForm = document.getElementById('register');
+export const registerForm = document.getElementById('register');
 registerForm.addEventListener('submit', (e) => {
     e.preventDefault();
 

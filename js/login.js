@@ -1,3 +1,4 @@
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js"
 import { getFirestore, collection, query, where, doc, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js"
@@ -18,7 +19,6 @@ const app = initializeApp(firebaseConfig)
 const auth = getAuth()
 const db = getFirestore()
 const storage = getStorage()
-
 // const registerForm = document.getElementById('register');
 // registerForm.addEventListener('submit', (e) => {
 //     e.preventDefault();
@@ -73,7 +73,7 @@ const storage = getStorage()
 //     }
 // })
 
-const loginForm = document.getElementById('login')
+export const loginForm = document.getElementById('login')
 console.log(loginForm)
 loginForm.addEventListener('submit', (e) => {
     e.preventDefault()
