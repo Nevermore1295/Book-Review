@@ -79,6 +79,7 @@ view.setScreen = async (screenName) => {
             document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
             document.getElementById('register').style.cursor = 'pointer';
             document.getElementById('register').addEventListener('click', () => view.setScreen('registerScreen')); 
+            document.getElementById('home').addEventListener('click', () => view.setScreen('homeScreen')); 
             document.querySelectorAll('.reviewScreen').forEach(element=>{
                 element.setAttribute('style','{cursor:pointer;}');
                 element.addEventListener('click',()=>view.setScreen('reviewScreen'));
@@ -193,11 +194,3 @@ view.setScreen = async (screenName) => {
 }
 
 view.setScreen();
-
-
-view.userAuth = (token) => {
-    if (token == true)
-        return component.navbarUsername;
-    else 
-        return component.navbarLoginForm;
-}
