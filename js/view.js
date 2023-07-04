@@ -5,6 +5,8 @@ import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, updateProfile 
 import { getFirestore, collection, query, where, doc, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js"
 import { getStorage } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js"
 
+
+
 // Your web app's Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyAA--PpoUl0p1Pjp3vubEVej9axE9xsE-8",
@@ -23,19 +25,19 @@ const storage = getStorage()
 
 let view = {};
 
-//Hàm khởi tạo module script 
-function createModule(src){
-    const script = document.createElement('script');
-    script.setAttribute('type','module');
-    script.setAttribute('src',src);
-    return script;
-}
+// //Hàm khởi tạo module script 
+// function createModule(src){
+//     const script = document.createElement('script');
+//     script.setAttribute('type','module');
+//     script.setAttribute('src',src);
+//     return script;
+// }
 
 
-//Các biến script element
-const script1 = createModule('../js/login.js');
-const script2 = createModule('../js/comment.js');
-const script3 = createModule('../js/register.js');
+// //Các biến script element
+// const script1 = createModule('../js/login.js');
+// const script2 = createModule('../js/comment.js');
+// const script3 = createModule('../js/register.js');
 
 view.currentScreen = '';
 //Thay đổi giao diện
@@ -162,3 +164,11 @@ view.setScreen = (screenName) => {
 }
 
 view.setScreen();
+
+
+view.userAuth = (token) => {
+    if (token == true)
+        return component.navbarUsername;
+    else 
+        return component.navbarLoginForm;
+}
