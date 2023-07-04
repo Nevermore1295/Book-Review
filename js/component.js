@@ -1,46 +1,63 @@
 export const component = {};
 component.navbarLoginForm = `
-<div class="dropdown">
-    <!-- Button trigger modal -->
-    <i type="button" class="navbar-nav ms-auto fa-solid fa-user" data-bs-toggle="modal" id="account-btn" data-bs-target="#LoginModal" style="font-size:25px"></i>
-    <!-- Modal -->
-    <div class="modal fade" id="LoginModal" tabindex="-1" aria-labelledby="LoginModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            
-            <div class="modal-content container">
-                <div class="modal-header">
-                    <h4>Login</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body container">
-                    <form id="login">
-                        <div class="form-outline mb-4">
-                            <label class="form-label" for="form2Example1">Email address</label>
-                            <input type="email" id="email-login" class="form-control validate text-4b88a2" />
-                        </div>
-                        <div class="form-outline mb-4">
-                            <label class="form-label" for="form2Example2">Password</label>
-                            <input type="password" id="password-login" class="form-control validate text-4b88a2" />
-                        </div>      
-                        <div class="row mb-4 d-flex justify-content-between" >
-                            <button id="signin-button" class="btn btn-primary btn-sm btn-block col-2 mb-4">Sign in</button>
-                            <div class="col-4">   
-                                <a href="#!">Forgot password?</a>
-                            </div>
-                        </div>
-                        <div class="text-center">
-                            <p>Not a member? <a class="text-primary close" data-bs-dismiss="modal" aria-label="Close" id="register">Register</a></p>
-                        </div>
-                    </form>
-                </div>
-            </div>
+<div class="login-container d-flex align-content-center me-1">
+    <div class="dropdown">
+        <div class="" type="button" data-bs-toggle="dropdown" >
+            Username
         </div>
+        <ul class="dropdown-menu account-dropdown">
+            <li><a class="dropdown-item" href="#">Action</a></li>
+            <li><a class="dropdown-item" href="#">Another action</a></li>
+            <li><a class="dropdown-item" href="#">Something else here</a></li>
+        </ul>
     </div>
+
+
 </div>
 `
-
+    // <!-- Button trigger modal -->
+    // <i type="button" class="navbar-nav ms-auto fa-solid fa-user" data-bs-toggle="modal" id="account-btn" data-bs-target="#LoginModal" style="font-size:25px"></i>
+    //     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+    //         <li><a class="dropdown-item" href="#">Action</a></li>
+    //         <li><a class="dropdown-item" href="#">Another action</a></li>
+    //         <li><a class="dropdown-item" href="#">Something else here</a></li>
+    //         <li><a class="dropdown-item" href="#">Action</a></li>
+    //         <li><a class="dropdown-item" href="#">Another action</a></li>
+    //     </ul>
+    // <!-- Modal -->
+    // <div class="modal fade" id="LoginModal" tabindex="-1" aria-labelledby="LoginModalLabel" aria-hidden="true">
+    //     <div class="modal-dialog modal-dialog-centered">
+    //         <div class="modal-content container">
+    //             <div class="modal-header">
+    //                 <h4>Login</h4>
+    //                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+    //                     <span aria-hidden="true">&times;</span>
+    //                 </button>
+    //             </div>
+    //             <div class="modal-body container">
+    //                 <form id="login">
+    //                     <div class="form-outline mb-4">
+    //                         <label class="form-label" for="form2Example1">Email address</label>
+    //                         <input type="email" id="email-login" class="form-control validate text-4b88a2" />
+    //                     </div>
+    //                     <div class="form-outline mb-4">
+    //                         <label class="form-label" for="form2Example2">Password</label>
+    //                         <input type="password" id="password-login" class="form-control validate text-4b88a2" />
+    //                     </div>      
+    //                     <div class="row mb-4 d-flex justify-content-between" >
+    //                         <button id="signin-button" class="btn btn-primary btn-sm btn-block col-2 mb-4">Sign in</button>
+    //                         <div class="col-4">   
+    //                             <a href="#!">Forgot password?</a>
+    //                         </div>
+    //                     </div>
+    //                     <div class="text-center">
+    //                         <p>Not a member? <a class="text-primary close" data-bs-dismiss="modal" aria-label="Close" id="register">Register</a></p>
+    //                     </div>
+    //                 </form>
+    //             </div>
+    //         </div>
+    //     </div>
+    // </div>
 component.navbar = `
     <nav class="header navbar navbar-expand-lg shadow navbar-light bg-white">
         <div class="container">
@@ -91,7 +108,7 @@ component.header = `
     </header>
 `;
 
-component.sideWidget =`
+component.sideWidget = `
     <!-- Side widgets-->
     <div class="col-lg-4">
         <!-- Search widget-->
@@ -254,7 +271,7 @@ component.reviewInfo = `
     </article>
 `
 
-component.commentSection =`
+component.commentSection = `
     <!-- Comments section-->
     <section class="mb-5">
         <div class="card bg-light">
