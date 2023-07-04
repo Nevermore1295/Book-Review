@@ -21,6 +21,29 @@ const db = getFirestore()
 const storage = getStorage()
 
 
+export const loginForm = document.getElementById('login')
+console.log(loginForm)
+loginForm.addEventListener('submit', (e) => {
+    e.preventDefault()
 
+    // Get user info
+    const email = document.getElementById('email-login').value
+    const password = document.getElementById('password-login').value
+
+    // Login user
+    signInWithEmailAndPassword(auth, email, password).then(user => {
+        console.log(`User ${user.user.displayName} successfully logged in`)
+        // Store the current UserId in local storage
+        //localStorage.setItem("currentUserId",JSON.stringify(user.user.id));
+        // app.updateCurrentUser(user.user)
+        // const uid = user.uid;
+
+        // Reset form
+        loginForm.reset()
+    }).catch(err => {
+        // Catch error
+        console.log(err.message)
+    })
+})
 
 

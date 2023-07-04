@@ -33,7 +33,7 @@ commentForm.addEventListener('submit', (cf) =>{
 
     // Get the current User
         const currentUser = auth.currentUser;
-        console.log(auth);
+        console.log(auth.currentUser);
 
     // Get user info that is working
         // const q = query(collection(db, 'user'), where('user_id', '==', currentUserId))
@@ -41,12 +41,12 @@ commentForm.addEventListener('submit', (cf) =>{
     
     //Create data firestore 
         const initialData = {
-            comment_creator_id: auth.currentUser,
+            comment_creator_id: auth.currentUser.uid,
             comment_content: commentContent,
             comment_created_date:2
         }
 
-        const docRef = doc(db, 'Comment');
+        const docRef = doc(db, 'Comment',auth.currentUser.uid);
         setDoc(docRef, initialData, { merge: false }).then(() => {
             // Reset form
             commentForm.reset()

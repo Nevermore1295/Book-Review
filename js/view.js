@@ -1,9 +1,9 @@
 import { component } from "./component.js";
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js"
-import { getFirestore, collection, query, where, doc, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js"
-import { getStorage } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js"
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+import { getFirestore, collection, query, where, doc, addDoc, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+import { getStorage } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -16,30 +16,15 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig)
-const auth = getAuth()
-const db = getFirestore()
-const storage = getStorage()
+const app = initializeApp(firebaseConfig);
+const auth = getAuth();
+const db = getFirestore();
+const storage = getStorage();
 
 let view = {};
 
-//Hàm khởi tạo module script 
-function createModule(src){
-    const script = document.createElement('script');
-    script.setAttribute('type','module');
-    script.setAttribute('src',src);
-    return script;
-}
-
-
-//Các biến script element
-const script1 = createModule('../js/login.js');
-const script2 = createModule('../js/comment.js');
-const script3 = createModule('../js/register.js');
-
-view.currentScreen = '';
 //Thay đổi giao diện
-view.setScreen = (screenName) => {
+view.setScreen = async (screenName) => {
 
     const body = document.getElementsByTagName('body')[0];
     
@@ -49,44 +34,75 @@ view.setScreen = (screenName) => {
             document.getElementById('app').innerHTML = component.navbar + component.header + component.homeContent + component.footer;
 
             const loginForm = document.getElementById('login');
-            console.log(loginForm)
-            loginForm.addEventListener('submit', (e) => {
-                e.preventDefault()
+            console.log(loginForm);
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
 
                 // Get user info
-                const email = document.getElementById('email-login').value
-                const password = document.getElementById('password-login').value
+                const email = document.getElementById('email-login').value;
+                const password = document.getElementById('password-login').value;
 
                 // Login user
-                signInWithEmailAndPassword(auth, email, password).then(user => {
-                    console.log(`User ${user.user.displayName} successfully logged in`)
+                await signInWithEmailAndPassword(auth, email, password).then(user => {
+                    console.log(`User ${user.user.displayName} successfully logged in`);
                     // Store the current UserId in local storage
                     //localStorage.setItem("currentUserId",JSON.stringify(user.user.id));
                     // app.updateCurrentUser(user.user)
                     // const uid = user.uid;
 
                     // Reset form
-                    loginForm.reset()
+                    loginForm.reset();
                 }).catch(err => {
                     // Catch error
-                    console.log(err.message)
+                    console.log(err.message);
                 })
             })
                         
-            try {
-                document.getElementById('navbar-brand').style.cursor = 'pointer';
-                document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
-                document.getElementById('register').style.cursor = 'pointer';
-                document.getElementById('register').addEventListener('click', () => view.setScreen('registerScreen')); ;
-            } catch (error) {
-                console.log('Error');
-            }
+            document.getElementById('navbar-brand').style.cursor = 'pointer';
+            document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
+            document.getElementById('register').style.cursor = 'pointer';
+            document.getElementById('register').addEventListener('click', () => view.setScreen('registerScreen')); 
+            document.querySelectorAll('.reviewScreen').forEach(element=>{
+                element.setAttribute('style','{cursor:pointer;}');
+                element.addEventListener('click',()=>view.setScreen('reviewScreen'));
+            })
+
             break;
 
         case 'reviewScreen':
             document.getElementById('app').innerHTML = component.navbar + component.reviewContent + component.footer;
+            document.getElementById('navbar-brand').style.cursor = 'pointer';
+            document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
             
-            //Xóa các script không cần thiết
+            const commentForm = document.getElementById('comment');
+            console.log(commentForm);
+            console.log(auth);
+            commentForm.addEventListener('submit', async (cf) =>{
+                cf.preventDefault();
+                // Get comment content
+                    const commentContent = document.getElementById('comment-content').value;
+                    console.log(commentContent);
+
+                // Get user info that is working
+                    // const q = query(collection(db, 'user'), where('user_id', '==', currentUserId))
+                    // const d = doc(q);
+                
+                //Create data firestore 
+                    const initialData = {
+                        comment_creator_id: auth.currentUser.uid,
+                        comment_content: commentContent,
+                        comment_created_date: Date(cf)
+                    }
+
+                    const docRef = await addDoc(collection(db, 'Comment'),initialData).then(() => {
+                        // Reset form
+                        commentForm.reset()
+                    }).catch(err => {
+                        // Catch error
+                        console.log(err.message)
+                    })
+                    console.log(`User ${auth.currentUser.displayName} successfully comment`);
+            })
 
             break;
         
@@ -113,14 +129,14 @@ view.setScreen = (screenName) => {
                 } else if (password === pwcf) {
                     let exist = false;
                     const q = await resolve(query(collection(db, 'users'), where('username', '==', username.trim())));
-                    await getDocs(q).then(d => {
-                        d.forEach(data => {
+                    await getDocs(q).then( async (d) => {
+                        await d.forEach(data => {
                             if (data.exists) {
                                 exist = true
                             }
                         })
                         if (!exist) {
-                            createUserWithEmailAndPassword(auth, email, password).then(cred => {
+                            await createUserWithEmailAndPassword(auth, email, password).then(cred => {
                                 // Create data firestore
                                 const initialData = {
                                     username: username.trim(),
@@ -145,12 +161,10 @@ view.setScreen = (screenName) => {
                 }
             })
             
-            try {
-                document.getElementById('navbar-brand').style.cursor = 'pointer';
-                document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
-            } catch (error) {
-                console.log('Error');
-            }
+
+            document.getElementById('navbar-brand').style.cursor = 'pointer';
+            document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
+
 
             break;
         

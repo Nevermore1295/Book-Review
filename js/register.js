@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js"
-import { getFirestore, collection, query, where, doc, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js"
+import { getFirestore, collection, query, where, doc, addDoc ,setDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js"
 import { getStorage } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js"
 
 // Your web app's Firebase configuration
@@ -54,7 +54,7 @@ registerForm.addEventListener('submit', (e) => {
                         type: 'writer'
                     }
                     const docRef = doc(db, 'User', cred.user.uid)
-                    setDoc(docRef, initialData, { merge: false })
+                    addDoc(docRef, initialData, { merge: false })
                     console.log(`User ${username} successfully registered`)
                     updateProfile(auth.currentUser, {displayName: username,})
                 }).then(() => {
