@@ -1,57 +1,22 @@
 import { component } from "./component.js";
+import { controller } from "./controller.js";
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-import { getFirestore, collection, query, where, doc, addDoc, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+import { getFirestore, collection, query, where, and, or, doc, addDoc, setDoc, getDocs, onSnapshot, orderBy, Timestamp, } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
+import { auth } from "./module.js";
 
-
-
-// Your web app's Firebase configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyAA--PpoUl0p1Pjp3vubEVej9axE9xsE-8",
-    authDomain: "book-review-ac765.firebaseapp.com",
-    projectId: "book-review-ac765",
-    storageBucket: "book-review-ac765.appspot.com",
-    messagingSenderId: "275710298289",
-    appId: "1:275710298289:web:b86e1cc2130d6ee8c17a90"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth();
-const db = getFirestore();
-const storage = getStorage();
 
 let view = {};
 
-//Hàm khởi tạo module script 
-function createModule(src){
-    const script = document.createElement('script');
-    script.setAttribute('type','module');
-    script.setAttribute('src',src);
-    return script;
-}
-
-
-//Các biến script element
-const script1 = createModule('../js/login.js');
-const script2 = createModule('../js/comment.js');
-const script3 = createModule('../js/register.js');
-
-view.currentScreen = '';
 //Thay đổi giao diện
-view.setScreen = async (screenName) => {
-
-    const body = document.getElementsByTagName('body')[0];
-    
-
+view.setScreen = (screenName) => {
     switch (screenName){
         case 'homeScreen':
             document.getElementById('app').innerHTML = component.navbar + component.header + component.homeContent + component.footer;
 
             const loginForm = document.getElementById('login');
-            console.log(loginForm);
             loginForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
 
@@ -59,13 +24,14 @@ view.setScreen = async (screenName) => {
                 const email = document.getElementById('email-login').value;
                 const password = document.getElementById('password-login').value;
 
+                const initialData = {
+                    email: email.trim(),
+                    password: password.trim(),
+                }
+
                 // Login user
-                await signInWithEmailAndPassword(auth, email, password).then(user => {
+                controller.login(initialData).then(user => {
                     console.log(`User ${user.user.displayName} successfully logged in`);
-                    // Store the current UserId in local storage
-                    //localStorage.setItem("currentUserId",JSON.stringify(user.user.id));
-                    // app.updateCurrentUser(user.user)
-                    // const uid = user.uid;
 
                     // Reset form
                     loginForm.reset();
@@ -74,13 +40,13 @@ view.setScreen = async (screenName) => {
                     console.log(err.message);
                 })
             })
-                        
+            
             document.getElementById('navbar-brand').style.cursor = 'pointer';
             document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
             document.getElementById('register').style.cursor = 'pointer';
             document.getElementById('register').addEventListener('click', () => view.setScreen('registerScreen')); 
             document.querySelectorAll('.reviewScreen').forEach(element=>{
-                element.setAttribute('style','{cursor:pointer;}');
+                element.style.cursor='pointer';
                 element.addEventListener('click',()=>view.setScreen('reviewScreen'));
             })
 
@@ -89,36 +55,38 @@ view.setScreen = async (screenName) => {
         case 'reviewScreen':
             document.getElementById('app').innerHTML = component.navbar + component.reviewContent + component.footer;
             document.getElementById('navbar-brand').style.cursor = 'pointer';
-            document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
+            document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));  
             
+            //Load realtime-update comment
+            view.showComment();
+
             const commentForm = document.getElementById('comment');
-            console.log(commentForm);
-            console.log(auth);
-            commentForm.addEventListener('submit', async (cf) =>{
+            commentForm.addEventListener('submit', (cf) =>{
                 cf.preventDefault();
                 // Get comment content
-                    const commentContent = document.getElementById('comment-content').value;
-                    console.log(commentContent);
+                const commentContent = document.getElementById('comment-content').value;
 
-                // Get user info that is working
-                    // const q = query(collection(db, 'user'), where('user_id', '==', currentUserId))
-                    // const d = doc(q);
-                
-                //Create data firestore 
-                    const initialData = {
-                        comment_creator_id: auth.currentUser.uid,
-                        comment_content: commentContent,
-                        comment_created_date: Date(cf)
-                    }
+                //Create data firestore      
+                const initialData = {
+                    comment_creator_id: auth.currentUser.uid,
+                    comment_created_date: Timestamp.now(),
+                    comment_review_id:12,
+                    comment_parent_id:null,
+                    comment_content: commentContent.trim(),
+                }
 
-                    const docRef = await addDoc(collection(db, 'Comment'),initialData).then(() => {
-                        // Reset form
-                        commentForm.reset()
-                    }).catch(err => {
-                        // Catch error
-                        console.log(err.message)
-                    })
-                    console.log(`User ${auth.currentUser.displayName} successfully comment`);
+                //Add data to doc
+                controller.addComment(initialData).then(() => {
+                    // Reset form
+                    commentForm.reset();
+
+                    // Add commment
+                }).catch(err => {
+                    // Catch error
+                    console.log(err.message)
+                })
+                console.log(`User ${auth.currentUser.displayName} successfully comment`);              
+                    
             })
 
             break;
@@ -127,7 +95,7 @@ view.setScreen = async (screenName) => {
             document.getElementById('app').innerHTML = component.registerNavbar + component.registerContent + component.footer;
 
             const registerForm = document.getElementById('register');
-            registerForm.addEventListener('submit', async (e) => {
+            registerForm.addEventListener('submit', (e) => {
                 e.preventDefault();
             
                 // Get user info
@@ -136,6 +104,12 @@ view.setScreen = async (screenName) => {
                 const password = document.getElementById('password').value;
                 const pwcf = document.getElementById('pwconfirmation').value;
             
+                const initialData = {
+                    username: username.trim(),
+                    email: email.trim(),
+                    password: password.trim(),
+                    type: 'writer'
+                }
                 // Register user
                 if (username.trim() === '') {
                     console.log('Missing username')
@@ -144,44 +118,16 @@ view.setScreen = async (screenName) => {
                 } else if (password !== pwcf) {
                     console.log('Password and password confirmation must be the same')
                 } else if (password === pwcf) {
-                    let exist = false;
-                    const q = await resolve(query(collection(db, 'users'), where('username', '==', username.trim())));
-                    await getDocs(q).then( async (d) => {
-                        await d.forEach(data => {
-                            if (data.exists) {
-                                exist = true
-                            }
-                        })
-                        if (!exist) {
-                            await createUserWithEmailAndPassword(auth, email, password).then(cred => {
-                                // Create data firestore
-                                const initialData = {
-                                    username: username.trim(),
-                                    email: email.trim(),
-                                    type: 'writer'
-                                }
-                                const docRef = doc(db, 'User', cred.user.uid)
-                                setDoc(docRef, initialData, { merge: false })
-                                console.log(`User ${username} successfully registered`)
-                                updateProfile(auth.currentUser, {displayName: username,})
-                            }).then(() => {
-                                // Reset form
-                                registerForm.reset()
-                            }).catch(err => {
-                                // Catch error
-                                console.log(err.message)
-                            })
-                        } else {
-                            console.log("This username has already been taken")
-                        }
-                    })
+                    controller.register(initialData).then(() => {
+                        // Reset form
+                        registerForm.reset()
+                    });
                 }
             })
             
 
             document.getElementById('navbar-brand').style.cursor = 'pointer';
             document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
-
 
             break;
         
@@ -195,9 +141,19 @@ view.setScreen = async (screenName) => {
 view.setScreen();
 
 
-view.userAuth = (token) => {
-    if (token == true)
-        return component.navbarUsername;
-    else 
-        return component.navbarLoginForm;
+view.showComment = async () =>{
+    onSnapshot(await controller.getCurrentCommentQuery(12),(qr)=>{
+        let str ='';
+        qr.forEach(doc =>{
+            str+=
+            `<div class="d-flex mb-4">
+                <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
+                <div class="ms-3">
+                    <div class="fw-bold">Commenter Name</div>
+                    ${doc.data().comment_content}
+                </div>
+            </div>`
+        })
+        document.getElementById('comment-section').innerHTML=str;
+    })
 }
