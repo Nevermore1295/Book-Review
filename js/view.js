@@ -5,7 +5,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebas
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 import { getFirestore, collection, query, where, and, or, doc, addDoc, setDoc, getDocs, onSnapshot, orderBy, Timestamp, } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
-import { auth } from "./module.js";
+import { auth, userAuth } from "./module.js";
 
 
 let view = {};
@@ -15,36 +15,51 @@ view.setScreen = (screenName) => {
     switch (screenName){
         case 'homeScreen':
             document.getElementById('app').innerHTML = component.navbar + component.header + component.homeContent + component.footer;
+            
 
-            const loginForm = document.getElementById('login');
-            loginForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
+            auth.onAuthStateChanged((user)=>{
+                console.log(auth.currentUser);
+                if(auth.currentUser==null){
+                    document.getElementById('user-auth').innerHTML=userAuth(false);
+                    const loginForm = document.getElementById('login');
+                    console.log(loginForm);
+                    loginForm.addEventListener('submit', async (e) => {
+                        e.preventDefault();
+        
+                        // Get user info
+                        const email = document.getElementById('email-login').value;
+                        const password = document.getElementById('password-login').value;
+        
+                        const initialData = {
+                            email: email.trim(),
+                            password: password.trim(),
+                        }
+                        
+                        controller.login(initialData);
+                        loginForm.reset();  
+                    })
+    
+                    document.getElementById('register').style.cursor = 'pointer';
+                    document.getElementById('register').addEventListener('click', () => view.setScreen('registerScreen'));
+                    
+                } else {
+                    document.getElementById('user-auth').innerHTML=userAuth(true);
+                    const logOutButton = document.getElementById('log-out');
+                    console.log(logOutButton);
+                    logOutButton.addEventListener('click',()=>{
+                        controller.logout();
+                    })
 
-                // Get user info
-                const email = document.getElementById('email-login').value;
-                const password = document.getElementById('password-login').value;
-
-                const initialData = {
-                    email: email.trim(),
-                    password: password.trim(),
                 }
-
-                // Login user
-                controller.login(initialData).then(user => {
-                    console.log(`User ${user.user.displayName} successfully logged in`);
-
-                    // Reset form
-                    loginForm.reset();
-                }).catch(err => {
-                    // Catch error
-                    console.log(err.message);
-                })
+    
             })
+            
+        
+
+ 
             
             document.getElementById('navbar-brand').style.cursor = 'pointer';
             document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
-            document.getElementById('register').style.cursor = 'pointer';
-            document.getElementById('register').addEventListener('click', () => view.setScreen('registerScreen')); 
             document.querySelectorAll('.reviewScreen').forEach(element=>{
                 element.style.cursor='pointer';
                 element.addEventListener('click',()=>view.setScreen('reviewScreen'));
@@ -77,10 +92,9 @@ view.setScreen = (screenName) => {
 
                 //Add data to doc
                 controller.addComment(initialData).then(() => {
-                    // Reset form
-                    commentForm.reset();
+                // Reset form
+                commentForm.reset();
 
-                    // Add commment
                 }).catch(err => {
                     // Catch error
                     console.log(err.message)
@@ -121,6 +135,9 @@ view.setScreen = (screenName) => {
                     controller.register(initialData).then(() => {
                         // Reset form
                         registerForm.reset()
+                    }).catch(err => {
+                        // Catch error
+                        console.log(err.message)
                     });
                 }
             })

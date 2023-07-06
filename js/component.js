@@ -10,7 +10,7 @@ component.navbarUsername =
             <ul class="dropdown-menu account-dropdown">
                 <li><a class="dropdown-item" href="#">Action</a></li>
                 <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                <li><a class="dropdown-item" id="log-out">Log Out</a></li>
             </ul>
         </div>
     </div>
@@ -49,7 +49,7 @@ component.navbarLoginForm = `
                             <input type="password" id="password-login" class="form-control validate text-4b88a2" />
                         </div>      
                         <div class="row mb-4 d-flex justify-content-between" >
-                            <button id="signin-button" class="btn btn-primary btn-sm btn-block col-2 mb-4">Sign in</button>
+                            <button id="signin-button" class="btn btn-primary btn-sm btn-block col-2 mb-4 close" data-bs-dismiss="modal" aria-label="Close">Sign in</button>
                             <div class="col-4">   
                                 <a href="#!">Forgot password?</a>
                             </div>
@@ -102,7 +102,8 @@ component.navbar = `
                         <a href="">About</a>
                     </li>
                 </ul>
-                ${userAuth(false)}
+                <a id="user-auth">
+                </a>
             </div>
         </div>
     </nav>

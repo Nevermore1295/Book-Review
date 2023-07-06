@@ -20,7 +20,7 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth();
 export const db = getFirestore(app);
 
-export const userAuth = (token) => {
+export let userAuth = (token) => {
     if (token == true)
         return component.navbarUsername;
     else 

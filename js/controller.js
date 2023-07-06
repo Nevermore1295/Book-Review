@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword ,updateProfile } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut ,updateProfile } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 import { getFirestore, collection, query, where, and, or, doc, addDoc, setDoc, getDocs, onSnapshot} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 import { auth,db } from "./module.js";
@@ -10,9 +10,22 @@ import { auth,db } from "./module.js";
 export const controller = {}
 
 controller.login = async (initialData) =>{
-    return signInWithEmailAndPassword(auth, initialData.email, initialData.password);
+    await signInWithEmailAndPassword(auth, initialData.email, initialData.password).then(user => {
+        console.log(`User ${user.user.displayName} successfully logged in`);
+    }).catch(err => {
+        // Catch error
+        console.log(err.message);
+    });
 }
 
+
+controller.logout = async () =>{
+    await signOut(auth).then(() => {
+    // Sign-out successful.
+    }).catch((error) => {
+    // An error happened.
+    });
+}
 
 controller.register = async (initialData) =>{
     let exist = false;
