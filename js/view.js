@@ -1,11 +1,11 @@
 import { component } from "./component.js";
-import { controller } from "./controller.js";
+import { auth , controller } from "./controller.js";
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 import { getFirestore, collection, query, where, and, or, doc, addDoc, setDoc, getDocs, onSnapshot, orderBy, Timestamp, } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
-import { auth, userAuth } from "./module.js";
+
 
 
 let view = {};
@@ -20,7 +20,7 @@ view.setScreen = (screenName) => {
             auth.onAuthStateChanged((user)=>{
                 console.log(auth.currentUser);
                 if(auth.currentUser==null){
-                    document.getElementById('user-auth').innerHTML=userAuth(false);
+                    document.getElementById('user-auth').innerHTML=component.navbarLoginForm;
                     const loginForm = document.getElementById('login');
                     console.log(loginForm);
                     loginForm.addEventListener('submit', async (e) => {
@@ -43,7 +43,7 @@ view.setScreen = (screenName) => {
                     document.getElementById('register').addEventListener('click', () => view.setScreen('registerScreen'));
                     
                 } else {
-                    document.getElementById('user-auth').innerHTML=userAuth(true);
+                    document.getElementById('user-auth').innerHTML=component.navbarUsername;
                     const logOutButton = document.getElementById('log-out');
                     console.log(logOutButton);
                     logOutButton.addEventListener('click',()=>{

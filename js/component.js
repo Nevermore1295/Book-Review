@@ -1,4 +1,3 @@
-import { userAuth } from "./module.js";
 export const component = {};
 
 component.navbarUsername = 
