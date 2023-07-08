@@ -1,10 +1,8 @@
 import { component } from "./component.js";
 import { auth , controller } from "./controller.js";
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 import { getFirestore, collection, query, where, and, or, doc, addDoc, setDoc, getDocs, onSnapshot, orderBy, Timestamp, } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
-import { getStorage } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
+
 
 
 
@@ -15,8 +13,6 @@ view.setScreen = (screenName) => {
     switch (screenName){
         case 'homeScreen':
             document.getElementById('app').innerHTML = component.navbar + component.header + component.homeContent + component.footer;
-            
-
             auth.onAuthStateChanged((user)=>{
                 console.log(auth.currentUser);
                 if(auth.currentUser==null){
@@ -40,8 +36,7 @@ view.setScreen = (screenName) => {
                     })
     
                     document.getElementById('register').style.cursor = 'pointer';
-                    document.getElementById('register').addEventListener('click', () => view.setScreen('registerScreen'));
-                    
+                    document.getElementById('register').addEventListener('click', () => view.setScreen('registerScreen'));         
                 } else {
                     document.getElementById('user-auth').innerHTML=component.navbarUsername;
                     const logOutButton = document.getElementById('log-out');
@@ -49,28 +44,19 @@ view.setScreen = (screenName) => {
                     logOutButton.addEventListener('click',()=>{
                         controller.logout();
                     })
-
                 }
-    
             })
-            
-        
-
- 
-            
             document.getElementById('navbar-brand').style.cursor = 'pointer';
             document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
             document.querySelectorAll('.reviewScreen').forEach(element=>{
                 element.style.cursor='pointer';
                 element.addEventListener('click',()=>view.setScreen('reviewScreen'));
             })
-
             break;
 
         case 'reviewScreen':
             document.getElementById('app').innerHTML = component.navbar + component.reviewContent + component.footer;
-            document.getElementById('navbar-brand').style.cursor = 'pointer';
-            document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));  
+            
             
             //Load realtime-update comment
             view.showComment();
@@ -141,13 +127,14 @@ view.setScreen = (screenName) => {
                     });
                 }
             })
-            
-
             document.getElementById('navbar-brand').style.cursor = 'pointer';
             document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
+            break;
+
+        case 'search': 
+            document.getElementById('app').innerHTML = component.navbar + component.reviewSearch + component.footer;
 
             break;
-        
         default:
             view.setScreen('homeScreen');
         break;
@@ -155,8 +142,7 @@ view.setScreen = (screenName) => {
     }
 }
 
-view.setScreen();
-
+view.setScreen('search');
 
 view.showComment = async () =>{
     onSnapshot(await controller.getCurrentCommentQuery(12),(qr)=>{

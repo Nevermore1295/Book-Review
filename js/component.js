@@ -91,10 +91,10 @@ component.navbar = `
                         </ul>
                     </li>
                     <li class="dropdown">
-                        <a href="">Search</a>
+                        <a id="search-btn">Search</a>
                     </li>  
                     <li class="dropdown">
-                        <a href="">About</a>
+                        <a id="about-btn">About</a>
                     </li>
                 </ul>
                 <a id="user-auth">
@@ -317,7 +317,7 @@ component.displayedChildComment=`
     <!-- Single comment-->
     <div class="d-flex">
         <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-        <div class="ms-3">
+        <form class="ms-3">
             <div class="fw-bold">Commenter Name</div>
             And under those conditions, you cannot establish a capital-market evaluation of that enterprise. You can't get investors.
         </div>
@@ -429,13 +429,44 @@ component.registerContent = `
     </div>  
 `;
 
-component.reviewSearch = `
+//**********************searchscreen***********************
 
+component.reviewSearch = `
+    <div class="container"> 
+        <form class="input-group input-group-lg p-4 mt-4">
+            <input type="text" class="form-control" placeholder="ISBN 10/ ISBN 13 / Book's title" ">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary btn-lg" type="button">Search</button>
+            </div>
+        </form>
+        <div class="card">
+            <div class="card-body">
+                <div class="card bg-light">
+                <div class="card-body d-flex justify-content-between">
+                    <div class="resultInfo d-flex">
+                        <img src="http://books.google.com/books/content?id=_TEJzgEACAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api" height="100">
+                        <div class="resultBasic ms-3">
+                            <h4>Title</h4>
+                            <p>Author</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-content-center">
+                        <span>
+                            <button class="btn btn-outline-secondary" type="button">ADD</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
 `;
 
+//***********************footer  ****************************/
 component.footer = `
-    <!-- Footer-->
     <footer class="py-5 bg-white shadow">
-        <div class="container"><p class="m-0 text-center">Copyright &copy; Your Website 2023</p></div>
+        <div class="container">
+            <p class="m-0 text-center">Copyright &copy; Your Website 2023</p>
+        </div>
     </footer>
 `;

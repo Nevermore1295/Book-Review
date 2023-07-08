@@ -1,0 +1,2 @@
+- chưa phân biệt được review
+- uid null không comment được
