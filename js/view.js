@@ -48,11 +48,14 @@ view.setScreen = (screenName) => {
             })
             document.getElementById('navbar-brand').style.cursor = 'pointer';
             document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
+            document.getElementById('review-btn').style.cursor = 'pointer';
+            document.getElementById('review-btn').addEventListener('click', () => view.setScreen('review'));
             document.querySelectorAll('.reviewScreen').forEach(element=>{
                 element.style.cursor='pointer';
                 element.addEventListener('click',()=>view.setScreen('reviewScreen'));
             })
             break;
+
 
         case 'reviewScreen':
             document.getElementById('app').innerHTML = component.navbar + component.reviewContent + component.footer;
@@ -88,11 +91,11 @@ view.setScreen = (screenName) => {
                 console.log(`User ${auth.currentUser.displayName} successfully comment`);              
                     
             })
-
-            break;
+        break;
         
+
         case 'registerScreen':
-            document.getElementById('app').innerHTML = component.registerNavbar + component.registerContent + component.footer;
+            document.getElementById('app').innerHTML = component.blankNavbar + component.registerContent + component.footer;
 
             const registerForm = document.getElementById('register');
             registerForm.addEventListener('submit', (e) => {
@@ -129,11 +132,12 @@ view.setScreen = (screenName) => {
             })
             document.getElementById('navbar-brand').style.cursor = 'pointer';
             document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
-            break;
+        break;
 
-        case 'search': 
+        case 'review': 
             document.getElementById('app').innerHTML = component.navbar + component.reviewSearch + component.footer;
-
+            document.getElementById('navbar-brand').style.cursor = 'pointer';
+            document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
             break;
         default:
             view.setScreen('homeScreen');
@@ -142,7 +146,7 @@ view.setScreen = (screenName) => {
     }
 }
 
-view.setScreen('search');
+view.setScreen();
 
 view.showComment = async () =>{
     onSnapshot(await controller.getCurrentCommentQuery(12),(qr)=>{

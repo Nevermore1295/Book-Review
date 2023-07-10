@@ -154,15 +154,6 @@ component.sideWidget = `
                 </div>
             </div>
         </div>
-        <!-- Side widget-->
-        <div class="card mb-4">
-            <div class="card-header">
-                Review Pending
-            </div>
-            <div class="card-body">
-                You can put anything you want inside of these side widgets. They are easy to use, and feature the Bootstrap 5 card component!
-            </div>
-        </div>
     </div>
 `
 
@@ -359,8 +350,8 @@ component.reviewContent = `
 `;
 
 
-//**********************register Screen***********************
-component.registerNavbar = `
+//**********************Register Screen***********************
+component.blankNavbar = `
     <div class="navbar navbar-expand-lg navbar-light bg-white shadow">
         <div class="container">
             <a class="navbar-brand" id="navbar-brand">BookReview</a>
@@ -370,7 +361,7 @@ component.registerNavbar = `
 
 
 component.registerContent = `
-    <div class="container d-flex align-items-center py-5">
+    <div class="container d-flex align-items-center py-4">
         <div class="container h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-12 col-md-9 col-lg-7 col-xl-6">
@@ -429,25 +420,33 @@ component.registerContent = `
     </div>  
 `;
 
-//**********************searchscreen***********************
+//**********************Reviewscreen***********************
 
 component.reviewSearch = `
-    <div class="container"> 
-        <form class="input-group input-group-lg p-4 mt-4">
-            <input type="text" class="form-control" placeholder="ISBN 10/ ISBN 13 / Book's title" ">
-            <div class="input-group-append">
-                <button class="btn btn-outline-secondary btn-lg" type="button">Search</button>
-            </div>
-        </form>
-        <div class="card">
-            <div class="card-body">
-                <div class="card bg-light">
-                <div class="card-body d-flex justify-content-between">
-                    <div class="resultInfo d-flex">
-                        <img src="http://books.google.com/books/content?id=_TEJzgEACAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api" height="100">
-                        <div class="resultBasic ms-3">
-                            <h4>Title</h4>
-                            <p>Author</p>
+    <div class="container my-4"> 
+        <h2 class="card-title m-2">Make your review</h2>
+            <form class="input-group input-group-lg p-4">
+                <input type="text" class="form-control" placeholder="ISBN / Book's title" ">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary btn-lg" type="button">Search</button>
+                </div>
+            </form>
+            <div class="card">
+                <div class="card-body overflow-auto bg-white" style="height: 300px">
+                    <div class="bookresult card bg-light m-2">
+                        <div class="card-body d-flex justify-content-between">
+                            <div class="resultInfo d-flex">
+                                <img class="mt-1" src="http://books.google.com/books/content?id=_TEJzgEACAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api" height="100">
+                                <div class="resultBasic ms-3">
+                                    <h4>Title</h4>
+                                    <h6>Author: author name</h6>
+                                    <h6>Publisher: publisher name</h6>
+                                    <h6>Date published: date published</h6>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center">        
+                                    <button class="btn btn-outline-secondary" type="button">Review</button>
+                            </div>
                         </div>
                     </div>
                     <div class="d-flex align-content-center">
@@ -462,7 +461,58 @@ component.reviewSearch = `
     </div>
 `;
 
-//***********************footer  ****************************/
+
+//*********************** Search review ****************************/
+
+component.reviewQuery =`
+    <div class="container my-4">
+        <h2 class="card-title m-2">Find reviews</h2>
+        <form class="input-group input-group-lg p-4">
+                <input type="text" class="form-control" placeholder="Book's title" ">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary btn-lg" type="button">Search</button>
+                </div>
+        </form>
+        <div class="card">
+                <div class="card-body overflow-auto bg-white" style="height: 600px">
+                    <div class="bookresult card bg-light m-2">
+                        <div class="card-body d-flex justify-content-between">
+                            <div class="resultInfo d-flex">
+                                <img class="mt-1" src="http://books.google.com/books/content?id=_TEJzgEACAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api" height="100">
+                                <div class="resultBasic ms-3">
+                                    <h4>Title</h4>
+                                    <h6>Author: author name</h6>
+                                    <h6>Posted by: username</h6>
+                                    <h6>Date posted: Date</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bookResult card bg-light m-2">
+                        <div class="card-body d-flex justify-content-between">
+                            <div class="resultInfo d-flex">
+                                <img class="mt-1" src="http://books.google.com/books/content?id=_TEJzgEACAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api" height="100">
+                                <div class="resultBasic ms-3">
+                                    <h4>Title</h4>
+                                    <h6>Author: author name</h6>
+                                    <h6>Posted by: username</h6>
+                                    <h6>Date posted: Date</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+`;
+
+
+//*********************** Admin view ****************************/
+component.adminScreen = `
+${component.homeContent}
+`;
+//*********************** Footer ****************************/
 component.footer = `
     <footer class="py-5 bg-white shadow">
         <div class="container">
