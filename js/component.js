@@ -96,6 +96,9 @@ component.navbar = `
                     <li class="dropdown">
                         <a id="about-btn">About</a>
                     </li>
+                    <li class="dropdown">
+                        <a id="review-btn">Make a review</a>
+                    </li>
                 </ul>
                 <a id="user-auth">
                 </a>
@@ -422,13 +425,13 @@ component.registerContent = `
 
 //**********************Reviewscreen***********************
 
-component.reviewSearch = `
+component.booksearch = `
     <div class="container my-4"> 
         <h2 class="card-title m-2">Make your review</h2>
             <form class="input-group input-group-lg p-4">
                 <input type="text" class="form-control" placeholder="ISBN / Book's title" ">
                 <div class="input-group-append">
-                    <button class="btn btn-outline-secondary btn-lg" type="button">Search</button>
+                    <button class="btn btn-primary btn-lg" type="button">Search</button>
                 </div>
             </form>
             <div class="card">
@@ -445,19 +448,67 @@ component.reviewSearch = `
                                 </div>
                             </div>
                             <div class="d-flex align-items-center">        
-                                    <button class="btn btn-outline-secondary" type="button">Review</button>
+                                    <button class="btn btn-outline-primary" type="button">Review</button>
                             </div>
                         </div>
                     </div>
-                    <div class="d-flex align-content-center">
-                        <span>
-                            <button class="btn btn-outline-secondary" type="button">ADD</button>
-                        </span>
+                    <div class="bookResult card bg-light m-2">
+                        <div class="card-body d-flex justify-content-between">
+                            <div class="resultInfo d-flex">
+                                <img class="mt-1" src="http://books.google.com/books/content?id=_TEJzgEACAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api" height="100">
+                                <div class="resultBasic ms-3">
+                                    <h4>Title</h4>
+                                    <h6>Author: author name</h6>
+                                    <h6>Publisher: publisher name</h6>
+                                    <h6>Date published: date published</h6>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center">        
+                                    <button class="btn btn-outline-primary" type="button">Review</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div class="card review-form mt-3">
+                <div class="card-body d-flex">
+                    <img  src="http://books.google.com/books/content?id=_TEJzgEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api" style="height:160px"> 
+                    <div class="book-info ms-3 w-100">
+                        <div class="input-group input-group-sm mb-3 w-100">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Book title</span>
+                            </div>
+                            <input type="text" class="form-control" aria-describedby="basic-addon1" disabled value="Book name">
+                        </div>
+                        <div class="row">
+                            <div class="input-group input-group-sm mb-3 me-1 col float-start">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">Author</span>
+                                </div>
+                                <input type="text" class="form-control" aria-describedby="basic-addon1" disabled value="Author name">
+                            </div>
+                            <div class="input-group input-group-sm mb-3 col">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">Publisher</span>
+                                </div>
+                                <input type="text" class="form-control" aria-describedby="basic-addon1" disabled value="Publisher">
+                            </div>
+                        </div>
+                        <div class="input-group input-group-sm mb-3 w-50">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Date published</span>
+                            </div>
+                            <input type="text" class="form-control" aria-describedby="basic-addon1" disabled value="1/1/1970">
+                        </div>
+                    <h6>Review</h6>
+                    <form>
+                        <textarea class="form-control mb-2" id="exampleFormControlTextarea1" rows="6"></textarea>
+                        <button class="btn btn-lg btn-primary float-end me-2"> Submit </button>
+                    <form>
+                    </div>
+                    
+                </div>
             </div>
-        </div>
     </div>
 `;
 
@@ -470,7 +521,7 @@ component.reviewQuery =`
         <form class="input-group input-group-lg p-4">
                 <input type="text" class="form-control" placeholder="Book's title" ">
                 <div class="input-group-append">
-                    <button class="btn btn-outline-secondary btn-lg" type="button">Search</button>
+                    <button class="btn btn-primary btn-lg" type="button">Search</button>
                 </div>
         </form>
         <div class="card">
