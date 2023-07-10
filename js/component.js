@@ -425,7 +425,7 @@ component.registerContent = `
 
 //**********************Reviewscreen***********************
 
-component.booksearch = `
+component.bookSearch = `
     <div class="container my-4"> 
         <h2 class="card-title m-2">Make your review</h2>
             <form class="input-group input-group-lg p-4">

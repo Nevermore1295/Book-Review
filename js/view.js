@@ -50,6 +50,8 @@ view.setScreen = (screenName) => {
             document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
             document.getElementById('review-btn').style.cursor = 'pointer';
             document.getElementById('review-btn').addEventListener('click', () => view.setScreen('review'));
+            document.getElementById('search-btn').style.cursor = 'pointer';
+            document.getElementById('search-btn').addEventListener('click', () => view.setScreen('search'));
             document.querySelectorAll('.reviewScreen').forEach(element=>{
                 element.style.cursor='pointer';
                 element.addEventListener('click',()=>view.setScreen('reviewScreen'));
@@ -135,10 +137,17 @@ view.setScreen = (screenName) => {
         break;
 
         case 'review': 
-            document.getElementById('app').innerHTML = component.navbar + component.reviewSearch + component.footer;
+            document.getElementById('app').innerHTML = component.navbar + component.bookSearch + component.footer;
             document.getElementById('navbar-brand').style.cursor = 'pointer';
             document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
             break;
+
+        case 'search':
+            document.getElementById('app').innerHTML = component.navbar + component.reviewQuery + component.footer;
+            document.getElementById('navbar-brand').style.cursor = 'pointer';
+            document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
+        break;
+        
         default:
             view.setScreen('homeScreen');
         break;
