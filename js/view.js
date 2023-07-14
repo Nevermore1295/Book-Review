@@ -17,7 +17,8 @@ view.showReview = async () => {
             value.set(doc.id,doc.data());
             key.push(doc.id);
         })
-        document.getElementById('featured-post').innerHTML = `
+        str+=`
+        <!-- Featured blog post-->
         <div class="card mb-4">
             <a class="reviewScreen" value="${key[0]}"><img class="card-img-top" src="https://dummyimage.com/850x350/dee2e6/6c757d.jpg" alt="..." /></a>
             <div class="card-body">
@@ -25,28 +26,50 @@ view.showReview = async () => {
                 <div class="small text-muted">${value.get(key[0]).review_creator_id}</div>
                 <h2 class="card-title">${value.get(key[0]).review_title}</h2>
                 <p class="card-text overflow-hidden">${value.get(key[0]).review_content}</p>
-                <a class="btn btn-primary review-show" value="${key[0]}">Read more →</a>
+                <a class="btn btn-primary" class="reviewScreen" value="${key[0]}">Read more →</a>
             </div>
         </div> 
         `
+        str +=`
+        <!-- Nested row for non-featured blog posts-->
+        <div class="row">
+        <div class="col-lg-6">`;
         for (let pos = 1; pos < key.length; pos++){
-            document.getElementById('review-posts').innerHTML +=`
-                <div class="col-lg-6">
-                    <div class="card mb-4">
-                        <a class="reviewScreen" value="${key[pos]}"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-                        <div class="card-body">
-                            <div class="small text-muted">${(value.get(key[pos]).review_created_date.toDate())}</div>
-                            <h2 class="card-title h4">${value.get(key[pos]).review_title}</h2>
-                            <p class="card-text overflow-hidden" style="height: 100px">${value.get(key[pos]).review_content}</p>
-                            <a class="btn btn-primary review-show" value="${key[pos]}">Read more →</a>
-                        </div>
+            str+=`
+                <!-- Blog post-->
+                <div class="card mb-4">
+                    <a class="reviewScreen" value="${key[pos]}"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
+                    <div class="card-body">
+                        <div class="small text-muted">${(value.get(key[pos]).review_created_date.toDate())}</div>
+                        <h2 class="card-title h4">${value.get(key[pos]).review_title}</h2>
+                        <p class="card-text overflow-hidden">${value.get(key[pos]).review_content}</p>
+                        <a class="btn btn-primary" class="reviewScreen" value="${key[pos]}">Read more →</a>
                     </div>
                 </div>
-           `
+                <!-- Blog post-->
+                <div class="card mb-4">
+                    <a class="reviewScreen" value="${key[pos]}"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
+                    <div class="card-body">
+                        <div class="small text-muted">${(value.get(key[pos]).review_created_date.toDate())}</div>
+                        <h2 class="card-title h4">${value.get(key[pos]).review_title}</h2>
+                        <p class="card-text">${value.get(key[pos]).review_content}</p>
+                        <a class="btn btn-primary" class="reviewScreen" value="${key[pos]}">Read more →</a>
+                    </div>
+                </div>
+            `
         }
+
+        str+= 
+        `
+        </div>
+        </div>`
+
+
+        document.getElementById('blog-entries').innerHTML = str;
+
         console.log(document.querySelectorAll('.reviewScreen'));
-        document.querySelectorAll('.reviewScreen, .review-show').forEach(element=>{
-            console.log(element.getAttribute('value'));
+
+        document.querySelectorAll('.reviewScreen').forEach(element=>{
             element.style.cursor='pointer';
             element.addEventListener('click', () => view.setScreen('reviewDetailScreen', element.getAttribute('value')));
         })
@@ -74,12 +97,16 @@ view.showComment = async (review_id) =>{
     })
 }
 
+view.showCurrentReview = async (review_id)=>{
+    return (await controller.getCurrentReviewDoc(review_id));
+}
+ 
 
 //Thay đổi giao diện
-view.setScreen = (screenName, type) => {
+view.setScreen = async (screenName, type) => {
     switch (screenName){
         case 'homeScreen':
-            document.getElementById('app').innerHTML = component.navbar + component.header + component.homeContent + component.footer;
+            document.getElementById('app').innerHTML = component.navbar() + component.header() + component.homeContent() + component.footer();
             
             controller.authCheck();
 
@@ -95,8 +122,8 @@ view.setScreen = (screenName, type) => {
 
 
         case 'reviewDetailScreen':
-            document.getElementById('app').innerHTML = component.navbar + component.reviewContent + component.footer;
-            
+            ;
+            document.getElementById('app').innerHTML = component.navbar() + component.reviewContent(await view.showCurrentReview(type)) + component.footer();
             controller.authCheck();
             
             //Load realtime-update comment
@@ -136,7 +163,7 @@ view.setScreen = (screenName, type) => {
         
 
         case 'registerScreen':
-            document.getElementById('app').innerHTML = component.blankNavbar + component.registerContent + component.footer;
+            document.getElementById('app').innerHTML = component.blankNavbar() + component.registerContent() + component.footer();
 
             const registerForm = document.getElementById('register');
             registerForm.addEventListener('submit', (e) => {
@@ -178,11 +205,12 @@ view.setScreen = (screenName, type) => {
         break;
 
         case 'review': 
-            document.getElementById('app').innerHTML = component.navbar + component.bookSearch + component.footer;
+            document.getElementById('app').innerHTML = component.navbar() + component.bookSearch() + component.footer();
             
             const ReviewForm = document.getElementById('Review');
             ReviewForm.addEventListener('submit', (e)=>{
                 e.preventDefault();
+
                 const reviewTitle = document.getElementById('Review-title').value;
                 const reviewContent = document.getElementById('Review-content').value;
                 const initialData = {
@@ -195,7 +223,8 @@ view.setScreen = (screenName, type) => {
                 //Add data to doc
                 controller.addReview(initialData).then(() => {
                 // Reset form
-                
+                ReviewForm.reset();
+
                 }).catch(err => {
                     // Catch error
                     console.log(err.message)
@@ -207,7 +236,7 @@ view.setScreen = (screenName, type) => {
             break;
 
         case 'search':
-            document.getElementById('app').innerHTML = component.navbar + component.reviewQuery + component.footer;
+            document.getElementById('app').innerHTML = component.navbar() + component.reviewQuery() + component.footer();
             document.getElementById('navbar-brand').style.cursor = 'pointer';
             document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
         break;
