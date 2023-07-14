@@ -32,43 +32,44 @@ view.showReview = async () => {
         `
         str +=`
         <!-- Nested row for non-featured blog posts-->
-        <div class="row">`;
+        <div class="row">
+        <div class="col-lg-6">`;
         for (let pos = 1; pos < key.length; pos++){
             str+=`
-                <div class="col-lg-6">
-                    <!-- Blog post-->
-                    <div class="card mb-4">
-                        <a class="reviewScreen" value="${key[pos]}"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-                        <div class="card-body">
-                            <div class="small text-muted">${(value.get(key[pos]).review_created_date.toDate())}</div>
-                            <h2 class="card-title h4">${value.get(key[pos]).review_title}</h2>
-                            <p class="card-text overflow-hidden">${value.get(key[pos]).review_content}</p>
-                            <a class="btn btn-primary" class="reviewScreen" value="${key[pos]}">Read more →</a>
-                        </div>
+                <!-- Blog post-->
+                <div class="card mb-4">
+                    <a class="reviewScreen" value="${key[pos]}"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
+                    <div class="card-body">
+                        <div class="small text-muted">${(value.get(key[pos]).review_created_date.toDate())}</div>
+                        <h2 class="card-title h4">${value.get(key[pos]).review_title}</h2>
+                        <p class="card-text overflow-hidden">${value.get(key[pos]).review_content}</p>
+                        <a class="btn btn-primary" class="reviewScreen" value="${key[pos]}">Read more →</a>
                     </div>
-                    <!-- Blog post-->
-                    <div class="card mb-4">
-                        <a class="reviewScreen" value="${key[pos]}"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-                        <div class="card-body">
-                            <div class="small text-muted">${(value.get(key[pos]).review_created_date.toDate())}</div>
-                            <h2 class="card-title h4">${value.get(key[pos]).review_title}</h2>
-                            <p class="card-text">${value.get(key[pos]).review_content}</p>
-                            <a class="btn btn-primary" class="reviewScreen" value="${key[pos]}">Read more →</a>
-                        </div>
+                </div>
+                <!-- Blog post-->
+                <div class="card mb-4">
+                    <a class="reviewScreen" value="${key[pos]}"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
+                    <div class="card-body">
+                        <div class="small text-muted">${(value.get(key[pos]).review_created_date.toDate())}</div>
+                        <h2 class="card-title h4">${value.get(key[pos]).review_title}</h2>
+                        <p class="card-text">${value.get(key[pos]).review_content}</p>
+                        <a class="btn btn-primary" class="reviewScreen" value="${key[pos]}">Read more →</a>
                     </div>
                 </div>
             `
         }
 
         str+= 
-        `</div>`
-        console.log(str);
+        `
+        </div>
+        </div>`
+
+
         document.getElementById('blog-entries').innerHTML = str;
 
         console.log(document.querySelectorAll('.reviewScreen'));
 
         document.querySelectorAll('.reviewScreen').forEach(element=>{
-            console.log(element.getAttribute('value'));
             element.style.cursor='pointer';
             element.addEventListener('click', () => view.setScreen('reviewDetailScreen', element.getAttribute('value')));
         })
@@ -96,12 +97,16 @@ view.showComment = async (review_id) =>{
     })
 }
 
+view.showCurrentReview = async (review_id)=>{
+    return (await controller.getCurrentReviewDoc(review_id));
+}
+ 
 
 //Thay đổi giao diện
-view.setScreen = (screenName, type) => {
+view.setScreen = async (screenName, type) => {
     switch (screenName){
         case 'homeScreen':
-            document.getElementById('app').innerHTML = component.navbar + component.header + component.homeContent + component.footer;
+            document.getElementById('app').innerHTML = component.navbar() + component.header() + component.homeContent() + component.footer();
             
             controller.authCheck();
 
@@ -117,8 +122,8 @@ view.setScreen = (screenName, type) => {
 
 
         case 'reviewDetailScreen':
-            document.getElementById('app').innerHTML = component.navbar + component.reviewContent + component.footer;
-            
+            ;
+            document.getElementById('app').innerHTML = component.navbar() + component.reviewContent(await view.showCurrentReview(type)) + component.footer();
             controller.authCheck();
             
             //Load realtime-update comment
@@ -158,7 +163,7 @@ view.setScreen = (screenName, type) => {
         
 
         case 'registerScreen':
-            document.getElementById('app').innerHTML = component.blankNavbar + component.registerContent + component.footer;
+            document.getElementById('app').innerHTML = component.blankNavbar() + component.registerContent() + component.footer();
 
             const registerForm = document.getElementById('register');
             registerForm.addEventListener('submit', (e) => {
@@ -200,7 +205,7 @@ view.setScreen = (screenName, type) => {
         break;
 
         case 'review': 
-            document.getElementById('app').innerHTML = component.navbar + component.bookSearch + component.footer;
+            document.getElementById('app').innerHTML = component.navbar() + component.bookSearch() + component.footer();
             
             const ReviewForm = document.getElementById('Review');
             ReviewForm.addEventListener('submit', (e)=>{
@@ -231,7 +236,7 @@ view.setScreen = (screenName, type) => {
             break;
 
         case 'search':
-            document.getElementById('app').innerHTML = component.navbar + component.reviewQuery + component.footer;
+            document.getElementById('app').innerHTML = component.navbar() + component.reviewQuery() + component.footer();
             document.getElementById('navbar-brand').style.cursor = 'pointer';
             document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
         break;
