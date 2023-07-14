@@ -8,7 +8,7 @@ import { getFirestore, collection, query, where, and, or, doc, addDoc, setDoc, g
 let view = {};
 
 view.showReview = async () => {
-    await onSnapshot(await controller.getCurrentReviewQuery(),(qr)=>{
+    onSnapshot(await controller.getCurrentReviewQuery(),(qr)=>{
         console.log(qr);
         let str = '';
         let value = new Map;
@@ -22,65 +22,56 @@ view.showReview = async () => {
         <div class="card mb-4">
             <a class="reviewScreen" value="${key[0]}"><img class="card-img-top" src="https://dummyimage.com/850x350/dee2e6/6c757d.jpg" alt="..." /></a>
             <div class="card-body">
-                <div class="small text-muted">${value.get(key[0]).review_created_date}</div>
+                <div class="small text-muted">${value.get(key[0]).review_created_date.toDate()}</div>
                 <div class="small text-muted">${value.get(key[0]).review_creator_id}</div>
                 <h2 class="card-title">${value.get(key[0]).review_title}</h2>
-                <p class="card-text">${value.get(key[0]).review_content}</p>
+                <p class="card-text overflow-hidden">${value.get(key[0]).review_content}</p>
                 <a class="btn btn-primary" class="reviewScreen" value="${key[0]}">Read more →</a>
             </div>
         </div> 
         `
-
-        str+=`
+        str +=`
         <!-- Nested row for non-featured blog posts-->
-        <div class="row">
-            <div class="col-lg-6">
-                <!-- Blog post-->
-                <div class="card mb-4">
-                    <a class="reviewScreen" value="${key[1]}"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-                    <div class="card-body">
-                        <div class="small text-muted">${(value.get(key[1]).review_created_date.ToDateTime())}</div>
-                        <h2 class="card-title h4">${value.get(key[1]).review_title}</h2>
-                        <p class="card-text">${value.get(key[1]).review_content}</p>
-                        <a class="btn btn-primary" class="reviewScreen" value="${key[1]}">Read more →</a>
+        <div class="row">`;
+        for (let pos = 1; pos < key.length; pos++){
+            str+=`
+                <div class="col-lg-6">
+                    <!-- Blog post-->
+                    <div class="card mb-4">
+                        <a class="reviewScreen" value="${key[pos]}"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
+                        <div class="card-body">
+                            <div class="small text-muted">${(value.get(key[pos]).review_created_date.toDate())}</div>
+                            <h2 class="card-title h4">${value.get(key[pos]).review_title}</h2>
+                            <p class="card-text overflow-hidden">${value.get(key[pos]).review_content}</p>
+                            <a class="btn btn-primary" class="reviewScreen" value="${key[pos]}">Read more →</a>
+                        </div>
+                    </div>
+                    <!-- Blog post-->
+                    <div class="card mb-4">
+                        <a class="reviewScreen" value="${key[pos]}"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
+                        <div class="card-body">
+                            <div class="small text-muted">${(value.get(key[pos]).review_created_date.toDate())}</div>
+                            <h2 class="card-title h4">${value.get(key[pos]).review_title}</h2>
+                            <p class="card-text">${value.get(key[pos]).review_content}</p>
+                            <a class="btn btn-primary" class="reviewScreen" value="${key[pos]}">Read more →</a>
+                        </div>
                     </div>
                 </div>
-                <!-- Blog post-->
-                <div class="card mb-4">
-                    <a class="reviewScreen"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-                    <div class="card-body">
-                        <div class="small text-muted">January 1, 2023</div>
-                        <h2 class="card-title h4">Post Title</h2>
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla.</p>
-                        <a class="btn btn-primary" class="reviewScreen">Read more →</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <!-- Blog post-->
-                <div class="card mb-4">
-                    <a class="reviewScreen"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-                    <div class="card-body">
-                        <div class="small text-muted">January 1, 2023</div>
-                        <h2 class="card-title h4">Post Title</h2>
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla.</p>
-                        <a class="btn btn-primary" class="reviewScreen">Read more →</a>
-                    </div>
-                </div>
-                <!-- Blog post-->
-                <div class="card mb-4">
-                    <a class="reviewScreen"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-                    <div class="card-body">
-                        <div class="small text-muted">January 1, 2023</div>
-                        <h2 class="card-title h4">Post Title</h2>
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam.</p>
-                        <a class="btn btn-primary" class="reviewScreen">Read more →</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        `
+            `
+        }
+
+        str+= 
+        `</div>`
+        console.log(str);
         document.getElementById('blog-entries').innerHTML = str;
+
+        console.log(document.querySelectorAll('.reviewScreen'));
+
+        document.querySelectorAll('.reviewScreen').forEach(element=>{
+            console.log(element.getAttribute('value'));
+            element.style.cursor='pointer';
+            element.addEventListener('click', () => view.setScreen('reviewDetailScreen', element.getAttribute('value')));
+        })
     },(err)=>{
         console.log(err);
         console.log(err.message);
@@ -121,10 +112,7 @@ view.setScreen = (screenName, type) => {
             document.getElementById('review-btn').addEventListener('click', () => view.setScreen('review'));
             document.getElementById('search-btn').style.cursor = 'pointer';
             document.getElementById('search-btn').addEventListener('click', () => view.setScreen('search'));
-            document.querySelectorAll('.reviewScreen').forEach(element=>{
-                element.style.cursor='pointer';
-                element.addEventListener('click', () => view.setScreen('reviewDetailScreen', element.getAttribute('value')));
-            })
+         
             break;
 
 

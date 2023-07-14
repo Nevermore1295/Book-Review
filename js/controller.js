@@ -108,11 +108,12 @@ controller.addComment = async (initialData) =>{
     return await addDoc(collection(db, 'Comment'),initialData);
 }
 
-
+//Lấy query của review từ firestore
 controller.getCurrentReviewQuery = async () => {
     return await (query(collection(db,'Review'),orderBy('review_created_date'),limit(5)));
 }
 
+//Thêm review vào firestore
 controller.addReview = async (initialData) =>{
     return await addDoc(collection(db, 'Review'),initialData);
 }

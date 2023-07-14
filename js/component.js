@@ -224,7 +224,7 @@ component.homeContent = `
         <div class="row">
             <!-- Blog entries-->
             <div class="col-lg-8" id="blog-entries">
-                ${component.blogEntries}
+                <!--{component.blogEntries}-->
                 <!-- Pagination-->
                 <nav aria-label="Pagination">
                     <hr class="my-0" />
