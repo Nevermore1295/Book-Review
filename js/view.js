@@ -122,7 +122,6 @@ view.setScreen = async (screenName, type) => {
 
 
         case 'reviewDetailScreen':
-            ;
             document.getElementById('app').innerHTML = component.navbar() + component.reviewContent(await view.showCurrentReview(type)) + component.footer();
             controller.authCheck();
             
