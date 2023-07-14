@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut ,updateProfile } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-import { getFirestore, collection, query, where, and, or, doc, addDoc, setDoc, getDoc, getDocs, orderBy, onSnapshot, limit} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+import { getFirestore, collection, query, where, and, or, doc, addDoc, setDoc, getDocs, orderBy, onSnapshot, limit} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 import { component } from "./component.js";
 
@@ -24,8 +24,9 @@ export const controller = {};
 controller.authCheck = async () => {
     await auth.onAuthStateChanged(()=>{
         if(auth.currentUser==null){
-            document.getElementById('user-auth').innerHTML=component.navbarLoginForm();
+            document.getElementById('user-auth').innerHTML=component.navbarLoginForm;
             const loginForm = document.getElementById('login');
+            console.log(loginForm);
             loginForm.addEventListener('submit', (e) => {
                 e.preventDefault();
 
@@ -44,7 +45,7 @@ controller.authCheck = async () => {
             document.getElementById('register').addEventListener('click', () => view.setScreen('registerScreen'));         
         
         } else {
-            document.getElementById('user-auth').innerHTML=component.navbarUsername();
+            document.getElementById('user-auth').innerHTML=component.navbarUsername;
             const logOutButton = document.getElementById('log-out');
             logOutButton.addEventListener('click',()=>{
                 controller.logout();
@@ -110,19 +111,6 @@ controller.addComment = async (initialData) =>{
 //Lấy query của review từ firestore
 controller.getCurrentReviewQuery = async () => {
     return await (query(collection(db,'Review'),orderBy('review_created_date'),limit(5)));
-}
-
-controller.getCurrentReviewDoc = async (review_id) => {
-
-    const docRef = doc(db, "Review", review_id);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-       return docSnap.data();
-    } else {
-    // docSnap.data() will be undefined in this case
-        console.log("No such document!");
-    }
 }
 
 //Thêm review vào firestore
