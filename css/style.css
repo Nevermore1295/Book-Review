@@ -28,12 +28,4 @@ a {
   color: black !important;
 }
 
-.book-info input:disabled {
-  background-color: white;
-}
-
-.review-show {
-  color: white !important;
-}
-
 /*# sourceMappingURL=style.css.map */
