@@ -1,8 +1,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut ,updateProfile } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-import { getFirestore, collection, query, where, and, or, doc, addDoc, setDoc, getDocs, onSnapshot} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+import { getFirestore, collection, query, where, and, or, doc, addDoc, setDoc, getDocs, orderBy, onSnapshot, limit} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
-
+import { component } from "./component.js";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -19,7 +19,40 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth();
 export const db = getFirestore(app);
 
-export const controller = {}
+export const controller = {};
+
+controller.authCheck = async () => {
+    await auth.onAuthStateChanged(()=>{
+        if(auth.currentUser==null){
+            document.getElementById('user-auth').innerHTML=component.navbarLoginForm;
+            const loginForm = document.getElementById('login');
+            console.log(loginForm);
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                // Get user info
+                const email = document.getElementById('email-login').value;
+                const password = document.getElementById('password-login').value;
+
+                const initialData = {
+                    email: email.trim(),
+                    password: password.trim(),
+                }
+                
+                controller.login(initialData);
+                loginForm.reset();  
+            })   
+            document.getElementById('register').addEventListener('click', () => view.setScreen('registerScreen'));         
+        
+        } else {
+            document.getElementById('user-auth').innerHTML=component.navbarUsername;
+            const logOutButton = document.getElementById('log-out');
+            logOutButton.addEventListener('click',()=>{
+                controller.logout();
+            })
+        }
+    })
+}
 
 controller.login = async (initialData) =>{
     await signInWithEmailAndPassword(auth, initialData.email, initialData.password).then(user => {
@@ -30,9 +63,9 @@ controller.login = async (initialData) =>{
     });
 }
 
-
 controller.logout = async () =>{
     await signOut(auth).then(() => {
+
     // Sign-out successful.
     }).catch((error) => {
     // An error happened.
@@ -65,13 +98,21 @@ controller.register = async (initialData) =>{
     })
 }
 
-
+//Lấy query của parent comment từ firestore
 controller.getCurrentCommentQuery = async (comment_review_id) => {
-    return await (query(collection(db,'Comment'),and(where('comment_review_id','==',comment_review_id),where('comment_parent_id','==',null))));
+    return await (query(collection(db,'Comment'),and(where('comment_review_id','==',comment_review_id),where('comment_parent_id','==',null)),limit(6)));
+}
+
+//Thêm comment vào firestore
+controller.addComment = async (initialData) =>{
+    return await addDoc(collection(db, 'Comment'),initialData);
 }
 
 
+controller.getCurrentReviewQuery = async () => {
+    return await (query(collection(db,'Review'),orderBy('review_created_date'),limit(5)));
+}
 
-controller.addComment = async (initialData) =>{
-    return await addDoc(collection(db, 'Comment'),initialData);
+controller.addReview = async (initialData) =>{
+    return await addDoc(collection(db, 'Review'),initialData);
 }

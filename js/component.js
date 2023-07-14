@@ -54,7 +54,7 @@ component.navbarLoginForm = `
                             </div>
                         </div>
                         <div class="text-center">
-                            <p>Not a member? <a class="text-primary close" data-bs-dismiss="modal" aria-label="Close" id="register">Register</a></p>
+                            <p>Not a member? <a class="text-primary close" type="button" data-bs-dismiss="modal" aria-label="Close" id="register">Register</a></p>
                         </div>
                     </form>
                 </div>
@@ -64,9 +64,6 @@ component.navbarLoginForm = `
     </div>
 </div>
 `
-
-
-
 
 component.navbar = `
     <nav class="header navbar navbar-expand-lg shadow navbar-light bg-white">
@@ -161,69 +158,73 @@ component.sideWidget = `
 `
 
 //**********************Home Screen***********************
+component.blogEntries = `
+<!-- Featured blog post-->
+<div class="card mb-4">
+    <a class="reviewScreen"><img class="card-img-top" src="https://dummyimage.com/850x350/dee2e6/6c757d.jpg" alt="..." /></a>
+    <div class="card-body">
+        <div class="small text-muted">January 1, 2023</div>
+        <h2 class="card-title">Featured Post Title</h2>
+        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam. Dicta expedita corporis animi vero voluptate voluptatibus possimus, veniam magni quis!</p>
+        <a class="btn btn-primary" class="reviewScreen">Read more →</a>
+    </div>
+</div>
+<!-- Nested row for non-featured blog posts-->
+<div class="row">
+    <div class="col-lg-6">
+        <!-- Blog post-->
+        <div class="card mb-4">
+            <a class="reviewScreen"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
+            <div class="card-body">
+                <div class="small text-muted">January 1, 2023</div>
+                <h2 class="card-title h4">Post Title</h2>
+                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla.</p>
+                <a class="btn btn-primary" class="reviewScreen">Read more →</a>
+            </div>
+        </div>
+        <!-- Blog post-->
+        <div class="card mb-4">
+            <a class="reviewScreen"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
+            <div class="card-body">
+                <div class="small text-muted">January 1, 2023</div>
+                <h2 class="card-title h4">Post Title</h2>
+                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla.</p>
+                <a class="btn btn-primary" class="reviewScreen">Read more →</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <!-- Blog post-->
+        <div class="card mb-4">
+            <a class="reviewScreen"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
+            <div class="card-body">
+                <div class="small text-muted">January 1, 2023</div>
+                <h2 class="card-title h4">Post Title</h2>
+                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla.</p>
+                <a class="btn btn-primary" class="reviewScreen">Read more →</a>
+            </div>
+        </div>
+        <!-- Blog post-->
+        <div class="card mb-4">
+            <a class="reviewScreen"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
+            <div class="card-body">
+                <div class="small text-muted">January 1, 2023</div>
+                <h2 class="card-title h4">Post Title</h2>
+                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam.</p>
+                <a class="btn btn-primary" class="reviewScreen">Read more →</a>
+            </div>
+        </div>
+    </div>
+</div>
+`
+
 component.homeContent = `
     <!-- Page content-->
     <div class="container">
         <div class="row">
             <!-- Blog entries-->
-            <div class="col-lg-8">
-                <!-- Featured blog post-->
-                <div class="card mb-4">
-                    <a class="reviewScreen"><img class="card-img-top" src="https://dummyimage.com/850x350/dee2e6/6c757d.jpg" alt="..." /></a>
-                    <div class="card-body">
-                        <div class="small text-muted">January 1, 2023</div>
-                        <h2 class="card-title">Featured Post Title</h2>
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam. Dicta expedita corporis animi vero voluptate voluptatibus possimus, veniam magni quis!</p>
-                        <a class="btn btn-primary" class="reviewScreen">Read more →</a>
-                    </div>
-                </div>
-                <!-- Nested row for non-featured blog posts-->
-                <div class="row">
-                    <div class="col-lg-6">
-                        <!-- Blog post-->
-                        <div class="card mb-4">
-                            <a class="reviewScreen"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-                            <div class="card-body">
-                                <div class="small text-muted">January 1, 2023</div>
-                                <h2 class="card-title h4">Post Title</h2>
-                                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla.</p>
-                                <a class="btn btn-primary" class="reviewScreen">Read more →</a>
-                            </div>
-                        </div>
-                        <!-- Blog post-->
-                        <div class="card mb-4">
-                            <a class="reviewScreen"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-                            <div class="card-body">
-                                <div class="small text-muted">January 1, 2023</div>
-                                <h2 class="card-title h4">Post Title</h2>
-                                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla.</p>
-                                <a class="btn btn-primary" class="reviewScreen">Read more →</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <!-- Blog post-->
-                        <div class="card mb-4">
-                            <a class="reviewScreen"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-                            <div class="card-body">
-                                <div class="small text-muted">January 1, 2023</div>
-                                <h2 class="card-title h4">Post Title</h2>
-                                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla.</p>
-                                <a class="btn btn-primary" class="reviewScreen">Read more →</a>
-                            </div>
-                        </div>
-                        <!-- Blog post-->
-                        <div class="card mb-4">
-                            <a class="reviewScreen"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-                            <div class="card-body">
-                                <div class="small text-muted">January 1, 2023</div>
-                                <h2 class="card-title h4">Post Title</h2>
-                                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam.</p>
-                                <a class="btn btn-primary" class="reviewScreen">Read more →</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="col-lg-8" id="blog-entries">
+                ${component.blogEntries}
                 <!-- Pagination-->
                 <nav aria-label="Pagination">
                     <hr class="my-0" />
@@ -500,10 +501,14 @@ component.bookSearch = `
                             </div>
                             <input type="text" class="form-control" aria-describedby="basic-addon1" disabled value="1/1/1970">
                         </div>
-                    <h6>Review</h6>
-                    <form>
-                        <textarea class="form-control mb-2" id="exampleFormControlTextarea1" rows="6"></textarea>
-                        <button class="btn btn-lg btn-primary float-end me-2"> Submit </button>
+                   
+                    <form id="Review">
+                        <h6>Review Title</h6>
+                        <textarea class="form-control mb-2" id="Review-title" rows="1"></textarea>
+
+                        <h6>Review</h6>
+                        <textarea class="form-control mb-2" id="Review-content" rows="6"></textarea>
+                        <button class="btn btn-lg btn-primary float-end me-2" > Submit </button>
                     <form>
                     </div>
                     
