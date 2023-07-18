@@ -2,7 +2,7 @@ import { component } from "./component.js";
 import { auth, db , controller } from "./controller.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 import { getFirestore, collection, query, where, and, or, doc, addDoc, setDoc, getDocs, onSnapshot, orderBy, Timestamp} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
-
+import { book } from "./bookfinder.js";
 
 
 export let view = {};
@@ -146,7 +146,51 @@ view.setScreen = async (screenName, review_id) => {
 
         case 'review': 
             document.getElementById('app').innerHTML = component.navbar() + component.bookSearch() + component.footer();
-            
+            const bookinfo = document.getElementById('bookSearchbar');
+            let bookIdSelected ='';
+            bookinfo.addEventListener('submit', async (j) => {
+                j.preventDefault();
+                let bookResult = await book.resolveQuery(document.getElementById('bookSearchinput').value.replace(/\s+/g, ''));
+                console.log(bookResult);
+                document.getElementById('bookSearchList').innerHTML +=`<div class="card-body overflow-auto bg-white" style="max-height: 300px">
+                    <div id="bookSearchoutput"></div>
+                </div>`;
+                
+                let str = '';
+                for (let index = 0; index < bookResult.length; index++) {    
+                      str +=
+                      `
+                    <div class="card bg-light m-2">
+                        <form class="card-body d-flex justify-content-between">
+                            <div class="d-flex">
+                                <img class="mt-1" src="
+                                ${imageCheck(bookResult[index].imageLinks)}" height="100" width="70">
+                                <div class="resultBasic ms-3">
+                                    <h5>${bookResult[index].title}</h5>
+                                    <p>Author: ${bookResult[index].authors}</p>
+                                    <p>Date published: ${bookResult[index].publishedDate}</;>
+                                </div>
+                            </div>   
+                            <button style="height:40px" id="${index}" class="rv-btn btn btn-outline-primary mt-2" type="button">Review</button>
+                        </form>
+                    </div>
+                      `;
+                }
+                
+                document.getElementById('bookSearchoutput').innerHTML=str; 
+                document.querySelectorAll(".rv-btn").forEach(e=>{
+                    e.addEventListener("click", (j) => {
+                        document.getElementById('rv-title').value = bookResult[j.target.id].title;
+                        document.getElementById('rv-authors').value = bookResult[j.target.id].authors;
+                        document.getElementById('rv-pd').value = bookResult[j.target.id].publishedDate;
+                        bookIdSelected = bookResult[j.target.id].id;
+                    })
+                })
+
+                
+                bookinfo.reset();  
+            })   
+
             const ReviewForm = document.getElementById('Review');
             ReviewForm.addEventListener('submit', (e)=>{
                 e.preventDefault();
@@ -161,6 +205,8 @@ view.setScreen = async (screenName, review_id) => {
                     review_creator_id: auth.currentUser.uid,
                     review_title: reviewTitle.trim(),
                     review_content: reviewContent.trim(),
+                    review_book_id: bookIdSelected
+                    //https://www.googleapis.com/books/v1/volumes/bVFPAAAAYAAJ
                 }
 
                 //Add data object to doc
@@ -193,7 +239,17 @@ view.setScreen = async (screenName, review_id) => {
     }
 }
 
-view.setScreen();
+let imageCheck = (index) => {
+    if ( index === undefined) {
+        return "../assets/Question_mark_(black).png";
+    }else
+    {
+        return index.thumbnail;
+    };
+}
+
+
+view.setScreen('review');
 
 
 

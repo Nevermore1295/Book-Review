@@ -14,15 +14,15 @@
 }
 
 .account-dropdown {
-  margin-left:-45px;
+  margin-left: -45px;
 }
 
-#signin-button{
+#signin-button {
   margin-left: 10px;
 }
 
 body {
-  background-color: RGBA(248, 249, 250)
+  background-color: RGBA(248, 249, 250);
 }
 
 a {
@@ -31,11 +31,15 @@ a {
 }
 
 .book-info {
-  input:disabled{
-  background-color: white;
+  input:disabled {
+    background-color: white;
   }
 }
 
-.review-show{
-    color: white !important;
+.review-show {
+  color: white !important;
+}
+
+#bookSearchList {
+  border: 0;
 }
