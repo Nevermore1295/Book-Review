@@ -2,3 +2,6 @@
 - uid null không comment được
 - onSnapshot bị lỗi quyền truy nhập - Missing or insufficient permissions.
 (có thể do cache hoặc firestore database rule)
+
+
+- category có ẵn

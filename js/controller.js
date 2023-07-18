@@ -131,3 +131,4 @@ controller.getCurrentReviewQuery = async () => {
 controller.addReview = async (initialData) =>{
     return await addDoc(collection(db, 'Review'),initialData);
 }
+
