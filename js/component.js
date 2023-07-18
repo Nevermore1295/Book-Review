@@ -1,4 +1,5 @@
-export const component = {};
+import { controller } from "./controller.js";
+export let component = {};
 
 component.navbarUsername = (auth) => {
     return ` 
@@ -16,7 +17,7 @@ component.navbarUsername = (auth) => {
     `
 }
 
-component.navbarLoginForm = () => {
+component.navbarLoginForm = (auth) => {
     return `
     <div class="d-flex align-content-center me-1">
         <div class="dropdown">
@@ -166,67 +167,131 @@ component.sideWidget = () =>{
 }
 
 //**********************Home Screen***********************
-component.blogEntries = () => {
+// component.blogEntries = (data_map, key_array) => {
+//     return `
+//     <!-- Featured blog post-->
+//     <div class="card mb-4">
+//         <a class="reviewScreen"><img class="card-img-top" src="https://dummyimage.com/850x350/dee2e6/6c757d.jpg" alt="..." /></a>
+//         <div class="card-body">
+//             <div class="small text-muted">January 1, 2023</div>
+//             <h2 class="card-title">Featured Post Title</h2>
+//             <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam. Dicta expedita corporis animi vero voluptate voluptatibus possimus, veniam magni quis!</p>
+//             <a class="btn btn-primary" class="reviewScreen">Read more →</a>
+//         </div>
+//     </div>
+//     <!-- Nested row for non-featured blog posts-->
+//     <div class="row">
+//         <div class="col-lg-6">
+//             <!-- Blog post-->
+//             <div class="card mb-4">
+//                 <a class="reviewScreen"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
+//                 <div class="card-body">
+//                     <div class="small text-muted">January 1, 2023</div>
+//                     <h2 class="card-title h4">Post Title</h2>
+//                     <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla.</p>
+//                     <a class="btn btn-primary" class="reviewScreen">Read more →</a>
+//                 </div>
+//             </div>
+//             <!-- Blog post-->
+//             <div class="card mb-4">
+//                 <a class="reviewScreen"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
+//                 <div class="card-body">
+//                     <div class="small text-muted">January 1, 2023</div>
+//                     <h2 class="card-title h4">Post Title</h2>
+//                     <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla.</p>
+//                     <a class="btn btn-primary" class="reviewScreen">Read more →</a>
+//                 </div>
+//             </div>
+//         </div>
+//         <div class="col-lg-6">
+//             <!-- Blog post-->
+//             <div class="card mb-4">
+//                 <a class="reviewScreen"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
+//                 <div class="card-body">
+//                     <div class="small text-muted">January 1, 2023</div>
+//                     <h2 class="card-title h4">Post Title</h2>
+//                     <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla.</p>
+//                     <a class="btn btn-primary" class="reviewScreen">Read more →</a>
+//                 </div>
+//             </div>
+//             <!-- Blog post-->
+//             <div class="card mb-4">
+//                 <a class="reviewScreen"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
+//                 <div class="card-body">
+//                     <div class="small text-muted">January 1, 2023</div>
+//                     <h2 class="card-title h4">Post Title</h2>
+//                     <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam.</p>
+//                     <a class="btn btn-primary" class="reviewScreen">Read more →</a>
+//                 </div>
+//             </div>
+//         </div>
+//     </div>
+//     `
+// }
+
+component.blogEntries = (data_map, key_array) => {
     return `
     <!-- Featured blog post-->
     <div class="card mb-4">
-        <a class="reviewScreen"><img class="card-img-top" src="https://dummyimage.com/850x350/dee2e6/6c757d.jpg" alt="..." /></a>
+        <a class="reviewScreen" value="${key_array[0]}"><img class="card-img-top" src="https://dummyimage.com/850x350/dee2e6/6c757d.jpg" alt="..." /></a>
         <div class="card-body">
-            <div class="small text-muted">January 1, 2023</div>
-            <h2 class="card-title">Featured Post Title</h2>
-            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam. Dicta expedita corporis animi vero voluptate voluptatibus possimus, veniam magni quis!</p>
-            <a class="btn btn-primary" class="reviewScreen">Read more →</a>
+            <div class="small text-muted">${data_map.get(key_array[0]).review_created_date.toDate()}</div>
+            <div class="small text-muted">${data_map.get(key_array[0]).review_creator_id}</div>
+            <h2 class="card-title">${data_map.get(key_array[0]).review_title}</h2>
+            <p class="card-text overflow-hidden">${data_map.get(key_array[0]).review_content}</p>
+            <a class="btn btn-primary review-show" value="${key_array[0]}">Read more →</a>
         </div>
-    </div>
+    </div> 
     <!-- Nested row for non-featured blog posts-->
     <div class="row">
         <div class="col-lg-6">
             <!-- Blog post-->
             <div class="card mb-4">
-                <a class="reviewScreen"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
+                <a class="reviewScreen" value="${key_array[1]}"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
                 <div class="card-body">
-                    <div class="small text-muted">January 1, 2023</div>
-                    <h2 class="card-title h4">Post Title</h2>
-                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla.</p>
-                    <a class="btn btn-primary" class="reviewScreen">Read more →</a>
+                    <div class="small text-muted">${(data_map.get(key_array[1]).review_created_date.toDate())}</div>
+                    <h2 class="card-title h4">${data_map.get(key_array[1]).review_title}</h2>
+                    <p class="card-text overflow-hidden" style="height: 100px">${data_map.get(key_array[1]).review_content}</p>
+                    <a class="btn btn-primary review-show" value="${key_array[1]}">Read more →</a>
                 </div>
             </div>
             <!-- Blog post-->
             <div class="card mb-4">
-                <a class="reviewScreen"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
+                <a class="reviewScreen" value="${key_array[2]}"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
                 <div class="card-body">
-                    <div class="small text-muted">January 1, 2023</div>
-                    <h2 class="card-title h4">Post Title</h2>
-                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla.</p>
-                    <a class="btn btn-primary" class="reviewScreen">Read more →</a>
+                    <div class="small text-muted">${(data_map.get(key_array[2]).review_created_date.toDate())}</div>
+                    <h2 class="card-title h4">${data_map.get(key_array[2]).review_title}</h2>
+                    <p class="card-text overflow-hidden" style="height: 100px">${data_map.get(key_array[2]).review_content}</p>
+                    <a class="btn btn-primary review-show" value="${key_array[2]}">Read more →</a>
                 </div>
             </div>
         </div>
         <div class="col-lg-6">
             <!-- Blog post-->
             <div class="card mb-4">
-                <a class="reviewScreen"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
+                <a class="reviewScreen" value="${key_array[3]}"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
                 <div class="card-body">
-                    <div class="small text-muted">January 1, 2023</div>
-                    <h2 class="card-title h4">Post Title</h2>
-                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla.</p>
-                    <a class="btn btn-primary" class="reviewScreen">Read more →</a>
+                    <div class="small text-muted">${(data_map.get(key_array[3]).review_created_date.toDate())}</div>
+                    <h2 class="card-title h4">${data_map.get(key_array[3]).review_title}</h2>
+                    <p class="card-text overflow-hidden" style="height: 100px">${data_map.get(key_array[3]).review_content}</p>
+                    <a class="btn btn-primary review-show" value="${key_array[3]}">Read more →</a>
                 </div>
             </div>
             <!-- Blog post-->
             <div class="card mb-4">
-                <a class="reviewScreen"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
+                <a class="reviewScreen" value="${key_array[4]}"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
                 <div class="card-body">
-                    <div class="small text-muted">January 1, 2023</div>
-                    <h2 class="card-title h4">Post Title</h2>
-                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam.</p>
-                    <a class="btn btn-primary" class="reviewScreen">Read more →</a>
+                    <div class="small text-muted">${(data_map.get(key_array[4]).review_created_date.toDate())}</div>
+                    <h2 class="card-title h4">${data_map.get(key_array[4]).review_title}</h2>
+                    <p class="card-text overflow-hidden" style="height: 100px">${data_map.get(key_array[4]).review_content}</p>
+                    <a class="btn btn-primary review-show" value="${key_array[4]}">Read more →</a>
                 </div>
             </div>
         </div>
     </div>
     `
 }
+
 
 component.homeContent = () => {
     return `
@@ -235,14 +300,12 @@ component.homeContent = () => {
         <div class="row">
             <!-- Blog entries-->
             <div class="col-lg-8" id="blog-entries">
-            <div id="featured-post">
-                
-            </div>
-            <div class="row d-flex" id="review-posts"> 
-            
-            </div>
-            </script>
-                
+
+                <div id="featured-post">
+                    
+                </div>
+
+                    
                 <!-- Pagination-->
                 <nav aria-label="Pagination">
                     <hr class="my-0" />
@@ -274,7 +337,7 @@ component.reviewInfo = (data) => {
             <!-- Post title-->
             <h1 class="fw-bolder mb-1">${data.review_title}</h1>
             <!-- Post meta content-->
-            <div class="text-muted fst-italic mb-2">${data.review_created_date}</div>
+            <div class="text-muted fst-italic mb-2">${data.review_created_date.toDate()}</div>
             <!-- Post categories-->
             <a class="badge bg-secondary text-decoration-none link-light" href="#!">Web Design</a>
             <a class="badge bg-secondary text-decoration-none link-light" href="#!">Freebies</a>
@@ -284,45 +347,57 @@ component.reviewInfo = (data) => {
         <!-- Post content-->
         <section class="mb-5">
             <p class="fs-5 mb-4">${data.review_content}</p>
-
         </section>
     </article>
 `
 }
 
-component.displayedParentComment = () => {
+//Demo
+// component.displayedParentComment = (data) => {
+//     return `
+//     <div class="d-flex mb-4">
+//         <!-- Parent comment-->
+//         <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." />
+//         </div>
+//         <div class="ms-3">
+//             <div class="fw-bold">
+//                 Commenter Name
+//             </div>
+//             If you're going to lead a space frontier, it has to be government; it'll never be private enterprise. Because the space frontier is dangerous, and it's expensive, and it has unquantified risks.
+//             <!-- Child comment 1-->
+//             <div class="d-flex mt-4">
+//                 <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." />
+//                 </div>
+//                 <div class="ms-3">
+//                     <div class="fw-bold">
+//                         Commenter Name
+//                     </div>
+//                     And under those conditions, you cannot establish a capital-market evaluation of that enterprise. You can't get investors.
+//                 </div>
+//             </div>
+//             <!-- Child comment 2-->
+//             <div class="d-flex mt-4">
+//                 <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." />
+//                 </div>
+//                 <div class="ms-3">
+//                     <div class="fw-bold">
+//                         Commenter Name
+//                     </div>
+//                     When you put money directly to a problem, it makes a good headline.
+//                 </div>
+//             </div>
+//         </div>
+//     </div>
+//     `
+// }
+
+component.displayedParentComment = (data) => {
     return `
     <div class="d-flex mb-4">
-        <!-- Parent comment-->
-        <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." />
-        </div>
+        <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
         <div class="ms-3">
-            <div class="fw-bold">
-                Commenter Name
-            </div>
-            If you're going to lead a space frontier, it has to be government; it'll never be private enterprise. Because the space frontier is dangerous, and it's expensive, and it has unquantified risks.
-            <!-- Child comment 1-->
-            <div class="d-flex mt-4">
-                <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." />
-                </div>
-                <div class="ms-3">
-                    <div class="fw-bold">
-                        Commenter Name
-                    </div>
-                    And under those conditions, you cannot establish a capital-market evaluation of that enterprise. You can't get investors.
-                </div>
-            </div>
-            <!-- Child comment 2-->
-            <div class="d-flex mt-4">
-                <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." />
-                </div>
-                <div class="ms-3">
-                    <div class="fw-bold">
-                        Commenter Name
-                    </div>
-                    When you put money directly to a problem, it makes a good headline.
-                </div>
-            </div>
+            <div class="fw-bold">Commenter Name</div>
+            ${data.data().comment_content}
         </div>
     </div>
     `
@@ -355,7 +430,7 @@ component.commentSection = (data) => {
                     </button>
                 </form>
                 <a id="comment-section">
-
+                    
                 </a>
             </div>
         </div>

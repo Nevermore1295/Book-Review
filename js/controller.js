@@ -3,7 +3,6 @@ import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWith
 import { getFirestore, collection, query, where, and, or, doc, addDoc, setDoc, getDocs, getDoc, orderBy, onSnapshot, limit} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 import { component } from "./component.js";
-
 // Your web app's Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyAA--PpoUl0p1Pjp3vubEVej9axE9xsE-8",
@@ -112,9 +111,10 @@ controller.getCurrentReviewDoc = async (review_id) => {
 
     const docRef = doc(db, "Review", review_id);
     const docSnap = await getDoc(docRef);
+    console.log(docSnap);
 
     if (docSnap.exists()) {
-       return docSnap.data();
+        return docSnap.data();
     } else {
     // docSnap.data() will be undefined in this case
         console.log("No such document!");
@@ -131,3 +131,29 @@ controller.getCurrentReviewQuery = async () => {
 controller.addReview = async (initialData) =>{
     return await addDoc(collection(db, 'Review'),initialData);
 }
+
+
+// controller.getComment = async (review_id) =>{
+//     onSnapshot(await controller.getCurrentCommentQuery(review_id),(qr)=>{
+//         let value = new Array();
+//         qr.forEach(doc =>{
+//             console.log(doc.data());
+//             value.push(doc.data());
+//         })
+//         console.log(value);
+//     })
+// }
+
+
+controller.showComment = async (review_id) =>{
+    onSnapshot(await controller.getCurrentCommentQuery(review_id),(qr)=>{
+        let str='';
+        qr.forEach(doc =>{
+            console.log(doc.data());
+            str+=component.displayedParentComment(doc);         
+        })
+        document.getElementById('comment-section').innerHTML=str;
+    })
+}
+
+

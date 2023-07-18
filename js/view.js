@@ -5,119 +5,84 @@ import { getFirestore, collection, query, where, and, or, doc, addDoc, setDoc, g
 
 
 
-let view = {};
+export let view = {};
 
 view.showReview = async () => {
     onSnapshot(await controller.getCurrentReviewQuery(),(qr)=>{
-        console.log(qr);
         let str = '';
-        let value = new Map;
+        //Define Map variable to store <key,value>
+        let data = new Map;
+
+        //Define Array variable to store <key>
         let key = new Array;
+
+        //Set mapping and push key
         qr.forEach(doc =>{
-            value.set(doc.id,doc.data());
+            data.set(doc.id,doc.data());
             key.push(doc.id);
         })
-        document.getElementById('featured-post').innerHTML = `
-        <div class="card mb-4">
-            <a class="reviewScreen" value="${key[0]}"><img class="card-img-top" src="https://dummyimage.com/850x350/dee2e6/6c757d.jpg" alt="..." /></a>
-            <div class="card-body">
-                <div class="small text-muted">${value.get(key[0]).review_created_date.toDate()}</div>
-                <div class="small text-muted">${value.get(key[0]).review_creator_id}</div>
-                <h2 class="card-title">${value.get(key[0]).review_title}</h2>
-                <p class="card-text overflow-hidden">${value.get(key[0]).review_content}</p>
-                <a class="btn btn-primary review-show" value="${key[0]}">Read more →</a>
-            </div>
-        </div> 
-        `
-        for (let pos = 1; pos < key.length; pos++){
-            document.getElementById('review-posts').innerHTML +=`
-                <div class="col-lg-6">
-                    <div class="card mb-4">
-                        <a class="reviewScreen" value="${key[pos]}"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-                        <div class="card-body">
-                            <div class="small text-muted">${(value.get(key[pos]).review_created_date.toDate())}</div>
-                            <h2 class="card-title h4">${value.get(key[pos]).review_title}</h2>
-                            <p class="card-text overflow-hidden" style="height: 100px">${value.get(key[pos]).review_content}</p>
-                            <a class="btn btn-primary review-show" value="${key[pos]}">Read more →</a>
-                        </div>
-                    </div>
-                </div>
-           `
-        }
-        console.log(document.querySelectorAll('.reviewScreen'));
+
+        //Add view for doc
+        document.getElementById('featured-post').innerHTML = component.blogEntries(data,key);
+
+        //Set redirect button
+        console.log(document.querySelectorAll('.reviewScreen, .review-show'));
+
         document.querySelectorAll('.reviewScreen, .review-show').forEach(element=>{
-            console.log(element.getAttribute('value'));
             element.style.cursor='pointer';
             element.addEventListener('click', () => view.setScreen('reviewDetailScreen', element.getAttribute('value')));
-        })
-    },(err)=>{
-        console.log(err);
-        console.log(err.message);
-    })
- 
-}
-
-view.showComment = async (review_id) =>{
-    onSnapshot(await controller.getCurrentCommentQuery(review_id),(qr)=>{
-        let str = '';
-        qr.forEach(doc =>{
-            str+=
-            `<div class="d-flex mb-4">
-                <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-                <div class="ms-3">
-                    <div class="fw-bold">Commenter Name</div>
-                    ${doc.data().comment_content}
-                </div>
-            </div>`
-        })
-        document.getElementById('comment-section').innerHTML=str;
-    })
-}
-
-view.showCurrentReview = async (review_id)=>{
-    return (await controller.getCurrentReviewDoc(review_id));
+        });
+        
+        },(err)=>{
+            console.log(err);
+            console.log(err.message);
+        }
+    );
 }
 
 //Thay đổi giao diện
-view.setScreen = async(screenName, type) => {
+view.setScreen = async (screenName, review_id) => {
     switch (screenName){
         case 'homeScreen':
             document.getElementById('app').innerHTML = component.navbar() + component.header() + component.homeContent() + component.footer();
             controller.authCheck();
+
             view.showReview();
+
+            //Set redirect button
             document.getElementById('navbar-brand').style.cursor = 'pointer';
             document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
             document.getElementById('review-btn').style.cursor = 'pointer';
             document.getElementById('review-btn').addEventListener('click', () => view.setScreen('review'));
             document.getElementById('search-btn').style.cursor = 'pointer';
             document.getElementById('search-btn').addEventListener('click', () => view.setScreen('search'));
-         
+
             break;
 
 
         case 'reviewDetailScreen':
-            document.getElementById('app').innerHTML = component.navbar() + component.reviewContent(await view.showCurrentReview(type)) + component.footer();
+            document.getElementById('app').innerHTML = component.navbar() + component.reviewContent(await controller.getCurrentReviewDoc(review_id)) + component.footer();
             controller.authCheck();
             
             //Load realtime-update comment
-            view.showComment(type);
+            controller.showComment(review_id);
 
             const commentForm = document.getElementById('comment');
             commentForm.addEventListener('submit', (cf) =>{
                 cf.preventDefault();
-                // Get comment content
+                //Get comment content
                 const commentContent = document.getElementById('comment-content').value;
 
-                //Create data firestore      
+                //Create data object     
                 const initialData = {
                     comment_creator_id: auth.currentUser.uid,
                     comment_created_date: Timestamp.now(),
-                    comment_review_id: type,
+                    comment_review_id: review_id,
                     comment_parent_id:null,
                     comment_content: commentContent.trim(),
                 }
 
-                //Add data to doc
+                //Add data object to doc
                 controller.addComment(initialData).then(() => {
                 // Reset form
                 commentForm.reset();
@@ -125,13 +90,13 @@ view.setScreen = async(screenName, type) => {
                 }).catch(err => {
                     // Catch error
                     console.log(err.message)
-                })
-                           
-                    
+                })                                
             })
 
+            //Set redirect button
             document.getElementById('navbar-brand').style.cursor = 'pointer';
             document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
+
         break;
         
 
@@ -142,13 +107,13 @@ view.setScreen = async(screenName, type) => {
             registerForm.addEventListener('submit', (e) => {
                 e.preventDefault();
             
-                // Get user info
+                //Get user info
                 const username = document.getElementById('username').value;
                 const email = document.getElementById('email').value;
                 const password = document.getElementById('password').value;
                 const pwcf = document.getElementById('pwconfirmation').value;            
 
-                // Register user
+                //Register user
                 if (username.trim() === '') {
                     console.log('Missing username')
                 } else if (username.trim().length < 6) {
@@ -157,6 +122,7 @@ view.setScreen = async(screenName, type) => {
                     console.log('Password and password confirmation must be the same')
                 } else if (password === pwcf) {
 
+                    //Create data object 
                     const initialData = {
                         user_name: username.trim(),
                         user_email: email.trim(),
@@ -164,6 +130,7 @@ view.setScreen = async(screenName, type) => {
                         user_authority: 1,                       
                     }
 
+                    //Add data object to doc
                     controller.register(initialData).then(() => {
                         // Reset form
                         registerForm.reset()
@@ -183,8 +150,12 @@ view.setScreen = async(screenName, type) => {
             const ReviewForm = document.getElementById('Review');
             ReviewForm.addEventListener('submit', (e)=>{
                 e.preventDefault();
+
+                //Get review data 
                 const reviewTitle = document.getElementById('Review-title').value;
                 const reviewContent = document.getElementById('Review-content').value;
+
+                //Create data object
                 const initialData = {
                     review_created_date: Timestamp.now(),
                     review_creator_id: auth.currentUser.uid,
@@ -192,9 +163,9 @@ view.setScreen = async(screenName, type) => {
                     review_content: reviewContent.trim(),
                 }
 
-                //Add data to doc
+                //Add data object to doc
                 controller.addReview(initialData).then(() => {
-                // Reset form
+                //Reset form
                 
                 }).catch(err => {
                     // Catch error
@@ -202,11 +173,14 @@ view.setScreen = async(screenName, type) => {
                 })
             })
             
+
+            //Set redirect button
             document.getElementById('navbar-brand').style.cursor = 'pointer';
             document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
             break;
 
         case 'search':
+             //Set redirect button
             document.getElementById('app').innerHTML = component.navbar() + component.reviewQuery() + component.footer();
             document.getElementById('navbar-brand').style.cursor = 'pointer';
             document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
