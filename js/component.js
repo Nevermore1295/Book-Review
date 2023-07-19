@@ -1,4 +1,4 @@
-import { controller } from "./controller.js";
+
 export let component = {};
 
 component.navbarUsername = (auth) => {
@@ -327,7 +327,7 @@ component.homeContent = () => {
 };
 
 
-//**********************Review Screen***********************
+//**********************Review Detail Screen***********************
 component.reviewInfo = (data) => { 
     return `
     <!-- Post content-->
@@ -524,7 +524,7 @@ component.registerContent = () => {
     </div>  
 `};
 
-//**********************Reviewscreen***********************
+//**********************Review Creator Screen***********************
 
 component.bookSearch = () => {
     return `
@@ -587,6 +587,38 @@ component.bookSearch = () => {
     </div>
 `};
 
+let imageCheck = (index) => {
+    if ( index === undefined) {
+        return "../assets/Question_mark_(black).png";
+    }else
+    {
+        return index.thumbnail;
+    };
+}
+
+component.bookSearchoutput = (bookResult) => {
+    let str = '';
+    for (let index = 0; index < bookResult.length; index++) {    
+        str +=
+        `
+        <div class="card bg-light m-2">
+            <form class="card-body d-flex justify-content-between">
+                <div class="d-flex">
+                    <img class="mt-1" src="
+                    ${imageCheck(bookResult[index].imageLinks)}" height="100" width="70">
+                    <div class="resultBasic ms-3">
+                        <h5>${bookResult[index].title}</h5>
+                        <p>Author: ${bookResult[index].authors}</p>
+                        <p>Date published: ${bookResult[index].publishedDate}</;>
+                    </div>
+                </div>   
+                <button style="height:40px" id="${index}" class="rv-btn btn btn-outline-primary mt-2" type="button">Review</button>
+            </form>
+        </div>
+          `;
+    }
+    return str;
+}
 
 //*********************** Search review ****************************/
 
