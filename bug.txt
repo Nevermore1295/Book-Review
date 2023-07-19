@@ -1,7 +1,3 @@
-- chưa phân biệt được review
 - uid null không comment được
-- onSnapshot bị lỗi quyền truy nhập - Missing or insufficient permissions.
-(có thể do cache hoặc firestore database rule)
 
-
-- category có ẵn
+- Sau khi register thì tự động đăng nhập, dẫn đến lỗi không xác định html để hiển thị cho phù hợp với auth 
