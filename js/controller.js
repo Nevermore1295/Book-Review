@@ -81,7 +81,7 @@ controller.logout = async () =>{
 
 controller.register = async (initialData,pwcf) =>{
     if (initialData.user_name.trim() === '') {
-        console.log('Missing username')
+        console.log('Missing username');
     } else if (initialData.user_name.trim().length < 6) {
         console.log('Username must be at least 6 characters')
     } else if (initialData.user_password !== pwcf) {
