@@ -1,7 +1,7 @@
 
 export let component = {};
 
-component.navbarUsername = (auth) => {
+component.navbarUsername = () => {
     return ` 
         <div class="d-flex align-content-center me-1">
             <div class="dropdown">
@@ -17,19 +17,12 @@ component.navbarUsername = (auth) => {
     `
 }
 
-component.navbarLoginForm = (auth) => {
+component.navbarLoginForm = () => {
     return `
     <div class="d-flex align-content-center me-1">
         <div class="dropdown">
         <!-- Button trigger modal -->
         <i type="button" class="navbar-nav ms-auto fa-solid fa-user" data-bs-toggle="modal" data-bs-target="#LoginModal" style="font-size:25px"></i>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-            </ul>
         <!-- Modal -->
         <div class="modal fade" id="LoginModal" tabindex="-1" aria-labelledby="LoginModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -76,7 +69,7 @@ component.navbar = () => {
                 <a class="navbar-brand" id="navbar-brand">BookReview</a>
                 <button class="navbar-toggler button-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto">
+                    <ul class="navbar-nav me-auto" id="navbtn">
                         <li class="dropdown">
                             <a id="home">Home</a>
                         </li>
@@ -98,7 +91,7 @@ component.navbar = () => {
                         <li class="dropdown">
                             <a id="about-btn">About</a>
                         </li>
-                        <li class="dropdown">
+                        <li class="dropdown" id="review-btn-li">
                             <a id="review-btn">Make a review</a>
                         </li>
                     </ul>
@@ -422,6 +415,7 @@ component.commentSection = (data) => {
         <div class="card bg-light">
             <div class="card-body">
                 <!-- Comment form-->
+                <div id="comment-input"></div>
                 <form class="mb-4 d-flex" id="comment" >
                     <input class="form-control" id="comment-content" rows="3" placeholder="Join the discussion and leave a comment!">
                     </input>
@@ -541,7 +535,7 @@ component.bookSearch = () => {
         </div>
         <div class="card review-form mt-3">
             <div class="card-body row">
-                <img class="mb-3 col-lg-2" src="http://books.google.com/books/content?id=_TEJzgEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api" style="height:160px; width:128px"> 
+                <img class="mb-3 col-lg-2" id="rv-thumbnail" src="../assets/Question_mark_(black).png" style="height:160px; width:128px"> 
                 <div class="book-info col-lg-10">
                     <div class="input-group input-group-sm mb-3 w-100">
                         <div class="input-group-prepend">
@@ -587,7 +581,7 @@ component.bookSearch = () => {
     </div>
 `};
 
-let imageCheck = (index) => {
+component.imageCheck = (index) => {
     if ( index === undefined) {
         return "../assets/Question_mark_(black).png";
     }else
@@ -605,7 +599,7 @@ component.bookSearchoutput = (bookResult) => {
             <form class="card-body d-flex justify-content-between">
                 <div class="d-flex">
                     <img class="mt-1" src="
-                    ${imageCheck(bookResult[index].imageLinks)}" height="100" width="70">
+                    ${component.imageCheck(bookResult[index].imageLinks)}" height="100" width="70">
                     <div class="resultBasic ms-3">
                         <h5>${bookResult[index].title}</h5>
                         <p>Author: ${bookResult[index].authors}</p>
@@ -626,40 +620,16 @@ component.reviewQuery = () => {
     return `
     <div class="container my-4">
         <h2 class="card-title m-2">Find reviews</h2>
-        <form class="input-group input-group-lg p-4">
-                <input type="text" class="form-control" placeholder="Book's title" ">
+        <form class="input-group input-group-lg p-4" id="review-Searchbar">
+                <input type="text" class="form-control" placeholder="Book/Review" id="review-Searchbar-input">
                 <div class="input-group-append">
                     <button class="btn btn-primary btn-lg" type="button">Search</button>
                 </div>
         </form>
         <div class="card">
                 <div class="card-body overflow-auto bg-white" style="height: 600px">
-                    <div class="bookresult card bg-light m-2">
-                        <div class="card-body d-flex justify-content-between">
-                            <div class="resultInfo d-flex">
-                                <img class="mt-1" src="http://books.google.com/books/content?id=_TEJzgEACAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api" height="100">
-                                <div class="resultBasic ms-3">
-                                    <h4>Title</h4>
-                                    <h6>Author: author name</h6>
-                                    <h6>Posted by: username</h6>
-                                    <h6>Date posted: Date</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bookResult card bg-light m-2">
-                        <div class="card-body d-flex justify-content-between">
-                            <div class="resultInfo d-flex">
-                                <img class="mt-1" src="http://books.google.com/books/content?id=_TEJzgEACAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api" height="100">
-                                <div class="resultBasic ms-3">
-                                    <h4>Title</h4>
-                                    <h6>Author: author name</h6>
-                                    <h6>Posted by: username</h6>
-                                    <h6>Date posted: Date</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                   
+                    
                 </div>
             </div>
         </div>
@@ -667,6 +637,23 @@ component.reviewQuery = () => {
 `
 };
 
+component.reviewQueryoutput = () => {
+    return `
+        <div class="bookresult card bg-light m-2">
+            <div class="card-body d-flex justify-content-between">
+                <div class="resultInfo d-flex">
+                    <img class="mt-1" src="http://books.google.com/books/content?id=_TEJzgEACAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api" height="100">
+                    <div class="resultBasic ms-3">
+                        <h4>Title</h4>
+                        <h6>Author: author name</h6>
+                        <h6>Posted by: username</h6>
+                        <h6>Date posted: Date</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `
+};
 
 //*********************** Admin view ****************************/
 component.adminScreen = `
