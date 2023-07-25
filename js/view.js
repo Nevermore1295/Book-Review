@@ -92,7 +92,7 @@ view.setScreen = async (screenName, review_id) => {
                 console.log(`User ${auth.currentUser.displayName} successfully comment`); 
                 }).catch(err => {
                     // Catch error
-                    console.log(err.message)
+                    console.log(err.message);
                 })                                
             })
 
