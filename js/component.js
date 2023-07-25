@@ -522,59 +522,69 @@ component.registerContent = () => {
 
 component.bookSearch = () => {
     return `
-    <div class="container my-4"> 
-        <h2 class="card-title m-2">Make your review</h2>
-        <form class="input-group input-group-lg p-4" id="bookSearchbar">
-            <input id="bookSearchinput" type="text" class="form-control" placeholder="ISBN / Book's title" ">
-            <div class="input-group-append">
-                <button class="btn btn-primary btn-lg">Search</button>
+    <div class="container my-4" style="min-height: 500px"> 
+        <h2 class="m-2">Make your review</h2>
+        <div id="review-funcscreen">
+            <form class="input-group input-group-lg p-4" id="bookSearchbar">
+                <input id="bookSearchinput" type="text" class="form-control" placeholder="ISBN / Book's title" ">
+                <div class="input-group-append">
+                    <button class="btn btn-primary btn-lg">Search</button>
+                </div>
+            </form>
+            <div class="card" id="bookSearchList">
+
             </div>
-        </form>
-        <div class="card" id="bookSearchList">
-            
-        </div>
-        <div class="card review-form mt-3">
-            <div class="card-body row">
-                <img class="mb-3 col-lg-2" id="rv-thumbnail" src="../assets/Question_mark_(black).png" style="height:160px; width:128px"> 
-                <div class="book-info col-lg-10">
-                    <div class="input-group input-group-sm mb-3 w-100">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1">Book title</span>
-                        </div>
-                        <input type="text" class="form-control" id="rv-title" aria-describedby="basic-addon1" disabled value="Book name">
-                    </div>
-                    <div class="row">
-                        <div class="input-group input-group-sm mb-3 me-1 col-lg float-start">
+            <div class="card review-form mt-3">
+                <div class="card-body row">
+                    <img class="mb-3 col-lg-2" id="rv-thumbnail" src="../assets/Question_mark_(black).png" style="height:160px; width:128px"> 
+                    <div class="book-info col-lg-10">
+                        <div class="input-group input-group-sm mb-3 w-100">
                             <div class="input-group-prepend">
-                                <span class="input-group-text" id="basic-addon1">Author</span>
+                                <span class="input-group-text" id="basic-addon1">Book title</span>
                             </div>
-                            <input type="text" class="form-control" id="rv-authors" aria-describedby="basic-addon1" disabled value="Author name">
+                            <input type="text" class="form-control" id="rv-title" aria-describedby="basic-addon1" disabled value="Book name">
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="input-group input-group-sm mb-3 col-lg float-start">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="basic-addon1">Published Date</span>
+                        <div class="row">
+                            <div class="input-group input-group-sm mb-3 me-1 col-lg float-start">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">Author</span>
+                                </div>
+                                <input type="text" class="form-control" id="rv-authors" aria-describedby="basic-addon1" disabled value="Author name">
                             </div>
-                            <input type="text" class="form-control" id="rv-pd" aria-describedby="basic-addon1" disabled value="1/1/1970">
                         </div>
-                        <div class="input-group input-group mb-3 col-lg">
-                            <span class="input-group-text" for="inputGroupSelect01">Options</span>
-                            <select class="form-select" id="inputGroupSelect01">
-                              <option selected>Choose...</option>
-                              <option value="1">One</option>
-                              <option value="2">Two</option>
-                              <option value="3">Three</option>
-                            </select>
+                        <div class="row">
+                            <div class="input-group input-group-sm mb-3 col-lg float-start">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">Published Date</span>
+                                </div>
+                                <input type="text" class="form-control" id="rv-pd" aria-describedby="basic-addon1" disabled value="1/1/1970">
+                            </div>
+                            <div class="input-group input-group-sm mb-3 col-lg">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">Book-ID</span>
+                                </div>
+                                <input type="text" class="form-control" id="rv-bid" aria-describedby="basic-addon1" disabled>
+                            </div>
                         </div>
+                        <div class="row">
+                            <div class="input-group input-group mb-3 col-lg">
+                                <span class="input-group-text" for="inputGroupSelect01">Options</span>
+                                <select class="form-select review-forminput" id="inputGroupSelect01" disabled>
+                                <option selected>Choose...</option>
+                                <option value="1">One</option>
+                                <option value="2">Two</option>
+                                <option value="3">Three</option>
+                                </select>
+                            </div>
+                        </div>
+                        <form id="Review">
+                            <h6>Review Title</h6>
+                            <textarea class="form-control review-forminput mb-2" id="Review-title" rows="1" disabled></textarea>
+                            <h6>Review</h6>
+                            <textarea class="form-control review-forminput mb-2" id="Review-content" rows="6" disabled></textarea>
+                            <button class="btn btn-lg btn-primary review-forminput float-end me-2" disabled> Submit </button>
+                        <form>
                     </div>
-                    <form id="Review">
-                        <h6>Review Title</h6>
-                        <textarea class="form-control mb-2" id="Review-title" rows="1"></textarea>
-                        <h6>Review</h6>
-                        <textarea class="form-control mb-2" id="Review-content" rows="6"></textarea>
-                        <button class="btn btn-lg btn-primary float-end me-2" > Submit </button>
-                    <form>
                 </div>
             </div>
         </div>

@@ -150,28 +150,42 @@ controller.addReview = () =>{
                 e.preventDefault();
 
                 //Get review data 
+                
                 const reviewTitle = document.getElementById('Review-title').value;
                 const reviewContent = document.getElementById('Review-content').value;
-
+                
                 //Create data object
                 const initialData = {
                     review_created_date: Timestamp.now(),
                     review_creator_id: auth.currentUser.uid,
                     review_title: reviewTitle.trim(),
                     review_content: reviewContent.trim(),
+                    review_book_id: document.getElementById('rv-bid').value
                     //https://www.googleapis.com/books/v1/volumes/bVFPAAAAYAAJ
                 }
 
-                
-
-                //Add data object to doc
-                addDoc(collection(db, 'Review'),initialData).then(() => {
-                //Reset form
-                
-                }).catch(err => {
-                    // Catch error
-                    console.log(err.message)
-                })
+                if (reviewTitle === '' || reviewContent === '') {
+                    alert('Title and content must not be blank');
+                } else
+                {
+                    //Add data object to doc
+                    addDoc(collection(db, 'Review'),initialData).then(() => {
+                    //Reset form
+                    document.getElementById('review-funcscreen').innerHTML = 
+                    `
+                        <div class="card mt-3">
+                            <div class="card-body">
+                                <h5>Your review has been saved!</h5>
+                                <p><a>Go to homepage</a> or <a>Make another review</a></p>
+                            </div>
+                        </div>
+    
+                    `
+                    }).catch(err => {
+                        // Catch error
+                        console.log(err.message)
+                    })
+                }
             })
 }
 
@@ -204,26 +218,24 @@ controller.showComment = async (review_id) =>{
 controller.getBookToReview = async () => {
     let bookIdSelected ='';
     let bookResult = await book.resolveQuery(document.getElementById('bookSearchinput').value.replace(/\s+/g, ''));
-    document.getElementById('bookSearchList').innerHTML +=`<div class="card-body overflow-auto bg-white" style="max-height: 300px">
+    document.getElementById('bookSearchList').innerHTML +=
+    `<div class="card-body overflow-auto bg-white" style="max-height: 300px">
         <div id="bookSearchoutput"></div>
     </div>`;               
-
-    
     document.getElementById('bookSearchoutput').innerHTML=component.bookSearchoutput(bookResult); 
-
     document.querySelectorAll(".rv-btn").forEach(e=>{
         e.addEventListener("click", (j) => {
             document.getElementById('rv-title').value = bookResult[j.target.id].title;
             document.getElementById('rv-authors').value = bookResult[j.target.id].authors;
             document.getElementById('rv-pd').value = bookResult[j.target.id].publishedDate;
             document.getElementById('rv-thumbnail').src = component.imageCheck(bookResult[j.target.id].imageLinks);
-            bookIdSelected = bookResult[j.target.id].id;
-            
+            document.getElementById('rv-bid').value = bookResult[j.target.id].id;;
+            document.querySelectorAll('.review-forminput').forEach(e=>{ 
+                e.disabled = false;
+            })
         })
     })
 }   
-
-
 
 controller.getReviewQuery = async () => {
     return await (query(collection(db, 'Review'), ))

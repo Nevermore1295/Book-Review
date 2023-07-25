@@ -151,10 +151,6 @@ view.setScreen = async (screenName, review_id) => {
                 bookinfo.reset();
             });
             controller.addReview();
-            
-            
-            
-
             //Set redirect button
             document.getElementById('navbar-brand').style.cursor = 'pointer';
             document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
