@@ -9,37 +9,6 @@ import { getFirestore, collection, query, where, and, or, doc, addDoc, setDoc, g
 
 export let view = {};
 
-view.showReview = async () => {
-    onSnapshot(await controller.getCurrentReviewQuery(),(qr)=>{
-        let str = '';
-        //Define Map variable to store <key,value>
-        let data = new Map;
-
-        //Define Array variable to store <key>
-        let key = new Array;
-
-        //Set mapping and push key
-        qr.forEach(doc =>{
-            data.set(doc.id,doc.data());
-            key.push(doc.id);
-        })
-
-        //Add view for doc
-        document.getElementById('featured-post').innerHTML = component.blogEntries(data,key);
-
-        //Set redirect button
-        document.querySelectorAll('.reviewScreen, .review-show').forEach(element=>{
-            element.style.cursor='pointer';
-            element.addEventListener('click', () => view.setScreen('reviewDetailScreen', element.getAttribute('value')));
-        });
-        
-        },(err)=>{
-            console.log(err);
-            console.log(err.message);
-        }
-    );
-}
-
 //Thay đổi giao diện
 view.setScreen = async (screenName, review_id) => {
     switch (screenName){
@@ -48,9 +17,9 @@ view.setScreen = async (screenName, review_id) => {
             document.getElementById('app').innerHTML = component.navbar() + component.header() + component.homeContent() + component.footer();
             controller.authChecktotal();
 
-            view.showReview();
-               
-
+            //Show review
+            controller.showReview();
+    
             //Set redirect button
             document.getElementById('navbar-brand').style.cursor = 'pointer';
             document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
@@ -110,23 +79,17 @@ view.setScreen = async (screenName, review_id) => {
             const registerForm = document.getElementById('register');
             registerForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-            
-                //Get user info
-                const username = document.getElementById('username').value;
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
-                const pwcf = document.getElementById('pwconfirmation').value; 
 
-                //Create data object 
+                //Get user infor and create data object 
                 const initialData = {
-                    user_name: username.trim(),
-                    user_email: email.trim(),
-                    user_password: password.trim(),
+                    user_name: document.getElementById('username').value.trim(),
+                    user_email: document.getElementById('email').value.trim(),
+                    user_password: document.getElementById('password').value.trim(),
                     user_authority: 1,                       
                 }
 
                 //Add data object to doc
-                controller.register(initialData, pwcf).then(() => {
+                controller.register(initialData, document.getElementById('pwconfirmation').value).then(() => {
                     // Reset form
                     registerForm.reset();
                     view.setScreen('homeScreen');
@@ -144,16 +107,45 @@ view.setScreen = async (screenName, review_id) => {
         case 'reviewCreatorScreen':
             //Set up HTML 
             document.getElementById('app').innerHTML = component.navbar() + component.bookSearch() + component.footer();
-            const bookinfo = document.getElementById('bookSearchbar');
-            bookinfo.addEventListener('submit', async (j) =>{
+
+            let bookIdSelected = '';
+
+            //Book search bar
+            document.getElementById('bookSearchbar').addEventListener('submit', async (j) =>{
                 j.preventDefault();
-                controller.getBookToReview(); 
-                bookinfo.reset();
+                await controller.showBook().then(() => {
+                    // Reset form
+                    document.getElementById('bookSearchbar').reset();
+                }).catch(err => {
+                    // Catch error
+                    console.log(err.message)
+                });
             });
-            controller.addReview();
-            
-            
-            
+
+
+            //Review Form
+            document.getElementById('Review').addEventListener('submit', (e)=>{
+                e.preventDefault();
+                console.log(bookIdSelected);
+
+                //Create data object
+                const initialData = {
+                    review_created_date: Timestamp.now(),
+                    review_creator_id: auth.currentUser.uid,
+                    review_title: document.getElementById('Review-title').value.trim(),
+                    review_content: document.getElementById('Review-content').value.trim(),
+                    review_book_isbn: bookIdSelected,
+                    //https://www.googleapis.com/books/v1/volumes/bVFPAAAAYAAJ
+                }
+                //Add data object to doc
+                controller.addReview(initialData).then(() => {
+                    // Reset form
+                    document.getElementById('Review').reset();
+                }).catch(err => {
+                    // Catch error
+                    console.log(err.message)
+                });
+            })
 
             //Set redirect button
             document.getElementById('navbar-brand').style.cursor = 'pointer';
@@ -175,6 +167,10 @@ view.setScreen = async (screenName, review_id) => {
     }
 }
 
+view.setScreenButton = (button_id,screen_name) => {
+    document.getElementById(button_id).style.cursor = 'pointer';
+    document.getElementById(button_id).addEventListener('click', () => view.setScreen(screen_name));
+}
 
 
 view.setScreen('reviewCreatorScreen');

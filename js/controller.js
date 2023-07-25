@@ -72,10 +72,11 @@ controller.login = async (initialData) =>{
 
 controller.logout = async () =>{
     await signOut(auth).then(() => {
-
+    view.setScreen('homeScreen');
     // Sign-out successful.
     }).catch((error) => {
     // An error happened.
+    console.log(error.message);
     });
 }
 
@@ -113,11 +114,6 @@ controller.register = async (initialData,pwcf) =>{
     }
 }
 
-//Lấy query của parent comment từ firestore
-controller.getCurrentCommentQuery = async (comment_review_id) => {
-    return await (query(collection(db,'Comment'),and(where('comment_review_id','==',comment_review_id),where('comment_parent_id','==',null)),limit(6)));
-}
-
 //Thêm comment vào firestore
 controller.addComment = async (initialData) =>{
     return await addDoc(collection(db, 'Comment'),initialData);
@@ -143,36 +139,46 @@ controller.getCurrentReviewQuery = async () => {
     return await (query(collection(db,'Review'),orderBy('review_created_date'),limit(5)));
 }
 
+//Hiển thị review
+controller.showReview = async () => {
+    onSnapshot(await controller.getCurrentReviewQuery(),(qr)=>{
+        let str = '';
+        //Define Map variable to store <key,value>
+        let data = new Map;
+
+        //Define Array variable to store <key>
+        let key = new Array;
+
+        //Set mapping and push key
+        qr.forEach(doc =>{
+            data.set(doc.id,doc.data());
+            key.push(doc.id);
+        })
+
+        //Add view for doc
+        document.getElementById('featured-post').innerHTML = component.blogEntries(data,key);
+
+        //Set redirect button
+        document.querySelectorAll('.reviewScreen, .review-show').forEach(element=>{
+            element.style.cursor='pointer';
+            element.addEventListener('click', () => view.setScreen('reviewDetailScreen', element.getAttribute('value')));
+        });
+        
+        },(err)=>{
+            console.log(err);
+            console.log(err.message);
+        }
+    );
+}
+
 //Thêm review vào firestore
-controller.addReview = () =>{
-    const ReviewForm = document.getElementById('Review');
-            ReviewForm.addEventListener('submit', (e)=>{
-                e.preventDefault();
-
-                //Get review data 
-                const reviewTitle = document.getElementById('Review-title').value;
-                const reviewContent = document.getElementById('Review-content').value;
-
-                //Create data object
-                const initialData = {
-                    review_created_date: Timestamp.now(),
-                    review_creator_id: auth.currentUser.uid,
-                    review_title: reviewTitle.trim(),
-                    review_content: reviewContent.trim(),
-                    //https://www.googleapis.com/books/v1/volumes/bVFPAAAAYAAJ
-                }
-
-                
-
-                //Add data object to doc
-                addDoc(collection(db, 'Review'),initialData).then(() => {
-                //Reset form
-                
-                }).catch(err => {
-                    // Catch error
-                    console.log(err.message)
-                })
-            })
+controller.addReview = async (initialData) =>{
+    await addDoc(collection(db, 'Review'),initialData).then(() => {
+        //Reset form
+    }).catch(err => {
+        // Catch error
+        console.log(err.message)
+    })        
 }
 
 
@@ -187,28 +193,38 @@ controller.addReview = () =>{
 //     })
 // }
 
+//Lấy query của parent comment từ firestore
+controller.getCurrentCommentQuery = async (comment_review_id) => {
+    return await (query(collection(db,'Comment'),and(where('comment_review_id','==',comment_review_id),where('comment_parent_id','==',null)),limit(6)));
+}
 
+//Hiển thị comment
 controller.showComment = async (review_id) =>{
     onSnapshot(await controller.getCurrentCommentQuery(review_id),(qr)=>{
         let str='';
         qr.forEach(doc =>{
             console.log(doc.data());
             str+=component.displayedParentComment(doc);         
-        })
+        });
         document.getElementById('comment-section').innerHTML=str;
-    })
+    });
 }
 
 
 
+//Lấy infor sách
 controller.getBookToReview = async () => {
-    let bookIdSelected ='';
-    let bookResult = await book.resolveQuery(document.getElementById('bookSearchinput').value.replace(/\s+/g, ''));
+    return await book.resolveQuery(document.getElementById('bookSearchinput').value.replace(/\s+/g, ''));
+}   
+
+//Hiển thị sách
+controller.showBook = async () => {
+    let bookIdSelected = ''
+
+    let bookResult = await controller.getBookToReview();
     document.getElementById('bookSearchList').innerHTML +=`<div class="card-body overflow-auto bg-white" style="max-height: 300px">
         <div id="bookSearchoutput"></div>
-    </div>`;               
-
-    
+    </div>`;
     document.getElementById('bookSearchoutput').innerHTML=component.bookSearchoutput(bookResult); 
 
     document.querySelectorAll(".rv-btn").forEach(e=>{
@@ -217,15 +233,14 @@ controller.getBookToReview = async () => {
             document.getElementById('rv-authors').value = bookResult[j.target.id].authors;
             document.getElementById('rv-pd').value = bookResult[j.target.id].publishedDate;
             document.getElementById('rv-thumbnail').src = component.imageCheck(bookResult[j.target.id].imageLinks);
-            bookIdSelected = bookResult[j.target.id].id;
-            
+            bookIdSelected = bookResult[j.target.id].id;  
         })
-    })
-}   
+    });
+}
+
 
 
 
 controller.getReviewQuery = async () => {
-    return await (query(collection(db, 'Review'), ))
-
+    return await (query(collection(db, 'Review')));
 }

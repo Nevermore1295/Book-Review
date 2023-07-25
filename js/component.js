@@ -531,8 +531,8 @@ component.bookSearch = () => {
             </div>
         </form>
         <div class="card" id="bookSearchList">
-            
         </div>
+
         <div class="card review-form mt-3">
             <div class="card-body row">
                 <img class="mb-3 col-lg-2" id="rv-thumbnail" src="../assets/Question_mark_(black).png" style="height:160px; width:128px"> 
