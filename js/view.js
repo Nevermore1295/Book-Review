@@ -46,7 +46,7 @@ view.setScreen = async (screenName, review_id) => {
         case 'homeScreen':
             //Set up HTML
             document.getElementById('app').innerHTML = component.navbar() + component.header() + component.homeContent() + component.footer();
-            controller.authCheck();
+            controller.authChecktotal();
 
             view.showReview();
                
@@ -57,18 +57,18 @@ view.setScreen = async (screenName, review_id) => {
             document.getElementById('review-btn').style.cursor = 'pointer';
             document.getElementById('review-btn').addEventListener('click', () => view.setScreen('reviewCreatorScreen'));
             document.getElementById('search-btn').style.cursor = 'pointer';
-            document.getElementById('search-btn').addEventListener('click', () => view.setScreen('search'));
-
+            document.getElementById('search-btn').addEventListener('click', () => view.setScreen('searchScreen'));
             break;
 
 
         case 'reviewDetailScreen':
              //Set up HTML
             document.getElementById('app').innerHTML = component.navbar() + component.reviewContent(await controller.getCurrentReviewDoc(review_id)) + component.footer();
-            controller.authCheck();
+            controller.authChecktotal();
             
             //Load realtime-update comment
             controller.showComment(review_id);
+            controller.authCheckcommment();
 
             const commentForm = document.getElementById('comment');
             commentForm.addEventListener('submit', (cf) =>{
@@ -81,7 +81,7 @@ view.setScreen = async (screenName, review_id) => {
                     comment_creator_id: auth.currentUser.uid,
                     comment_created_date: Timestamp.now(),
                     comment_review_id: review_id,
-                    comment_parent_id:null,
+                    comment_parent_id: null,
                     comment_content: commentContent.trim(),
                 }
 
@@ -145,39 +145,14 @@ view.setScreen = async (screenName, review_id) => {
             //Set up HTML 
             document.getElementById('app').innerHTML = component.navbar() + component.bookSearch() + component.footer();
             const bookinfo = document.getElementById('bookSearchbar');
-            bookinfo.addEventListener('submit', (j) =>{
+            bookinfo.addEventListener('submit', async (j) =>{
                 j.preventDefault();
                 controller.getBookToReview(); 
-                bookinfo.reset() 
+                bookinfo.reset();
             });
-
-            const ReviewForm = document.getElementById('Review');
-            ReviewForm.addEventListener('submit', (e)=>{
-                e.preventDefault();
-
-                //Get review data 
-                const reviewTitle = document.getElementById('Review-title').value;
-                const reviewContent = document.getElementById('Review-content').value;
-
-                //Create data object
-                const initialData = {
-                    review_created_date: Timestamp.now(),
-                    review_creator_id: auth.currentUser.uid,
-                    review_title: reviewTitle.trim(),
-                    review_content: reviewContent.trim(),
-                    review_book_id: bookIdSelected
-                    //https://www.googleapis.com/books/v1/volumes/bVFPAAAAYAAJ
-                }
-
-                //Add data object to doc
-                controller.addReview(initialData).then(() => {
-                //Reset form
-                
-                }).catch(err => {
-                    // Catch error
-                    console.log(err.message)
-                })
-            })
+            controller.addReview();
+            
+            
             
 
             //Set redirect button
@@ -185,11 +160,12 @@ view.setScreen = async (screenName, review_id) => {
             document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
             break;
 
-        case 'search':
+        case 'searchScreen':
              //Set redirect button
             document.getElementById('app').innerHTML = component.navbar() + component.reviewQuery() + component.footer();
             document.getElementById('navbar-brand').style.cursor = 'pointer';
             document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
+
         break;
         
         default:
@@ -201,7 +177,7 @@ view.setScreen = async (screenName, review_id) => {
 
 
 
-view.setScreen();
+view.setScreen('reviewCreatorScreen');
 
 
 

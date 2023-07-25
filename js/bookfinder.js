@@ -78,3 +78,18 @@ book.resolveQuery= async(data) => {
     }
     return list;
 }
+
+book.searchBookByID = async (id) => {
+    var response = await fetch('https://www.googleapis.com/books/v1/volumes/'+id)
+            .then(response => {
+                return response;
+            })
+            .catch(error => {
+                console.log(error);
+                return null;
+            });
+    var results = await response.json();
+    console.log(results);
+}
+
+book.searchBookByID('bVFPAAAAYAAJ');

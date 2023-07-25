@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut ,updateProfile } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-import { getFirestore, collection, query, where, and, or, doc, addDoc, setDoc, getDocs, getDoc, orderBy, onSnapshot, limit} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+import { getFirestore, collection, query, where, and, or, doc, addDoc, setDoc, getDocs, getDoc, orderBy, onSnapshot, Timestamp, limit} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 import { auth,db } from "./index.js";
 import { view } from "./view.js";
@@ -9,19 +9,17 @@ import { book } from "./bookfinder.js";
 
 export const controller = {};
 
-controller.authCheck = async () => {
+controller.authChecktotal = () => {
     auth.onAuthStateChanged(()=>{
-        if(auth.currentUser==null){
+        if(auth.currentUser===null){
             console.log(document.getElementById('user-auth'));
             document.getElementById('user-auth').innerHTML=component.navbarLoginForm();
             const loginForm = document.getElementById('login');
             loginForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-
                 // Get user info
                 const email = document.getElementById('email-login').value;
                 const password = document.getElementById('password-login').value;
-
                 const initialData = {
                     email: email.trim(),
                     password: password.trim(),
@@ -31,10 +29,11 @@ controller.authCheck = async () => {
                 loginForm.reset();  
             });   
             document.getElementById('register').addEventListener('click', () => view.setScreen('registerScreen'));
-
+            document.getElementById('review-btn-li').style.display = "none";
         } else {
             console.log(document.getElementById('user-auth'));
             document.getElementById('user-auth').innerHTML=component.navbarUsername();
+            document.getElementById('review-btn-li').style.display = 'block';
             
             const logOutButton = document.getElementById('log-out');
             logOutButton.addEventListener('click',()=>{
@@ -43,6 +42,24 @@ controller.authCheck = async () => {
         }
     })
 }
+
+controller.authCheckcommment = () =>{
+    auth.onAuthStateChanged(() => {
+        if (auth.currentUser!==null) {
+        document.getElementById("comment").innerHTML = `<form class="mb-4 d-flex" id="comment" >
+        <input class="form-control" id="comment-content" rows="3" placeholder="Join the discussion and leave a comment!">
+        </input>
+        <button class="btn btn-block btn-lg btn-primary">
+            Submit
+        </button>
+    </form>`;
+    }
+    else {
+        document.getElementById("comment").innerHTML = ``;
+    }
+    });
+}
+
 
 controller.login = async (initialData) =>{
     await signInWithEmailAndPassword(auth, initialData.email, initialData.password).then(user => {
@@ -127,8 +144,35 @@ controller.getCurrentReviewQuery = async () => {
 }
 
 //Thêm review vào firestore
-controller.addReview = async (initialData) =>{
-    return await addDoc(collection(db, 'Review'),initialData);
+controller.addReview = () =>{
+    const ReviewForm = document.getElementById('Review');
+            ReviewForm.addEventListener('submit', (e)=>{
+                e.preventDefault();
+
+                //Get review data 
+                const reviewTitle = document.getElementById('Review-title').value;
+                const reviewContent = document.getElementById('Review-content').value;
+
+                //Create data object
+                const initialData = {
+                    review_created_date: Timestamp.now(),
+                    review_creator_id: auth.currentUser.uid,
+                    review_title: reviewTitle.trim(),
+                    review_content: reviewContent.trim(),
+                    //https://www.googleapis.com/books/v1/volumes/bVFPAAAAYAAJ
+                }
+
+                
+
+                //Add data object to doc
+                addDoc(collection(db, 'Review'),initialData).then(() => {
+                //Reset form
+                
+                }).catch(err => {
+                    // Catch error
+                    console.log(err.message)
+                })
+            })
 }
 
 
@@ -157,11 +201,9 @@ controller.showComment = async (review_id) =>{
 
 
 
-
 controller.getBookToReview = async () => {
     let bookIdSelected ='';
     let bookResult = await book.resolveQuery(document.getElementById('bookSearchinput').value.replace(/\s+/g, ''));
-    console.log(bookResult);
     document.getElementById('bookSearchList').innerHTML +=`<div class="card-body overflow-auto bg-white" style="max-height: 300px">
         <div id="bookSearchoutput"></div>
     </div>`;               
@@ -174,8 +216,16 @@ controller.getBookToReview = async () => {
             document.getElementById('rv-title').value = bookResult[j.target.id].title;
             document.getElementById('rv-authors').value = bookResult[j.target.id].authors;
             document.getElementById('rv-pd').value = bookResult[j.target.id].publishedDate;
+            document.getElementById('rv-thumbnail').src = component.imageCheck(bookResult[j.target.id].imageLinks);
             bookIdSelected = bookResult[j.target.id].id;
+            
         })
     })
- 
 }   
+
+
+
+controller.getReviewQuery = async () => {
+    return await (query(collection(db, 'Review'), ))
+
+}
