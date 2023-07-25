@@ -80,20 +80,31 @@ controller.logout = async () =>{
     });
 }
 
-controller.register = async (initialData,pwcf) =>{
+controller.register = async () =>{
+    //Get user infor and create data object 
+    const initialData = {
+        user_name: document.getElementById('username').value.trim(),
+        user_email: document.getElementById('email').value.trim(),
+        user_password: document.getElementById('password').value.trim(),
+        user_authority: 1,                       
+    }
+
     if (initialData.user_name.trim() === '') {
+        //Kiểm tra khoảng trống username
         console.log('Missing username');
     } else if (initialData.user_name.trim().length < 6) {
+        //Kiểm tra độ dài username
         console.log('Username must be at least 6 characters')
-    } else if (initialData.user_password !== pwcf) {
+    } else if (initialData.user_password !== document.getElementById('pwconfirmation').value) {
+        //Xác nhận mật khẩu
         console.log('Password and password confirmation must be the same')
-    } else if (initialData.user_password === pwcf) {
+    } else if (initialData.user_password === document.getElementById('pwconfirmation').value) {
         let exist = false;
         const q = await query(collection(db, 'users'), where('username', '==', initialData.user_name.trim()));
         await getDocs(q).then( async (d) => {
             d.forEach(data => {
                 if (data.exists) {
-                    exist = true;  //
+                    exist = true;  
                 }
             })
             if (!exist) {
@@ -115,7 +126,16 @@ controller.register = async (initialData,pwcf) =>{
 }
 
 //Thêm comment vào firestore
-controller.addComment = async (initialData) =>{
+controller.addComment = async (review_id) =>{
+    //Create data object     
+    const initialData = {
+        comment_creator_id: auth.currentUser.uid,
+        comment_created_date: Timestamp.now(),
+        comment_review_id: review_id,
+        comment_parent_id: null,
+        comment_content: document.getElementById('comment-content').value.trim(),
+    };
+
     return await addDoc(collection(db, 'Comment'),initialData);
 }
 
@@ -142,7 +162,7 @@ controller.getCurrentReviewQuery = async () => {
 //Hiển thị review
 controller.showReview = async () => {
     onSnapshot(await controller.getCurrentReviewQuery(),(qr)=>{
-        let str = '';
+
         //Define Map variable to store <key,value>
         let data = new Map;
 
@@ -171,8 +191,19 @@ controller.showReview = async () => {
     );
 }
 
-//Thêm review vào firestore
-controller.addReview = async (initialData) =>{
+//Add review to firestore
+controller.addReview = async () =>{
+    
+    //Create data object
+    const initialData = {
+        review_created_date: Timestamp.now(),
+        review_creator_id: auth.currentUser.uid,
+        review_title: document.getElementById('Review-title').value.trim(),
+        review_content: document.getElementById('Review-content').value.trim(),
+        review_book_id: document.getElementById('rv-bid').value
+        //https://www.googleapis.com/books/v1/volumes/bVFPAAAAYAAJ
+    }
+
     if (initialData.review_title === '' || initialData.review_content === '') {
         alert('Title and content must not be blank');
     } else {
@@ -208,12 +239,20 @@ controller.addReview = async (initialData) =>{
 //     })
 // }
 
+
+controller.showCurrentReviewDetail = async (review_id) =>{
+    console.log(await controller.getCurrentReviewDoc(review_id));
+    document.getElementById('reviewInfo').innerHTML=component.reviewInfo(await controller.getCurrentReviewDoc(review_id));
+    document.getElementById('commentSection').innerHTML=component.commentSection(await controller.getCurrentReviewDoc(review_id));
+}
+
 //Lấy query của parent comment từ firestore
 controller.getCurrentCommentQuery = async (comment_review_id) => {
     return await (query(collection(db,'Comment'),and(where('comment_review_id','==',comment_review_id),where('comment_parent_id','==',null)),limit(6)));
 }
 
-//Hiển thị comment
+
+//Show comment
 controller.showComment = async (review_id) =>{
     onSnapshot(await controller.getCurrentCommentQuery(review_id),(qr)=>{
         let str='';
@@ -227,12 +266,12 @@ controller.showComment = async (review_id) =>{
 
 
 
-//Lấy infor sách
+//Get book information
 controller.getBookToReview = async () => {
     return await book.resolveQuery(document.getElementById('bookSearchinput').value.replace(/\s+/g, ''));
 }   
 
-//Hiển thị sách
+//Show book information
 controller.showBook = async () => {
 
     let bookResult = await controller.getBookToReview();

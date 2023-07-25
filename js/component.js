@@ -431,14 +431,14 @@ component.commentSection = (data) => {
     </section>
 `}
 
-component.reviewContent = (data) => {
+component.reviewContent = () => {
     return `
     <!-- Page content-->
     <div class="container mt-5">
         <div class="row">
             <div class="col-lg-8">
-                ${component.reviewInfo(data)}
-                ${component.commentSection(data)}
+                <a id="reviewInfo"></a>
+                <a id="commentSection"></a>
             </div>
             ${component.sideWidget()}
         </div>
