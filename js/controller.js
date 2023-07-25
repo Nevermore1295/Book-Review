@@ -173,59 +173,29 @@ controller.showReview = async () => {
 
 //Thêm review vào firestore
 controller.addReview = async (initialData) =>{
-    await addDoc(collection(db, 'Review'),initialData).then(() => {
+    if (initialData.review_title === '' || initialData.review_content === '') {
+        alert('Title and content must not be blank');
+    } else {
+        await addDoc(collection(db, 'Review'),initialData).then(() => {
+
+        document.getElementById('review-funcscreen').innerHTML = 
+        `
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5>Your review has been saved!</h5>
+                    <p><a>Go to homepage</a> or <a>Make another review</a></p>
+                </div>
+            </div>
+
+        `
         //Reset form
-    }).catch(err => {
-        // Catch error
-        console.log(err.message)
-    })
+
+        }).catch(err => {
+            // Catch error
+            console.log(err.message)
+        })
+    }
 }
-            
-controller.addReview = () =>{
-    const ReviewForm = document.getElementById('Review');
-            ReviewForm.addEventListener('submit', (e)=>{
-                e.preventDefault();
-
-                //Get review data 
-                
-                const reviewTitle = document.getElementById('Review-title').value;
-                const reviewContent = document.getElementById('Review-content').value;
-                
-                //Create data object
-                const initialData = {
-                    review_created_date: Timestamp.now(),
-                    review_creator_id: auth.currentUser.uid,
-                    review_title: reviewTitle.trim(),
-                    review_content: reviewContent.trim(),
-                    review_book_id: document.getElementById('rv-bid').value
-                    //https://www.googleapis.com/books/v1/volumes/bVFPAAAAYAAJ
-                }
-
-                if (reviewTitle === '' || reviewContent === '') {
-                    alert('Title and content must not be blank');
-                } else
-                {
-                    //Add data object to doc
-                    addDoc(collection(db, 'Review'),initialData).then(() => {
-                    //Reset form
-                    document.getElementById('review-funcscreen').innerHTML = 
-                    `
-                        <div class="card mt-3">
-                            <div class="card-body">
-                                <h5>Your review has been saved!</h5>
-                                <p><a>Go to homepage</a> or <a>Make another review</a></p>
-                            </div>
-                        </div>
-    
-                    `
-                    }).catch(err => {
-                        // Catch error
-                        console.log(err.message)
-                    })
-                }
-            })
-}
-
 
 // controller.getComment = async (review_id) =>{
 //     onSnapshot(await controller.getCurrentCommentQuery(review_id),(qr)=>{
@@ -264,7 +234,6 @@ controller.getBookToReview = async () => {
 
 //Hiển thị sách
 controller.showBook = async () => {
-    let bookIdSelected = ''
 
     let bookResult = await controller.getBookToReview();
     document.getElementById('bookSearchList').innerHTML +=
@@ -279,7 +248,6 @@ controller.showBook = async () => {
             document.getElementById('rv-authors').value = bookResult[j.target.id].authors;
             document.getElementById('rv-pd').value = bookResult[j.target.id].publishedDate;
             document.getElementById('rv-thumbnail').src = component.imageCheck(bookResult[j.target.id].imageLinks);
-            bookIdSelected = bookResult[j.target.id].id;  
             document.getElementById('rv-bid').value = bookResult[j.target.id].id;;
             document.querySelectorAll('.review-forminput').forEach(e=>{ 
                 e.disabled = false;

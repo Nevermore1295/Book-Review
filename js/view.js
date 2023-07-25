@@ -108,14 +108,36 @@ view.setScreen = async (screenName, review_id) => {
             //Set up HTML 
             document.getElementById('app').innerHTML = component.navbar() + component.bookSearch() + component.footer();
 
-            let bookIdSelected = '';
-
             //Book search bar
             document.getElementById('bookSearchbar').addEventListener('submit', async (j) =>{
                 j.preventDefault();
-                await controller.showBook().then(() => {
+                controller.showBook().then(() => {
                     // Reset form
                     document.getElementById('bookSearchbar').reset();
+
+                    //Review Form
+                    document.getElementById('Review').addEventListener('submit', (e)=>{
+                        e.preventDefault();
+
+                        //Create data object
+                        const initialData = {
+                            review_created_date: Timestamp.now(),
+                            review_creator_id: auth.currentUser.uid,
+                            review_title: document.getElementById('Review-title').value.trim(),
+                            review_content: document.getElementById('Review-content').value.trim(),
+                            review_book_id: document.getElementById('rv-bid').value
+                            //https://www.googleapis.com/books/v1/volumes/bVFPAAAAYAAJ
+                        }
+
+                        //Add data object to doc
+                        controller.addReview(initialData).then(() => {
+                            // Reset form
+                            document.getElementById('Review').reset();
+                        }).catch(err => {
+                            // Catch error
+                            console.log(err.message)
+                        });
+                    })
                 }).catch(err => {
                     // Catch error
                     console.log(err.message)
@@ -123,31 +145,8 @@ view.setScreen = async (screenName, review_id) => {
             });
 
 
-            //Review Form
-            document.getElementById('Review').addEventListener('submit', (e)=>{
-                e.preventDefault();
-                console.log(bookIdSelected);
 
-                //Create data object
-                const initialData = {
-                    review_created_date: Timestamp.now(),
-                    review_creator_id: auth.currentUser.uid,
-                    review_title: document.getElementById('Review-title').value.trim(),
-                    review_content: document.getElementById('Review-content').value.trim(),
-                    review_book_isbn: bookIdSelected,
-                    //https://www.googleapis.com/books/v1/volumes/bVFPAAAAYAAJ
-                }
-                //Add data object to doc
-                controller.addReview(initialData).then(() => {
-                    // Reset form
-                    document.getElementById('Review').reset();
-                }).catch(err => {
-                    // Catch error
-                    console.log(err.message)
-                });
-            })
 
-            controller.addReview();
             //Set redirect button
             document.getElementById('navbar-brand').style.cursor = 'pointer';
             document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
