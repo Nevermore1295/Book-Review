@@ -9,7 +9,6 @@ import { book } from "./bookfinder.js";
 
 export const controller = {};
 
-<<<<<<< Updated upstream
 //Auth check 
 controller.Authentication = async () => {
     auth.onAuthStateChanged(()=>{
@@ -17,16 +16,6 @@ controller.Authentication = async () => {
             document.getElementById('user-auth').innerHTML=component.Authentication(false);
             document.getElementById('review-btn-li').style.display = 'none';
             document.getElementById('login').addEventListener('submit', (e) => {
-=======
-auth
-
-controller.authChecktotal = () => {
-    auth.onAuthStateChanged(()=>{
-        if(auth.currentUser===null){
-            document.getElementById('user-auth').innerHTML=component.navbarLoginForm();
-            const loginForm = document.getElementById('login');
-            loginForm.addEventListener('submit', (e) => {
->>>>>>> Stashed changes
                 e.preventDefault();
                 controller.login();
                 document.getElementById('login').reset(); 
@@ -46,7 +35,6 @@ controller.authChecktotal = () => {
     })
 }
 
-<<<<<<< Updated upstream
 //Auth check for comment
 controller.showSubmitComment = () => {
     auth.onAuthStateChanged(()=>{
@@ -66,26 +54,6 @@ controller.showSubmitComment = () => {
         }
     });
 }
-=======
-// controller.authCheckcommment = () =>{
-//     auth.onAuthStateChanged(() => {
-//         if (auth.currentUser!==null) {
-//         document.getElementById("comment").innerHTML = `<form class="mb-4 d-flex" id="comment" >
-//         <input class="form-control" id="comment-content" rows="3" placeholder="Join the discussion and leave a comment!">
-//         </input>
-//         <button class="btn btn-block btn-lg btn-primary">
-//             Submit
-//         </button>
-//     </form>`;
-//     }
-//     else {
-//         document.getElementById("comment").innerHTML = ``;
-//     }
-//     });
-// }
-
-
->>>>>>> Stashed changes
 
 //Login
 controller.login = async () =>{
@@ -159,8 +127,6 @@ controller.register = async () =>{
     }
 }
 
-<<<<<<< Updated upstream
-=======
 //Thêm comment vào firestore
 controller.addComment = async (review_id) =>{
     //Create data object     
@@ -227,7 +193,6 @@ controller.showReview = async () => {
         }
     );
 }
->>>>>>> Stashed changes
 
 //Add review to firestore
 controller.addReview = async () =>{   
