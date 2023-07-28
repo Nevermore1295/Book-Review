@@ -9,6 +9,7 @@ import { book } from "./bookfinder.js";
 
 export const controller = {};
 
+<<<<<<< Updated upstream
 //Auth check 
 controller.Authentication = async () => {
     auth.onAuthStateChanged(()=>{
@@ -16,6 +17,16 @@ controller.Authentication = async () => {
             document.getElementById('user-auth').innerHTML=component.Authentication(false);
             document.getElementById('review-btn-li').style.display = 'none';
             document.getElementById('login').addEventListener('submit', (e) => {
+=======
+auth
+
+controller.authChecktotal = () => {
+    auth.onAuthStateChanged(()=>{
+        if(auth.currentUser===null){
+            document.getElementById('user-auth').innerHTML=component.navbarLoginForm();
+            const loginForm = document.getElementById('login');
+            loginForm.addEventListener('submit', (e) => {
+>>>>>>> Stashed changes
                 e.preventDefault();
                 controller.login();
                 document.getElementById('login').reset(); 
@@ -35,6 +46,7 @@ controller.Authentication = async () => {
     })
 }
 
+<<<<<<< Updated upstream
 //Auth check for comment
 controller.showSubmitComment = () => {
     auth.onAuthStateChanged(()=>{
@@ -54,6 +66,26 @@ controller.showSubmitComment = () => {
         }
     });
 }
+=======
+// controller.authCheckcommment = () =>{
+//     auth.onAuthStateChanged(() => {
+//         if (auth.currentUser!==null) {
+//         document.getElementById("comment").innerHTML = `<form class="mb-4 d-flex" id="comment" >
+//         <input class="form-control" id="comment-content" rows="3" placeholder="Join the discussion and leave a comment!">
+//         </input>
+//         <button class="btn btn-block btn-lg btn-primary">
+//             Submit
+//         </button>
+//     </form>`;
+//     }
+//     else {
+//         document.getElementById("comment").innerHTML = ``;
+//     }
+//     });
+// }
+
+
+>>>>>>> Stashed changes
 
 //Login
 controller.login = async () =>{
@@ -127,6 +159,75 @@ controller.register = async () =>{
     }
 }
 
+<<<<<<< Updated upstream
+=======
+//Thêm comment vào firestore
+controller.addComment = async (review_id) =>{
+    //Create data object     
+    const initialData = {
+        comment_creator_id: auth.currentUser.uid,
+        comment_created_date: Timestamp.now(),
+        comment_review_id: review_id,
+        comment_parent_id: null,
+        comment_content: document.getElementById('comment-content').value.trim(),
+    };
+
+    return await addDoc(collection(db, 'Comment'),initialData);
+}
+
+controller.getCurrentReviewDoc = async (review_id) => {
+
+    const docRef = doc(db, "Review", review_id);
+    const docSnap = await getDoc(docRef);
+    console.log(docSnap);
+
+    if (docSnap.exists()) {
+        return docSnap.data();
+    } else {
+    // docSnap.data() will be undefined in this case
+        console.log("No such document!");
+    }
+}
+
+
+//Lấy query của review từ firestore
+controller.getCurrentReviewQuery = async () => {
+    return await (query(collection(db,'Review'),orderBy('review_created_date'),limit(5)));
+}
+
+//Hiển thị review
+controller.showReview = async () => {
+    onSnapshot(await controller.getCurrentReviewQuery(),(qr)=>{
+
+        //Define Map variable to store <key,value>
+        let data = new Map;
+
+        //Define Array variable to store <key>
+        let key = new Array;
+
+        //Set mapping and push key
+        qr.forEach(doc =>{
+            data.set(doc.id,doc.data());
+            key.push(doc.id);
+        })
+
+        //Add view for doc
+        document.getElementById('featured-post').innerHTML = component.blogEntries(data,key);
+        console.log(data.get(key[0]).review_created_date)
+
+        //Set redirect button
+        document.querySelectorAll('.reviewScreen, .review-show').forEach(element=>{
+            element.style.cursor='pointer';
+            element.addEventListener('click', () => view.setScreen('reviewDetailScreen', element.getAttribute('value')));
+        });
+        
+        },(err)=>{
+            console.log(err);
+            console.log(err.message);
+        }
+    );
+}
+>>>>>>> Stashed changes
 
 //Add review to firestore
 controller.addReview = async () =>{   
@@ -307,7 +408,7 @@ controller.getBookToReview = async () => {
 controller.showBook = async () => {
     let bookResult = await controller.getBookToReview();
     document.getElementById('bookSearchList').innerHTML +=
-    `<div class="card-body overflow-auto bg-white" style="max-height: 300px">
+    `<div class="card-body overflow-auto" style="max-height: 300px">
         <div id="bookSearchoutput"></div>
     </div>`;
 
@@ -330,3 +431,5 @@ controller.showBook = async () => {
 controller.getReviewQuery = async () => {
     return await (query(collection(db, 'Review')));
 }
+
+

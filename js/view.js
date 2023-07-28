@@ -22,8 +22,12 @@ view.setScreen = (screenName, review_id) => {
             controller.Authentication();
 
             //Show review
+<<<<<<< Updated upstream
             controller.showReviewPage();
     
+=======
+            controller.showReview();
+>>>>>>> Stashed changes
             //Set redirect button
             view.setScreenButton('navbar-brand','homeScreen');
             // document.getElementById('navbar-brand').style.cursor = 'pointer';
@@ -47,8 +51,13 @@ view.setScreen = (screenName, review_id) => {
             
             controller.showCurrentReviewDetail(review_id).then(()=>{
                 //Load realtime-update comment
+<<<<<<< Updated upstream
                 controller.showSubmitComment();
                 controller.showParentComment(review_id);
+=======
+                // controller.authCheckcommment();
+                controller.showComment(review_id);
+>>>>>>> Stashed changes
 
                 document.getElementById('comment').addEventListener('submit', (cf) =>{
                     cf.preventDefault();
@@ -84,11 +93,23 @@ view.setScreen = (screenName, review_id) => {
                 });
                 //Register user
 
+<<<<<<< Updated upstream
             });
 
             view.setScreenButton('navbar-brand','homeScreen');
             // document.getElementById('navbar-brand').style.cursor = 'pointer';
             // document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
+=======
+            })
+            document.getElementById('navbar-brand').style.cursor = 'pointer';
+            document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
+            document.getElementById('login-btn').style.cursor = 'pointer';
+            document.getElementById('login-btn').addEventListener('click', async () => {
+                await view.setScreen('homeScreen');
+                document.getElementById('login-modal').click();
+        
+        });
+>>>>>>> Stashed changes
         break;
 
         case 'reviewCreatorScreen':
@@ -98,7 +119,7 @@ view.setScreen = (screenName, review_id) => {
             controller.Authentication();
 
             //Book search bar
-            document.getElementById('bookSearchbar').addEventListener('submit', async (j) =>{
+            document.getElementById('bookSearchbar').addEventListener('submit', (j) =>{
                 j.preventDefault();
                 
                 controller.showBook().then(() => {
@@ -108,20 +129,10 @@ view.setScreen = (screenName, review_id) => {
                     //Review Form
                     document.getElementById('Review').addEventListener('submit', (e)=>{
                         e.preventDefault();
-
                         //Add data object to doc
-                        controller.addReview().then(() => {
-                            // Reset form
-                            document.getElementById('Review').reset();
-                        }).catch(err => {
-                            // Catch error
-                            console.log(err.message)
-                        });
+                        controller.addReview();
                     })
-                }).catch(err => {
-                    // Catch error
-                    console.log(err.message)
-                });
+                })
             });
 
             //Set redirect button
@@ -150,7 +161,11 @@ view.setScreenButton = (button_id,screen_name) => {
 }
 
 
+<<<<<<< Updated upstream
 view.setScreen('homeScreen');
+=======
+view.setScreen();
+>>>>>>> Stashed changes
 
 
 

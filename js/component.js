@@ -20,6 +20,7 @@ component.Authentication = (isUserExist) =>{
         return `
         <div class="d-flex align-content-center me-1">
             <div class="dropdown">
+<<<<<<< Updated upstream
                 <!-- Button trigger modal -->
                 <i type="button" class="navbar-nav ms-auto fa-solid fa-user" data-bs-toggle="modal" data-bs-target="#LoginModal" style="font-size:25px"></i>
                 <!-- Modal -->
@@ -31,6 +32,41 @@ component.Authentication = (isUserExist) =>{
                                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
+=======
+                <i class="navbar-nav ms-auto fa-solid fa-user" type="button" data-bs-toggle="dropdown" style="font-size:25px" >
+                </i>
+                <ul class="dropdown-menu account-dropdown">
+                    <li><a class="dropdown-item" href="#">Action</a></li>
+                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                    <li><a class="dropdown-item" id="log-out">Log Out</a></li>
+                </ul>
+            </div>
+        </div>
+    `
+}
+
+component.navbarLoginForm = () => {
+    return `
+    <div class="d-flex align-content-center me-1">
+        <div class="dropdown">
+        <!-- Button trigger modal -->
+        <i type="button" id="login-modal" class="navbar-nav ms-auto fa-solid fa-user" data-bs-toggle="modal" data-bs-target="#LoginModal" style="font-size:25px"></i>
+        <!-- Modal -->
+        <div class="modal fade" id="LoginModal" tabindex="-1" aria-labelledby="LoginModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content container">
+                    <div class="modal-header">
+                        <h4>Login</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body container">
+                        <form id="login">
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="form2Example1">Email address</label>
+                                <input type="email" id="email-login" class="form-control validate text-4b88a2" />
+>>>>>>> Stashed changes
                             </div>
                             <div class="modal-body container">
                                 <form id="login">
@@ -164,7 +200,7 @@ component.navbar = () => {
     `
 };
 
-component.header = () =>{
+component.header = () => {
     return `
     <header class="py-5 bg-light border-bottom mb-4">
         <div class="container">
@@ -176,7 +212,7 @@ component.header = () =>{
     </header>
 `};
 
-component.sideWidget = () =>{ 
+component.sideWidget = () => {
     return `
     <!-- Side widgets-->
     <div class="col-lg-4">
@@ -199,18 +235,19 @@ component.sideWidget = () =>{
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col-sm-6">
+                    
                         <ul class="list-unstyled mb-0">
-                            <li><a href="#!">Web Design</a></li>
-                            <li><a href="#!">HTML</a></li>
-                            <li><a href="#!">Freebies</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-sm-6">
-                        <ul class="list-unstyled mb-0">
-                            <li><a href="#!">JavaScript</a></li>
-                            <li><a href="#!">CSS</a></li>
-                            <li><a href="#!">Tutorials</a></li>
+                            <li><a href="#!">Action & adventure</a></li>
+                            <li><a href="#!">Biography/religion</a></li>
+                            <li><a href="#!">Bussiness</a></li>
+                            <li><a href="#!">Comics</a></li>
+                            <li><a href="#!">Education</a></li>
+                            <li><a href="#!">Entertainment</a></li>
+                            <li><a href="#!">History</a></li>
+                            <li><a href="#!">Medical & Lifestyle</a></li>
+                            <li><a href="#!">Literature & fiction</a></li>
+                            <li><a href="#!">Science</a></li>
+                            <li><a href="#!">Sport</a></li>
                         </ul>
                     </div>
                 </div>
@@ -284,6 +321,7 @@ component.sideWidget = () =>{
 // }
 
 component.blogEntries = (data_map, key_array) => {
+<<<<<<< Updated upstream
     if (key_array.length==1){
         return `
         <!-- Featured blog post-->
@@ -359,6 +397,24 @@ component.blogEntries = (data_map, key_array) => {
         </div>
         `
     }
+=======
+    let str=``;
+    for (let i=0; i<5; i++)
+    {
+        str+= `<div class="card mb-4 flex-row align-items-center">
+        <a class="reviewScreen" value="${key_array[i]}"><img src="http://books.google.com/books/content?id=bVFPAAAAYAAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"></a>
+        <div class="card-body">
+            <h2 class="card-title">${data_map.get(key_array[i]).review_title}</h2>
+            <span class="small text-muted">${data_map.get(key_array[i]).review_creator_id}</span>
+            <span class="small text-muted">${data_map.get(key_array[i]).review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })}</span>
+            
+            <p class="card-text overflow-hidden" style="max-height: 70px">${data_map.get(key_array[i]).review_content}</p>
+            <a class="btn btn-primary review-show" value="${key_array[i]}">Read more →</a>
+        </div>
+    </div> `
+    }
+    return str;
+>>>>>>> Stashed changes
 }
 
 
@@ -372,8 +428,25 @@ component.homeContent = () => {
 
                 <div id="featured-post">                    
                 </div>
+<<<<<<< Updated upstream
                 ${component.reviewPage()}
               
+=======
+
+                    
+                <!-- Pagination-->
+                <nav aria-label="Pagination">
+                    <ul class="pagination justify-content-center my-4">
+                        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Newer</a></li>
+                        <li class="page-item active" aria-current="page"><a class="page-link" href="#!">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#!">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#!">3</a></li>
+                        <li class="page-item disabled"><a class="page-link" href="#!">...</a></li>
+                        <li class="page-item"><a class="page-link" href="#!">15</a></li>
+                        <li class="page-item"><a class="page-link" href="#!">Older</a></li>
+                    </ul>
+                </nav>
+>>>>>>> Stashed changes
             </div>
             ${component.sideWidget()}
         </div>
@@ -400,7 +473,7 @@ component.reviewPage = () => {
 
 
 //**********************Review Detail Screen***********************
-component.reviewInfo = (data) => { 
+component.reviewInfo = (data) => {
     return `
     <!-- Post content-->
     <article>
@@ -475,7 +548,7 @@ component.displayedParentComment = (data) => {
     `
 }
 
-component.displayedChildComment = () =>{
+component.displayedChildComment = () => {
     return `
     <!-- Single comment-->
     <div class="d-flex">
@@ -536,7 +609,7 @@ component.blankNavbar = () => {
 `};
 
 
-component.registerContent = () => { 
+component.registerContent = () => {
     return `
     <div class="container d-flex align-items-center py-4">
         <div class="container h-100">
@@ -586,7 +659,7 @@ component.registerContent = () => {
 
                                 <div class="d-flex justify-content-center flex-column flex-sm-row  text-center text-muted mt-4 mb-0">
                                     <p>Have already an account?</p>
-                                    <a href="#!" class="fw-bold text-body"><u>Login here</u></a>
+                                    <a href="#!" class="fw-bold text-body"><u id="login-btn">Login here</u></a>
                                 </div>                    
                             </form>
                         </div>
@@ -610,7 +683,7 @@ component.bookSearch = () => {
                     <button class="btn btn-primary btn-lg">Search</button>
                 </div>
             </form>
-            <div class="card" id="bookSearchList">
+            <div id="bookSearchList">
 
             </div>
             <div class="card review-form mt-3">
@@ -647,12 +720,22 @@ component.bookSearch = () => {
                         </div>
                         <div class="row">
                             <div class="input-group input-group mb-3 col-lg">
-                                <span class="input-group-text" for="inputGroupSelect01">Options</span>
+                                <span class="input-group-text" for="inputGroupSelect01">Category</span>
                                 <select class="form-select review-forminput" id="inputGroupSelect01" disabled>
                                 <option selected>Choose...</option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
+                                <option value="1">Action & Adventure</option>
+                                <option value="2">Biographies/religion</option>
+                                <option value="3">Business</option>
+                                <option value="4">Comics</option>
+                                <option value="5">Education</option>
+                                <option value="6">Entertainment</option>
+                                <option value="7">History</option>
+                                <option value="8">Medical/lifestyle</option>
+                                <option value="9">Literature & fiction</option>
+                                <option value="10">Science & technology</option>
+                                <option value="11">Sport</option>
+                                <option value="12">Medical/lifestyle</option>
+
                                 </select>
                             </div>
                         </div>
@@ -671,7 +754,7 @@ component.bookSearch = () => {
 `};
 
 component.imageCheck = (index) => {
-    if ( index === undefined) {
+    if (index === undefined) {
         return "../assets/Question_mark_(black).png";
     } else {
         return index.thumbnail;
@@ -680,18 +763,18 @@ component.imageCheck = (index) => {
 
 component.bookSearchoutput = (bookResult) => {
     let str = '';
-    for (let index = 0; index < bookResult.length; index++) {    
+    for (let index = 0; index < bookResult.length; index++) {
         str +=
-        `
-        <div class="card bg-light m-2">
+            `
+        <div class="card bg-white m-2">
             <form class="card-body d-flex justify-content-between">
                 <div class="d-flex">
                     <img class="mt-1" src="
-                    ${component.imageCheck(bookResult[index].imageLinks)}" height="100" width="70">
+                    ${component.imageCheck(bookResult[index].imageLinks)}" height="120" width="90">
                     <div class="resultBasic ms-3">
                         <h5>${bookResult[index].title}</h5>
-                        <p>Author: ${bookResult[index].authors}</p>
-                        <p>Date published: ${bookResult[index].publishedDate}</;>
+                        <div><b>Author:</b> ${bookResult[index].authors}</div>
+                        <div><b>Date published:</b> ${bookResult[index].publishedDate}</div>
                     </div>
                 </div>   
                 <button style="height:40px" id="${index}" class="rv-btn btn btn-outline-primary mt-2" type="button">Review</button>
@@ -702,22 +785,78 @@ component.bookSearchoutput = (bookResult) => {
     return str;
 }
 
+component.searchQueryoutput = () => {
+    let str = `
+    <div class="card bg-light m-2">
+            <form class="card-body d-flex justify-content-between">
+                <div class="d-flex">
+                    <img class="mt-1" src="
+                    ${component.imageCheck(bookResult[index].imageLinks)}" height="100" width="70">
+                    <div class="resultBasic ms-3">
+                        <h5>${bookResult[index].title}</h5>
+                        <div>Author: ${bookResult[index].authors}</div>
+                        <div>Date published: ${bookResult[index].publishedDate}</div>
+                    </div>
+                </div>   
+                <button style="height:40px" id="${index}" class="rv-btn btn btn-outline-primary mt-2" type="button">Review</button>
+            </form>
+        </div>`;
+    return str;
+}
 //*********************** Search review ****************************/
 
 component.reviewQuery = () => {
     return `
     <div class="container my-4">
-        <h2 class="card-title m-2">Find reviews</h2>
-        <form class="input-group input-group-lg p-4" id="review-Searchbar">
+        <h2 class="m-2">Find reviews</h2>
+        <form class="input-group input-group-lg p-4" id="reviewQuerySearchbar">
                 <input type="text" class="form-control" placeholder="Book/Review" id="review-Searchbar-input">
                 <div class="input-group-append">
                     <button class="btn btn-primary btn-lg" type="button">Search</button>
                 </div>
         </form>
-        <div class="card">
-                <div class="card-body overflow-auto bg-white" style="height: 600px">
-                   
+        <div id="reviewQueryList">
+            <div class="overflow-auto" style="max-height: 700px; min-height: 200px"> 
+                <div class="reviewQueryoutput">
+                    <div class="card bg-white">
+                        <div class="card-body d-flex justify-content-between">
+                            <div class="d-flex">
+                                <img class="mt-1" src="
+                                http://books.google.com/books/content?id=bVFPAAAAYAAJ&amp;printsec=frontcover&amp;img=1&amp;zoom=1&amp;edge=curl&amp;source=gbs_api" height="120" width="90">
+                                <div class="resultBasic ms-3">
+                                    <h5>Title</h5>
+                                    <div><b>Book:</b> Report</div>
+                                    <div><b>Author:</b> New York State Library</div>
+                                    <div><b>User:</b> username</div>
+                                    <div><b>Date published:</b> 1916</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-4">
+            <div class="card-header">
+                Categories
+            </div>
+            <div class="card-body">
+                <div class="row">
                     
+                        <ul class="list-unstyled mb-0">
+                            <li><a href="#!">Action & adventure</a></li>
+                            <li><a href="#!">Biography/religion</a></li>
+                            <li><a href="#!">Bussiness</a></li>
+                            <li><a href="#!">Comics</a></li>
+                            <li><a href="#!">Education</a></li>
+                            <li><a href="#!">Entertainment</a></li>
+                            <li><a href="#!">History</a></li>
+                            <li><a href="#!">Medical & Lifestyle</a></li>
+                            <li><a href="#!">Literature & fiction</a></li>
+                            <li><a href="#!">Science</a></li>
+                            <li><a href="#!">Sport</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
