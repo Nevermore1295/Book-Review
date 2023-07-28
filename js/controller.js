@@ -141,59 +141,6 @@ controller.addComment = async (review_id) =>{
     return await addDoc(collection(db, 'Comment'),initialData);
 }
 
-controller.getCurrentReviewDoc = async (review_id) => {
-
-    const docRef = doc(db, "Review", review_id);
-    const docSnap = await getDoc(docRef);
-    console.log(docSnap);
-
-    if (docSnap.exists()) {
-        return docSnap.data();
-    } else {
-    // docSnap.data() will be undefined in this case
-        console.log("No such document!");
-    }
-}
-
-
-//Lấy query của review từ firestore
-controller.getCurrentReviewQuery = async () => {
-    return await (query(collection(db,'Review'),orderBy('review_created_date'),limit(5)));
-}
-
-//Hiển thị review
-controller.showReview = async () => {
-    onSnapshot(await controller.getCurrentReviewQuery(),(qr)=>{
-
-        //Define Map variable to store <key,value>
-        let data = new Map;
-
-        //Define Array variable to store <key>
-        let key = new Array;
-
-        //Set mapping and push key
-        qr.forEach(doc =>{
-            data.set(doc.id,doc.data());
-            key.push(doc.id);
-        })
-
-        //Add view for doc
-        document.getElementById('featured-post').innerHTML = component.blogEntries(data,key);
-        console.log(data.get(key[0]).review_created_date)
-
-        //Set redirect button
-        document.querySelectorAll('.reviewScreen, .review-show').forEach(element=>{
-            element.style.cursor='pointer';
-            element.addEventListener('click', () => view.setScreen('reviewDetailScreen', element.getAttribute('value')));
-        });
-        
-        },(err)=>{
-            console.log(err);
-            console.log(err.message);
-        }
-    );
-}
-
 //Add review to firestore
 controller.addReview = async () =>{   
     //Create data object
@@ -202,7 +149,8 @@ controller.addReview = async () =>{
         review_creator_id: auth.currentUser.uid,
         review_title: document.getElementById('Review-title').value.trim(),
         review_content: document.getElementById('Review-content').value.trim(),
-        review_book_id: document.getElementById('rv-bid').value
+        review_book_id: document.getElementById('rv-bid').value,
+        // review_id: await getDoc();
         //https://www.googleapis.com/books/v1/volumes/bVFPAAAAYAAJ
     }
 
@@ -229,64 +177,98 @@ controller.addReview = async () =>{
 }
 
 //Get review query from firestore
-controller.getCurrentReviewQuery = async (page) => {
+controller.getCurrentReviewQuery = async () => {
     // ,startAt(page*5),endAt((page+1)*5)
     return await (query(collection(db,'Review'),orderBy('review_created_date','desc')));
 }
 
+//Get review query from firestore
+controller.getCurrentReviewDocs = async () => {
+    // ,startAt(page*5),endAt((page+1)*5)
+    return await (getDocs(query(collection(db,'Review'),orderBy('review_created_date','desc'),limit(5))));
+}
+
 //Show review at Homepage
-controller.showCurrentReviewPage = async (page) => {
-    onSnapshot(await controller.getCurrentReviewQuery(),(qr)=>{
-        console.log(qr);
+controller.showCurrentReviewPage = async (data_map,key_array,page) => {
 
-        if (qr == null){
+        let current_key = new Array();
 
-        } else {
-            //Define Map variable to store <key,value>
-            let data_map = new Map;
+        let i = page*5 ;
+        while (i<(page+1)*5 && key_array[i]!==undefined){
+            current_key.push(key_array[i]);
+            i++;
+        };
 
-            //Define Array variable to store <key>
-            let key = new Array;
-
-            //Set mapping and push key
-            qr.forEach(doc =>{
-                data_map.set(doc.id,doc.data());
-                key.push(doc.id);
-            });
-
-            let key_array = new Array;
-
-            for (let i = page*5; i<(page+1)*5;i++){
-                key_array.push(key[i]);
-            }
-
-            console.log(key_array); 
-            
-            //Add view for doc
-            document.getElementById('featured-post').innerHTML = component.blogEntries(data_map,key_array);
-
-            //Set redirect button
-            document.querySelectorAll('.reviewScreen, .review-show').forEach(element=>{
-                element.style.cursor='pointer';
-                element.addEventListener('click', () => view.setScreen('reviewDetailScreen', element.getAttribute('value')));
-            });
-        }
+        // for (let i = page*5; i<(page+1)*5;i++){
+        //     current_key.push(key_array[i]);
+        // }
+        console.log(current_key);
         
-    });
+        //Add view for doc
+        document.getElementById('featured-post').innerHTML = component.blogEntries(data_map,current_key);
+        
+
+        //Set redirect button
+        document.querySelectorAll('.reviewScreen, .review-show').forEach(element=>{
+            element.style.cursor='pointer';
+            element.addEventListener('click', () => view.setScreen('reviewDetailScreen', element.getAttribute('value')));
+        });
 }
 
 controller.showReviewPage = async () =>{
-    controller.showCurrentReviewPage(0);
-    document.querySelectorAll('.page-item').forEach(item =>{
-        item.addEventListener('click',()=>{
-            document.querySelectorAll('.page-item').forEach (childitem =>{
-                childitem.setAttribute('class','page-item');
-            })
-            item.setAttribute('class','page-item active');
-            controller.showCurrentReviewPage(item.getAttribute('value')-1);
+    let review_query = await controller.getCurrentReviewQuery();
+
+    controller.showDefaultReviewPage();
+
+    onSnapshot(review_query,(qr)=>{
+
+        //Define Map variable to store <key,value>
+        let data_map = new Map();
+
+        //Define Array variable to store <key>
+        let key_array = new Array();
+
+        //Set mapping and push key
+        qr.forEach(doc =>{
+            data_map.set(doc.id,doc.data());
+            key_array.push(doc.id);
         });
-    });
+
+        let page = (key_array.length/5)+1;
+
+        document.getElementById('review-page').innerHTML=component.reviewPage(page);
+
+        document.querySelectorAll('.page-item').forEach(item =>{
+            item.addEventListener('click',async ()=>{
+                document.querySelectorAll('.page-item').forEach (childitem =>{
+                    childitem.setAttribute('class','page-item');
+                })
+
+                item.setAttribute('class','page-item active');
+                controller.showCurrentReviewPage(data_map,key_array,item.getAttribute('value')-1)
+            });
+        });
+   })  
 }
+
+
+controller.showDefaultReviewPage = async () => {
+    let review_doc = await controller.getCurrentReviewDocs();
+    //Define Map variable to store <key,value>
+    let data = new Map();
+
+    //Define Array variable to store <key>
+    let key = new Array();
+    console.log(review_doc);
+    //Set mapping and push key
+    review_doc.forEach(doc =>{
+        data.set(doc.id,doc.data());
+        key.push(doc.id);
+    });
+    controller.showCurrentReviewPage(data,key,0);
+} 
+
+
 
 // Get review doc from firestore
 controller.getCurrentReviewDetailDoc = async (review_id) => {

@@ -226,8 +226,8 @@ component.sideWidget = () => {
 
 component.blogEntries = (data_map, key_array) => {
     let str=``;
-    for (let i=0; i<5; i++)
-    {
+    for (let i=0; i<key_array.length; i++)
+        {
         str+= `<div class="card mb-4 flex-row align-items-center">
         <a class="reviewScreen" value="${key_array[i]}"><img src="http://books.google.com/books/content?id=bVFPAAAAYAAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"></a>
         <div class="card-body">
@@ -254,7 +254,9 @@ component.homeContent = () => {
 
                 <div id="featured-post">                    
                 </div>
-                ${component.reviewPage()}
+
+                <div id="review-page">
+                </div>
               
             </div>
             ${component.sideWidget()}
@@ -262,22 +264,33 @@ component.homeContent = () => {
     </div>`
 };
 
-component.reviewPage = () => {
-    return `
-    <!-- Pagination-->
+component.reviewPage = (page_number) => {
+    let str = `
+        <!-- Pagination-->
         <nav aria-label="Pagination">
             <hr class="my-0" />
             <ul class="pagination justify-content-center my-4">
                 <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Newer</a></li>
-                <li class="page-item active" value=1><a class="page-link" href="#!">1</a></li>
-                <li class="page-item" value=2><a class="page-link" href="#!">2</a></li>
-                <li class="page-item" value=3><a class="page-link" href="#!">3</a></li>
-                <li class="page-item disabled"><a class="page-link" href="#!">...</a></li>
-                <li class="page-item" value=15><a class="page-link" href="#!">15</a></li>
+    `;
+        
+    for (let i=1;i<page_number;i++){
+        str+=`
+                <li class="page-item" value=${i}><a class="page-link" href="#!">${i}</a></li>
+            `
+    }
+
+    str +=`
                 <li class="page-item"><a class="page-link" href="#!">Older</a></li>
             </ul>
         </nav>
     `
+    return str;
+     
+    // <li class="page-item active" value=1><a class="page-link" href="#!">1</a></li>
+    // <li class="page-item" value=2><a class="page-link" href="#!">2</a></li>
+    // <li class="page-item" value=3><a class="page-link" href="#!">3</a></li>
+    // <li class="page-item disabled"><a class="page-link" href="#!">...</a></li>
+    // <li class="page-item" value=15><a class="page-link" href="#!">15</a></li>  
 }
 
 

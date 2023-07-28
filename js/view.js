@@ -16,13 +16,12 @@ view.setScreen = (screenName, review_id) => {
     switch (screenName){
         case 'homeScreen':
             view.currentScreen='homeScreen';
-
             //Set up HTML
             document.getElementById('app').innerHTML = component.navbar() + component.header() + component.homeContent() + component.footer();
             controller.Authentication();
 
             //Show review
-            controller.showReview();
+            controller.showReviewPage();
             //Set redirect button
             view.setScreenButton('navbar-brand','homeScreen');
             // document.getElementById('navbar-brand').style.cursor = 'pointer';
@@ -88,10 +87,10 @@ view.setScreen = (screenName, review_id) => {
             view.setScreenButton('navbar-brand','homeScreen');
             document.getElementById('login-btn').style.cursor = 'pointer';
             document.getElementById('login-btn').addEventListener('click', async () => {
-                await view.setScreen('homeScreen');
+                view.setScreen('homeScreen');
                 document.getElementById('login-modal').click();
-        
-        });
+            });
+            
         break;
 
         case 'reviewCreatorScreen':
