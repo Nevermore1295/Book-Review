@@ -6,52 +6,54 @@ import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, updateProfile 
 import { getFirestore, collection, query, where, and, or, doc, addDoc, setDoc, getDocs, onSnapshot, orderBy, Timestamp} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 
-
 export let view = {};
+
+//Get current view
+view.currentScreen = '';
 
 //Set view
 view.setScreen = (screenName, review_id) => {
     switch (screenName){
         case 'homeScreen':
+            view.currentScreen='homeScreen';
+
             //Set up HTML
             document.getElementById('app').innerHTML = component.navbar() + component.header() + component.homeContent() + component.footer();
-            controller.authChecktotal();
+            controller.Authentication();
 
             //Show review
-            controller.showReview();
+            controller.showReviewPage();
     
             //Set redirect button
-            document.getElementById('navbar-brand').style.cursor = 'pointer';
-            document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
-            document.getElementById('review-btn').style.cursor = 'pointer';
-            document.getElementById('review-btn').addEventListener('click', () => view.setScreen('reviewCreatorScreen'));
-            document.getElementById('search-btn').style.cursor = 'pointer';
-            document.getElementById('search-btn').addEventListener('click', () => view.setScreen('searchScreen'));
+            view.setScreenButton('navbar-brand','homeScreen');
+            // document.getElementById('navbar-brand').style.cursor = 'pointer';
+            // document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
+
+            view.setScreenButton('review-btn','reviewCreatorScreen');
+            // document.getElementById('review-btn').style.cursor = 'pointer';
+            // document.getElementById('review-btn').addEventListener('click', () => view.setScreen('reviewCreatorScreen'));
+
+            view.setScreenButton('search-btn','searchScreen');
+            // document.getElementById('search-btn').style.cursor = 'pointer';
+            // document.getElementById('search-btn').addEventListener('click', () => view.setScreen('searchScreen'));
             break;
 
-
         case 'reviewDetailScreen':
+            view.currentScreen='reviewDetailScreen';
+
              //Set up HTML
             document.getElementById('app').innerHTML = component.navbar() + component.reviewContent() + component.footer();
-            controller.authChecktotal();
+            controller.Authentication();
             
             controller.showCurrentReviewDetail(review_id).then(()=>{
                 //Load realtime-update comment
-                controller.authCheckcommment();
-                controller.showComment(review_id);
+                controller.showSubmitComment();
+                controller.showParentComment(review_id);
 
                 document.getElementById('comment').addEventListener('submit', (cf) =>{
                     cf.preventDefault();
-    
                     //Add data object to doc
-                    controller.addComment(review_id).then(() => {
-                        // Reset form
-                        document.getElementById('comment').reset();
-                        console.log(`User ${auth.currentUser.displayName} successfully comment`); 
-                    }).catch(err => {
-                        // Catch error
-                        console.log(err.message);
-                    })                                
+                    controller.addComment(review_id);                             
                 })
             });
 
@@ -64,17 +66,17 @@ view.setScreen = (screenName, review_id) => {
         
 
         case 'registerScreen':
+            view.currentScreen='registerScreen';
+
             //Set up HTML
             document.getElementById('app').innerHTML = component.blankNavbar() + component.registerContent() + component.footer();
 
-            const registerForm = document.getElementById('register');
-            registerForm.addEventListener('submit', (e) => {
+            document.getElementById('register').addEventListener('submit', (e) => {
                 e.preventDefault();
 
                 //Add data object to doc
                 controller.register().then(() => {
                     // Reset form
-                    registerForm.reset();
                     view.setScreen('homeScreen');
                 }).catch(err => {
                     // Catch error
@@ -82,14 +84,18 @@ view.setScreen = (screenName, review_id) => {
                 });
                 //Register user
 
-            })
-            document.getElementById('navbar-brand').style.cursor = 'pointer';
-            document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
+            });
+
+            view.setScreenButton('navbar-brand','homeScreen');
+            // document.getElementById('navbar-brand').style.cursor = 'pointer';
+            // document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
         break;
 
         case 'reviewCreatorScreen':
+            view.currentScreen='reviewCreatorScreen';
             //Set up HTML 
             document.getElementById('app').innerHTML = component.navbar() + component.bookSearch() + component.footer();
+            controller.Authentication();
 
             //Book search bar
             document.getElementById('bookSearchbar').addEventListener('submit', async (j) =>{
@@ -118,14 +124,12 @@ view.setScreen = (screenName, review_id) => {
                 });
             });
 
-
-
-
             //Set redirect button
             view.setScreenButton('navbar-brand','homeScreen');
             break;
 
         case 'searchScreen':
+            view.currentScreen='searchScreen';
              //Set redirect button
             document.getElementById('app').innerHTML = component.navbar() + component.reviewQuery() + component.footer();
             document.getElementById('navbar-brand').style.cursor = 'pointer';
@@ -146,7 +150,7 @@ view.setScreenButton = (button_id,screen_name) => {
 }
 
 
-view.setScreen('reviewCreatorScreen');
+view.setScreen('homeScreen');
 
 
 

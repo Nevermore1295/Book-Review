@@ -1,66 +1,127 @@
 
 export let component = {};
 
-component.navbarUsername = () => {
-    return ` 
+component.Authentication = (isUserExist) =>{
+    if (isUserExist===true){
+        return ` 
+            <div class="d-flex align-content-center me-1">
+                <div class="dropdown">
+                    <i class="navbar-nav ms-auto fa-solid fa-user" type="button" data-bs-toggle="dropdown" style="font-size:25px" >
+                    </i>
+                    <ul class="dropdown-menu account-dropdown">
+                        <li><a class="dropdown-item" href="#">Action</a></li>
+                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li><a class="dropdown-item" id="log-out">Log Out</a></li>
+                    </ul>
+                </div>
+            </div>
+        `
+    } else {
+        return `
         <div class="d-flex align-content-center me-1">
             <div class="dropdown">
-                <i class="navbar-nav ms-auto fa-solid fa-user" type="button" data-bs-toggle="dropdown" style="font-size:25px" >
-                </i>
-                <ul class="dropdown-menu account-dropdown">
-                    <li><a class="dropdown-item" href="#">Action</a></li>
-                    <li><a class="dropdown-item" href="#">Another action</a></li>
-                    <li><a class="dropdown-item" id="log-out">Log Out</a></li>
-                </ul>
-            </div>
-        </div>
-    `
-}
-
-component.navbarLoginForm = () => {
-    return `
-    <div class="d-flex align-content-center me-1">
-        <div class="dropdown">
-        <!-- Button trigger modal -->
-        <i type="button" class="navbar-nav ms-auto fa-solid fa-user" data-bs-toggle="modal" data-bs-target="#LoginModal" style="font-size:25px"></i>
-        <!-- Modal -->
-        <div class="modal fade" id="LoginModal" tabindex="-1" aria-labelledby="LoginModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content container">
-                    <div class="modal-header">
-                        <h4>Login</h4>
-                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body container">
-                        <form id="login">
-                            <div class="form-outline mb-4">
-                                <label class="form-label" for="form2Example1">Email address</label>
-                                <input type="email" id="email-login" class="form-control validate text-4b88a2" />
+                <!-- Button trigger modal -->
+                <i type="button" class="navbar-nav ms-auto fa-solid fa-user" data-bs-toggle="modal" data-bs-target="#LoginModal" style="font-size:25px"></i>
+                <!-- Modal -->
+                <div class="modal fade" id="LoginModal" tabindex="-1" aria-labelledby="LoginModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content container">
+                            <div class="modal-header">
+                                <h4>Login</h4>
+                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
                             </div>
-                            <div class="form-outline mb-4">
-                                <label class="form-label" for="form2Example2">Password</label>
-                                <input type="password" id="password-login" class="form-control validate text-4b88a2" />
-                            </div>      
-                            <div class="row mb-4 d-flex justify-content-between" >
-                                <button id="signin-button" class="btn btn-primary btn-sm btn-block col-2 mb-4 close" data-bs-dismiss="modal" aria-label="Close">Sign in</button>
-                                <div class="col-4">   
-                                    <a href="#!">Forgot password?</a>
-                                </div>
+                            <div class="modal-body container">
+                                <form id="login">
+                                    <div class="form-outline mb-4">
+                                        <label class="form-label" for="form2Example1">Email address</label>
+                                        <input type="email" id="email-login" class="form-control validate text-4b88a2" />
+                                    </div>
+                                    <div class="form-outline mb-4">
+                                        <label class="form-label" for="form2Example2">Password</label>
+                                        <input type="password" id="password-login" class="form-control validate text-4b88a2" />
+                                    </div>      
+                                    <div class="row mb-4 d-flex justify-content-between" >
+                                        <button id="signin-button" class="btn btn-primary btn-sm btn-block col-2 mb-4 close" data-bs-dismiss="modal" aria-label="Close">Sign in</button>
+                                        <div class="col-4">   
+                                            <a href="#!">Forgot password?</a>
+                                        </div>
+                                    </div>
+                                    <div class="text-center">
+                                        <p>Not a member? <a class="text-primary close" type="button" data-bs-dismiss="modal" aria-label="Close" id="register">Register</a></p>
+                                    </div>
+                                </form>
                             </div>
-                            <div class="text-center">
-                                <p>Not a member? <a class="text-primary close" type="button" data-bs-dismiss="modal" aria-label="Close" id="register">Register</a></p>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        </div>
-    </div>
-    `
+        `
+    }
 }
+
+// component.navbarUsername = () => {
+//     return ` 
+//         <div class="d-flex align-content-center me-1">
+//             <div class="dropdown">
+//                 <i class="navbar-nav ms-auto fa-solid fa-user" type="button" data-bs-toggle="dropdown" style="font-size:25px" >
+//                 </i>
+//                 <ul class="dropdown-menu account-dropdown">
+//                     <li><a class="dropdown-item" href="#">Action</a></li>
+//                     <li><a class="dropdown-item" href="#">Another action</a></li>
+//                     <li><a class="dropdown-item" id="log-out">Log Out</a></li>
+//                 </ul>
+//             </div>
+//         </div>
+//     `
+// }
+
+// component.navbarLoginForm = () => {
+//     return `
+//     <div class="d-flex align-content-center me-1">
+//         <div class="dropdown">
+//         <!-- Button trigger modal -->
+//         <i type="button" class="navbar-nav ms-auto fa-solid fa-user" data-bs-toggle="modal" data-bs-target="#LoginModal" style="font-size:25px"></i>
+//         <!-- Modal -->
+//         <div class="modal fade" id="LoginModal" tabindex="-1" aria-labelledby="LoginModalLabel" aria-hidden="true">
+//             <div class="modal-dialog modal-dialog-centered">
+//                 <div class="modal-content container">
+//                     <div class="modal-header">
+//                         <h4>Login</h4>
+//                         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+//                             <span aria-hidden="true">&times;</span>
+//                         </button>
+//                     </div>
+//                     <div class="modal-body container">
+//                         <form id="login">
+//                             <div class="form-outline mb-4">
+//                                 <label class="form-label" for="form2Example1">Email address</label>
+//                                 <input type="email" id="email-login" class="form-control validate text-4b88a2" />
+//                             </div>
+//                             <div class="form-outline mb-4">
+//                                 <label class="form-label" for="form2Example2">Password</label>
+//                                 <input type="password" id="password-login" class="form-control validate text-4b88a2" />
+//                             </div>      
+//                             <div class="row mb-4 d-flex justify-content-between" >
+//                                 <button id="signin-button" class="btn btn-primary btn-sm btn-block col-2 mb-4 close" data-bs-dismiss="modal" aria-label="Close">Sign in</button>
+//                                 <div class="col-4">   
+//                                     <a href="#!">Forgot password?</a>
+//                                 </div>
+//                             </div>
+//                             <div class="text-center">
+//                                 <p>Not a member? <a class="text-primary close" type="button" data-bs-dismiss="modal" aria-label="Close" id="register">Register</a></p>
+//                             </div>
+//                         </form>
+//                     </div>
+//                 </div>
+//             </div>
+//         </div>
+//         </div>
+//     </div>
+//     `
+// }
 
 component.navbar = () => {
     return `
@@ -223,66 +284,81 @@ component.sideWidget = () =>{
 // }
 
 component.blogEntries = (data_map, key_array) => {
-    return `
-    <!-- Featured blog post-->
-    <div class="card mb-4">
-        <a class="reviewScreen" value="${key_array[0]}"><img class="card-img-top" src="https://dummyimage.com/850x350/dee2e6/6c757d.jpg" alt="..." /></a>
-        <div class="card-body">
-            <div class="small text-muted">${data_map.get(key_array[0]).review_created_date.toDate()}</div>
-            <div class="small text-muted">${data_map.get(key_array[0]).review_creator_id}</div>
-            <h2 class="card-title">${data_map.get(key_array[0]).review_title}</h2>
-            <p class="card-text overflow-hidden">${data_map.get(key_array[0]).review_content}</p>
-            <a class="btn btn-primary review-show" value="${key_array[0]}">Read more →</a>
-        </div>
-    </div> 
-    <!-- Nested row for non-featured blog posts-->
-    <div class="row">
-        <div class="col-lg-6">
-            <!-- Blog post-->
-            <div class="card mb-4">
-                <a class="reviewScreen" value="${key_array[1]}"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-                <div class="card-body">
-                    <div class="small text-muted">${(data_map.get(key_array[1]).review_created_date.toDate())}</div>
-                    <h2 class="card-title h4">${data_map.get(key_array[1]).review_title}</h2>
-                    <p class="card-text overflow-hidden" style="height: 100px">${data_map.get(key_array[1]).review_content}</p>
-                    <a class="btn btn-primary review-show" value="${key_array[1]}">Read more →</a>
-                </div>
+    if (key_array.length==1){
+        return `
+        <!-- Featured blog post-->
+        <div class="card mb-4">
+            <a class="reviewScreen" value="${key_array[0]}"><img class="card-img-top" src="https://dummyimage.com/850x350/dee2e6/6c757d.jpg" alt="..." /></a>
+            <div class="card-body">
+                <div class="small text-muted">${data_map.get(key_array[0]).review_created_date.toDate()}</div>
+                <div class="small text-muted">${data_map.get(key_array[0]).review_creator_id}</div>
+                <h2 class="card-title">${data_map.get(key_array[0]).review_title}</h2>
+                <p class="card-text overflow-hidden">${data_map.get(key_array[0]).review_content}</p>
+                <a class="btn btn-primary review-show" value="${key_array[0]}">Read more →</a>
             </div>
-            <!-- Blog post-->
-            <div class="card mb-4">
-                <a class="reviewScreen" value="${key_array[2]}"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-                <div class="card-body">
-                    <div class="small text-muted">${(data_map.get(key_array[2]).review_created_date.toDate())}</div>
-                    <h2 class="card-title h4">${data_map.get(key_array[2]).review_title}</h2>
-                    <p class="card-text overflow-hidden" style="height: 100px">${data_map.get(key_array[2]).review_content}</p>
-                    <a class="btn btn-primary review-show" value="${key_array[2]}">Read more →</a>
-                </div>
+        </div>` 
+    } else {
+        return `
+        <!-- Featured blog post-->
+        <div class="card mb-4">
+            <a class="reviewScreen" value="${key_array[0]}"><img class="card-img-top" src="https://dummyimage.com/850x350/dee2e6/6c757d.jpg" alt="..." /></a>
+            <div class="card-body">
+                <div class="small text-muted">${data_map.get(key_array[0]).review_created_date.toDate()}</div>
+                <div class="small text-muted">${data_map.get(key_array[0]).review_creator_id}</div>
+                <h2 class="card-title">${data_map.get(key_array[0]).review_title}</h2>
+                <p class="card-text overflow-hidden">${data_map.get(key_array[0]).review_content}</p>
+                <a class="btn btn-primary review-show" value="${key_array[0]}">Read more →</a>
             </div>
         </div>
-        <div class="col-lg-6">
-            <!-- Blog post-->
-            <div class="card mb-4">
-                <a class="reviewScreen" value="${key_array[3]}"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-                <div class="card-body">
-                    <div class="small text-muted">${(data_map.get(key_array[3]).review_created_date.toDate())}</div>
-                    <h2 class="card-title h4">${data_map.get(key_array[3]).review_title}</h2>
-                    <p class="card-text overflow-hidden" style="height: 100px">${data_map.get(key_array[3]).review_content}</p>
-                    <a class="btn btn-primary review-show" value="${key_array[3]}">Read more →</a>
+        <!-- Nested row for non-featured blog posts-->
+        <div class="row">
+            <div class="col-lg-6">
+                <!-- Blog post-->
+                <div class="card mb-4">
+                    <a class="reviewScreen" value="${key_array[1]}"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
+                    <div class="card-body">
+                        <div class="small text-muted">${(data_map.get(key_array[1]).review_created_date.toDate())}</div>
+                        <h2 class="card-title h4">${data_map.get(key_array[1]).review_title}</h2>
+                        <p class="card-text overflow-hidden" style="height: 100px">${data_map.get(key_array[1]).review_content}</p>
+                        <a class="btn btn-primary review-show" value="${key_array[1]}">Read more →</a>
+                    </div>
+                </div>
+                <!-- Blog post-->
+                <div class="card mb-4">
+                    <a class="reviewScreen" value="${key_array[2]}"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
+                    <div class="card-body">
+                        <div class="small text-muted">${(data_map.get(key_array[2]).review_created_date.toDate())}</div>
+                        <h2 class="card-title h4">${data_map.get(key_array[2]).review_title}</h2>
+                        <p class="card-text overflow-hidden" style="height: 100px">${data_map.get(key_array[2]).review_content}</p>
+                        <a class="btn btn-primary review-show" value="${key_array[2]}">Read more →</a>
+                    </div>
                 </div>
             </div>
-            <!-- Blog post-->
-            <div class="card mb-4">
-                <a class="reviewScreen" value="${key_array[4]}"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-                <div class="card-body">
-                    <div class="small text-muted">${(data_map.get(key_array[4]).review_created_date.toDate())}</div>
-                    <h2 class="card-title h4">${data_map.get(key_array[4]).review_title}</h2>
-                    <p class="card-text overflow-hidden" style="height: 100px">${data_map.get(key_array[4]).review_content}</p>
-                    <a class="btn btn-primary review-show" value="${key_array[4]}">Read more →</a>
+            <div class="col-lg-6">
+                <!-- Blog post-->
+                <div class="card mb-4">
+                    <a class="reviewScreen" value="${key_array[3]}"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
+                    <div class="card-body">
+                        <div class="small text-muted">${(data_map.get(key_array[3]).review_created_date.toDate())}</div>
+                        <h2 class="card-title h4">${data_map.get(key_array[3]).review_title}</h2>
+                        <p class="card-text overflow-hidden" style="height: 100px">${data_map.get(key_array[3]).review_content}</p>
+                        <a class="btn btn-primary review-show" value="${key_array[3]}">Read more →</a>
+                    </div>
+                </div>
+                <!-- Blog post-->
+                <div class="card mb-4">
+                    <a class="reviewScreen" value="${key_array[4]}"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
+                    <div class="card-body">
+                        <div class="small text-muted">${(data_map.get(key_array[4]).review_created_date.toDate())}</div>
+                        <h2 class="card-title h4">${data_map.get(key_array[4]).review_title}</h2>
+                        <p class="card-text overflow-hidden" style="height: 100px">${data_map.get(key_array[4]).review_content}</p>
+                        <a class="btn btn-primary review-show" value="${key_array[4]}">Read more →</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    `
+        `
+    }
 }
 
 
@@ -294,30 +370,33 @@ component.homeContent = () => {
             <!-- Blog entries-->
             <div class="col-lg-8" id="blog-entries">
 
-                <div id="featured-post">
-                    
+                <div id="featured-post">                    
                 </div>
-
-                    
-                <!-- Pagination-->
-                <nav aria-label="Pagination">
-                    <hr class="my-0" />
-                    <ul class="pagination justify-content-center my-4">
-                        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Newer</a></li>
-                        <li class="page-item active" aria-current="page"><a class="page-link" href="#!">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#!">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#!">3</a></li>
-                        <li class="page-item disabled"><a class="page-link" href="#!">...</a></li>
-                        <li class="page-item"><a class="page-link" href="#!">15</a></li>
-                        <li class="page-item"><a class="page-link" href="#!">Older</a></li>
-                    </ul>
-                </nav>
+                ${component.reviewPage()}
+              
             </div>
             ${component.sideWidget()}
         </div>
-    </div>
-`
+    </div>`
 };
+
+component.reviewPage = () => {
+    return `
+    <!-- Pagination-->
+        <nav aria-label="Pagination">
+            <hr class="my-0" />
+            <ul class="pagination justify-content-center my-4">
+                <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Newer</a></li>
+                <li class="page-item active" value=1><a class="page-link" href="#!">1</a></li>
+                <li class="page-item" value=2><a class="page-link" href="#!">2</a></li>
+                <li class="page-item" value=3><a class="page-link" href="#!">3</a></li>
+                <li class="page-item disabled"><a class="page-link" href="#!">...</a></li>
+                <li class="page-item" value=15><a class="page-link" href="#!">15</a></li>
+                <li class="page-item"><a class="page-link" href="#!">Older</a></li>
+            </ul>
+        </nav>
+    `
+}
 
 
 //**********************Review Detail Screen***********************
@@ -594,8 +673,7 @@ component.bookSearch = () => {
 component.imageCheck = (index) => {
     if ( index === undefined) {
         return "../assets/Question_mark_(black).png";
-    }else
-    {
+    } else {
         return index.thumbnail;
     };
 }

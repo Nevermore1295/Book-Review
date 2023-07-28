@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut ,updateProfile } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-import { getFirestore, collection, query, where, and, or, doc, addDoc, setDoc, getDocs, getDoc, orderBy, onSnapshot, Timestamp, limit} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+import { getFirestore, collection, query, where, and, or, doc, addDoc, setDoc, getDocs, getDoc, orderBy, onSnapshot, Timestamp, limit, startAt, endAt} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 import { auth,db } from "./index.js";
 import { view } from "./view.js";
@@ -9,59 +9,60 @@ import { book } from "./bookfinder.js";
 
 export const controller = {};
 
-controller.authChecktotal = () => {
+//Auth check 
+controller.Authentication = async () => {
     auth.onAuthStateChanged(()=>{
         if(auth.currentUser===null){
-            console.log(document.getElementById('user-auth'));
-            document.getElementById('user-auth').innerHTML=component.navbarLoginForm();
-            const loginForm = document.getElementById('login');
-            loginForm.addEventListener('submit', (e) => {
+            document.getElementById('user-auth').innerHTML=component.Authentication(false);
+            document.getElementById('review-btn-li').style.display = 'none';
+            document.getElementById('login').addEventListener('submit', (e) => {
                 e.preventDefault();
-                // Get user info
-                const email = document.getElementById('email-login').value;
-                const password = document.getElementById('password-login').value;
-                const initialData = {
-                    email: email.trim(),
-                    password: password.trim(),
-                }
-                
-                controller.login(initialData);
-                loginForm.reset();  
+                controller.login();
+                document.getElementById('login').reset(); 
             });   
-            document.getElementById('register').addEventListener('click', () => view.setScreen('registerScreen'));
-            document.getElementById('review-btn-li').style.display = "none";
+
+            view.setScreenButton('register','registerScreen');
+            // document.getElementById('register').addEventListener('click', () => view.setScreen('registerScreen'));
+            // document.getElementById('review-btn-li').style.display = "none";
+        
         } else {
-            console.log(document.getElementById('user-auth'));
-            document.getElementById('user-auth').innerHTML=component.navbarUsername();
+            document.getElementById('user-auth').innerHTML=component.Authentication(true);
             document.getElementById('review-btn-li').style.display = 'block';
-            
-            const logOutButton = document.getElementById('log-out');
-            logOutButton.addEventListener('click',()=>{
+            document.getElementById('log-out').addEventListener('click',()=>{
                 controller.logout();
             });
         }
     })
 }
 
-controller.authCheckcommment = () =>{
-    auth.onAuthStateChanged(() => {
-        if (auth.currentUser!==null) {
-        document.getElementById("comment").innerHTML = `<form class="mb-4 d-flex" id="comment" >
-        <input class="form-control" id="comment-content" rows="3" placeholder="Join the discussion and leave a comment!">
-        </input>
-        <button class="btn btn-block btn-lg btn-primary">
-            Submit
-        </button>
-    </form>`;
-    }
-    else {
-        document.getElementById("comment").innerHTML = ``;
-    }
+//Auth check for comment
+controller.showSubmitComment = () => {
+    auth.onAuthStateChanged(()=>{
+        if (auth.currentUser!==null && view.currentScreen==='reviewDetailScreen') {
+            console.log(document.getElementById("comment"));
+            document.getElementById("comment").innerHTML = `
+            <form class="mb-4 d-flex" id="comment" >
+                <input class="form-control" id="comment-content" rows="3" placeholder="Join the discussion and leave a comment!">
+                </input>
+                <button class="btn btn-block btn-lg btn-primary">
+                    Submit
+                </button>
+            </form>`;
+        } else if (auth.currentUser===null && view.currentScreen==='reviewDetailScreen'){
+            console.log(document.getElementById("comment"));
+            document.getElementById("comment").innerHTML = ``;
+        }
     });
 }
 
-
-controller.login = async (initialData) =>{
+//Login
+controller.login = async () =>{
+    //Get user information and create a user data object
+    const initialData = {
+        email: document.getElementById('email-login').value.trim(),
+        password: document.getElementById('password-login').value.trim(),
+    }
+    
     await signInWithEmailAndPassword(auth, initialData.email, initialData.password).then(user => {
         console.log(`User ${user.user.displayName} successfully logged in`);
     }).catch(err => {
@@ -70,9 +71,9 @@ controller.login = async (initialData) =>{
     });
 }
 
+//Logout
 controller.logout = async () =>{
     await signOut(auth).then(() => {
-    view.setScreen('homeScreen');
     // Sign-out successful.
     }).catch((error) => {
     // An error happened.
@@ -80,6 +81,7 @@ controller.logout = async () =>{
     });
 }
 
+//Register
 controller.register = async () =>{
     //Get user infor and create data object 
     const initialData = {
@@ -125,75 +127,9 @@ controller.register = async () =>{
     }
 }
 
-//Thêm comment vào firestore
-controller.addComment = async (review_id) =>{
-    //Create data object     
-    const initialData = {
-        comment_creator_id: auth.currentUser.uid,
-        comment_created_date: Timestamp.now(),
-        comment_review_id: review_id,
-        comment_parent_id: null,
-        comment_content: document.getElementById('comment-content').value.trim(),
-    };
-
-    return await addDoc(collection(db, 'Comment'),initialData);
-}
-
-controller.getCurrentReviewDoc = async (review_id) => {
-
-    const docRef = doc(db, "Review", review_id);
-    const docSnap = await getDoc(docRef);
-    console.log(docSnap);
-
-    if (docSnap.exists()) {
-        return docSnap.data();
-    } else {
-    // docSnap.data() will be undefined in this case
-        console.log("No such document!");
-    }
-}
-
-
-//Lấy query của review từ firestore
-controller.getCurrentReviewQuery = async () => {
-    return await (query(collection(db,'Review'),orderBy('review_created_date'),limit(5)));
-}
-
-//Hiển thị review
-controller.showReview = async () => {
-    onSnapshot(await controller.getCurrentReviewQuery(),(qr)=>{
-
-        //Define Map variable to store <key,value>
-        let data = new Map;
-
-        //Define Array variable to store <key>
-        let key = new Array;
-
-        //Set mapping and push key
-        qr.forEach(doc =>{
-            data.set(doc.id,doc.data());
-            key.push(doc.id);
-        })
-
-        //Add view for doc
-        document.getElementById('featured-post').innerHTML = component.blogEntries(data,key);
-
-        //Set redirect button
-        document.querySelectorAll('.reviewScreen, .review-show').forEach(element=>{
-            element.style.cursor='pointer';
-            element.addEventListener('click', () => view.setScreen('reviewDetailScreen', element.getAttribute('value')));
-        });
-        
-        },(err)=>{
-            console.log(err);
-            console.log(err.message);
-        }
-    );
-}
 
 //Add review to firestore
-controller.addReview = async () =>{
-    
+controller.addReview = async () =>{   
     //Create data object
     const initialData = {
         review_created_date: Timestamp.now(),
@@ -217,16 +153,96 @@ controller.addReview = async () =>{
                     <p><a>Go to homepage</a> or <a>Make another review</a></p>
                 </div>
             </div>
-
         `
         //Reset form
-
         }).catch(err => {
             // Catch error
             console.log(err.message)
         })
     }
 }
+
+//Get review query from firestore
+controller.getCurrentReviewQuery = async (page) => {
+    // ,startAt(page*5),endAt((page+1)*5)
+    return await (query(collection(db,'Review'),orderBy('review_created_date','desc')));
+}
+
+//Show review at Homepage
+controller.showCurrentReviewPage = async (page) => {
+    onSnapshot(await controller.getCurrentReviewQuery(),(qr)=>{
+        console.log(qr);
+
+        if (qr == null){
+
+        } else {
+            //Define Map variable to store <key,value>
+            let data_map = new Map;
+
+            //Define Array variable to store <key>
+            let key = new Array;
+
+            //Set mapping and push key
+            qr.forEach(doc =>{
+                data_map.set(doc.id,doc.data());
+                key.push(doc.id);
+            });
+
+            let key_array = new Array;
+
+            for (let i = page*5; i<(page+1)*5;i++){
+                key_array.push(key[i]);
+            }
+
+            console.log(key_array); 
+            
+            //Add view for doc
+            document.getElementById('featured-post').innerHTML = component.blogEntries(data_map,key_array);
+
+            //Set redirect button
+            document.querySelectorAll('.reviewScreen, .review-show').forEach(element=>{
+                element.style.cursor='pointer';
+                element.addEventListener('click', () => view.setScreen('reviewDetailScreen', element.getAttribute('value')));
+            });
+        }
+        
+    });
+}
+
+controller.showReviewPage = async () =>{
+    controller.showCurrentReviewPage(0);
+    document.querySelectorAll('.page-item').forEach(item =>{
+        item.addEventListener('click',()=>{
+            document.querySelectorAll('.page-item').forEach (childitem =>{
+                childitem.setAttribute('class','page-item');
+            })
+            item.setAttribute('class','page-item active');
+            controller.showCurrentReviewPage(item.getAttribute('value')-1);
+        });
+    });
+}
+
+// Get review doc from firestore
+controller.getCurrentReviewDetailDoc = async (review_id) => {
+
+    const docRef = doc(db, "Review", review_id);
+    const docSnap = await getDoc(docRef);
+    console.log(docSnap);
+
+    if (docSnap.exists()) {
+        return docSnap.data();
+    } else {
+    // docSnap.data() will be undefined in this case
+        console.log("No such document!");
+    }
+}
+
+//Show review detail information at current review page
+controller.showCurrentReviewDetail = async (review_id) =>{
+    document.getElementById('reviewInfo').innerHTML=component.reviewInfo(await controller.getCurrentReviewDetailDoc(review_id));
+    document.getElementById('commentSection').innerHTML=component.commentSection(await controller.getCurrentReviewDetailDoc(review_id));
+}
+
 
 // controller.getComment = async (review_id) =>{
 //     onSnapshot(await controller.getCurrentCommentQuery(review_id),(qr)=>{
@@ -240,20 +256,36 @@ controller.addReview = async () =>{
 // }
 
 
-controller.showCurrentReviewDetail = async (review_id) =>{
-    console.log(await controller.getCurrentReviewDoc(review_id));
-    document.getElementById('reviewInfo').innerHTML=component.reviewInfo(await controller.getCurrentReviewDoc(review_id));
-    document.getElementById('commentSection').innerHTML=component.commentSection(await controller.getCurrentReviewDoc(review_id));
+//Add comment to firestore
+controller.addComment = async (review_id) =>{
+
+    //Get comment information and create a comment data object  
+    const initialData = {
+        comment_creator_id: auth.currentUser.uid,
+        comment_created_date: Timestamp.now(),
+        comment_review_id: review_id,
+        comment_parent_id: null,
+        comment_content: document.getElementById('comment-content').value.trim(),
+    };
+
+    //Add comment data object to firestore and return a Promise
+    await addDoc(collection(db, 'Comment'),initialData).then(() => {
+        // Reset form
+        document.getElementById('comment').reset();
+        console.log(`User ${auth.currentUser.displayName} successfully comment`); 
+    }).catch(err => {
+        // Catch error
+        console.log(err.message);
+    });
 }
 
-//Lấy query của parent comment từ firestore
+//Get parent comment query from firestore
 controller.getCurrentCommentQuery = async (comment_review_id) => {
     return await (query(collection(db,'Comment'),and(where('comment_review_id','==',comment_review_id),where('comment_parent_id','==',null)),limit(6)));
 }
 
-
-//Show comment
-controller.showComment = async (review_id) =>{
+//Show comment information
+controller.showParentComment = async (review_id) =>{
     onSnapshot(await controller.getCurrentCommentQuery(review_id),(qr)=>{
         let str='';
         qr.forEach(doc =>{
@@ -273,7 +305,6 @@ controller.getBookToReview = async () => {
 
 //Show book information
 controller.showBook = async () => {
-
     let bookResult = await controller.getBookToReview();
     document.getElementById('bookSearchList').innerHTML +=
     `<div class="card-body overflow-auto bg-white" style="max-height: 300px">

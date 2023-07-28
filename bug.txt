@@ -1,3 +1,3 @@
-- uid null không comment được
-
 - Sau khi register thì tự động đăng nhập, dẫn đến lỗi không xác định html để hiển thị cho phù hợp với auth 
+
+- Khi Đăng xuất ở homepage sẽ gặp lỗi do id 'comment' bị onAuthStateChanged gọi lại
