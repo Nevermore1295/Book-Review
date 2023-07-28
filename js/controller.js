@@ -15,6 +15,7 @@ controller.Authentication = async () => {
         if(auth.currentUser===null){
             document.getElementById('user-auth').innerHTML=component.Authentication(false);
             document.getElementById('review-btn-li').style.display = 'none';
+            document.getElementById('admin-btn-li').style.display = 'none';
             document.getElementById('login').addEventListener('submit', (e) => {
                 e.preventDefault();
                 controller.login();
@@ -28,11 +29,24 @@ controller.Authentication = async () => {
         } else {
             document.getElementById('user-auth').innerHTML=component.Authentication(true);
             document.getElementById('review-btn-li').style.display = 'block';
+            controller.isAdmin();
             document.getElementById('log-out').addEventListener('click',()=>{
                 controller.logout();
             });
         }
     })
+}
+
+controller.isAdmin = async () => {
+    // .data().user_authority
+    let docRef = await (getDoc(doc(db, "User", auth.currentUser.uid)));
+    console.log(docRef.data());
+    if (await docRef.data().user_authority==2){
+        document.getElementById('admin-btn-li').style.display = 'block';
+        document.getElementById('admin-btn-li').innerHTML=`<a id="admin-btn">Administration</a>`
+    } else {
+        document.getElementById('admin-btn-li').style.display = 'none';
+    }
 }
 
 //Auth check for comment
@@ -250,7 +264,6 @@ controller.showReviewPage = async () =>{
         });
    })  
 }
-
 
 controller.showDefaultReviewPage = async () => {
     let review_doc = await controller.getCurrentReviewDocs();

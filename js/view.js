@@ -24,16 +24,9 @@ view.setScreen = (screenName, review_id) => {
             controller.showReviewPage();
             //Set redirect button
             view.setScreenButton('navbar-brand','homeScreen');
-            // document.getElementById('navbar-brand').style.cursor = 'pointer';
-            // document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
-
             view.setScreenButton('review-btn','reviewCreatorScreen');
-            // document.getElementById('review-btn').style.cursor = 'pointer';
-            // document.getElementById('review-btn').addEventListener('click', () => view.setScreen('reviewCreatorScreen'));
-
             view.setScreenButton('search-btn','searchScreen');
-            // document.getElementById('search-btn').style.cursor = 'pointer';
-            // document.getElementById('search-btn').addEventListener('click', () => view.setScreen('searchScreen'));
+
             break;
 
         case 'reviewDetailScreen':
@@ -85,12 +78,8 @@ view.setScreen = (screenName, review_id) => {
             });
 
             view.setScreenButton('navbar-brand','homeScreen');
-            document.getElementById('login-btn').style.cursor = 'pointer';
-            document.getElementById('login-btn').addEventListener('click', async () => {
-                view.setScreen('homeScreen');
-                document.getElementById('login-modal').click();
-            });
-            
+            view.setScreenButton('login-btn','homeScreen', document.getElementById('login-modal').click());
+
         break;
 
         case 'reviewCreatorScreen':
@@ -136,9 +125,9 @@ view.setScreen = (screenName, review_id) => {
     }
 }
 
-view.setScreenButton = (button_id,screen_name) => {
+view.setScreenButton = (button_id, screen_name, screen_event) => {
     document.getElementById(button_id).style.cursor = 'pointer';
-    document.getElementById(button_id).addEventListener('click', () => view.setScreen(screen_name));
+    document.getElementById(button_id).addEventListener('click', () => view.setScreen(screen_name), screen_event);
 }
 
 

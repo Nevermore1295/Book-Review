@@ -95,6 +95,10 @@ component.navbar = () => {
                         <li class="dropdown" id="review-btn-li">
                             <a id="review-btn">Make a review</a>
                         </li>
+
+                        <li class="dropdown" id="admin-btn-li">
+                            
+                        </li>
                     </ul>
                     <a id="user-auth">
                     </a>
