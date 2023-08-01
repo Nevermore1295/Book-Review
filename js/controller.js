@@ -40,7 +40,6 @@ controller.Authentication = async () => {
 controller.isAdmin = async () => {
     // .data().user_authority
     let docRef = await (getDoc(doc(db, "User", auth.currentUser.uid)));
-    console.log(docRef.data());
     if (await docRef.data().user_authority==2){
         document.getElementById('admin-btn-li').style.display = 'block';
         document.getElementById('admin-btn-li').innerHTML=`<a id="admin-btn">Administration</a>`
@@ -53,12 +52,11 @@ controller.isAdmin = async () => {
 controller.showSubmitComment = () => {
     auth.onAuthStateChanged(()=>{
         if (auth.currentUser!==null && view.currentScreen==='reviewDetailScreen') {
-            console.log(document.getElementById("comment"));
-            document.getElementById("comment").innerHTML = `
+            document.getElementById("comment-input").innerHTML = `
             <form class="mb-4 d-flex" id="comment" >
                 <input class="form-control" id="comment-content" rows="3" placeholder="Join the discussion and leave a comment!">
                 </input>
-                <button class="btn btn-block btn-lg btn-primary">
+                <button class="btn btn-block btn-lg btn-primary" id="comment-btn">
                     Submit
                 </button>
             </form>`;
@@ -141,19 +139,7 @@ controller.register = async () =>{
     }
 }
 
-//Thêm comment vào firestore
-controller.addComment = async (review_id) =>{
-    //Create data object     
-    const initialData = {
-        comment_creator_id: auth.currentUser.uid,
-        comment_created_date: Timestamp.now(),
-        comment_review_id: review_id,
-        comment_parent_id: null,
-        comment_content: document.getElementById('comment-content').value.trim(),
-    };
 
-    return await addDoc(collection(db, 'Comment'),initialData);
-}
 
 //Add review to firestore
 controller.addReview = async () =>{   
@@ -272,7 +258,6 @@ controller.showDefaultReviewPage = async () => {
 
     //Define Array variable to store <key>
     let key = new Array();
-    console.log(review_doc);
     //Set mapping and push key
     review_doc.forEach(doc =>{
         data.set(doc.id,doc.data());
@@ -288,8 +273,6 @@ controller.getCurrentReviewDetailDoc = async (review_id) => {
 
     const docRef = doc(db, "Review", review_id);
     const docSnap = await getDoc(docRef);
-    console.log(docSnap);
-
     if (docSnap.exists()) {
         return docSnap.data();
     } else {
@@ -334,6 +317,8 @@ controller.addComment = async (review_id) =>{
         // Reset form
         document.getElementById('comment').reset();
         console.log(`User ${auth.currentUser.displayName} successfully comment`); 
+        document.getElementById('comment-content').disabled = false;
+        document.getElementById('comment-btn').disabled = false;      
     }).catch(err => {
         // Catch error
         console.log(err.message);
@@ -350,7 +335,6 @@ controller.showParentComment = async (review_id) =>{
     onSnapshot(await controller.getCurrentCommentQuery(review_id),(qr)=>{
         let str='';
         qr.forEach(doc =>{
-            console.log(doc.data());
             str+=component.displayedParentComment(doc);         
         });
         document.getElementById('comment-section').innerHTML=str;
