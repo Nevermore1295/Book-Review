@@ -25,7 +25,8 @@ controller.Authentication = async () => {
             view.setScreenButton('register','registerScreen');
             // document.getElementById('register').addEventListener('click', () => view.setScreen('registerScreen'));
             // document.getElementById('review-btn-li').style.display = "none";
-        
+            return true;
+
         } else {
             document.getElementById('user-auth').innerHTML=component.Authentication(true);
             document.getElementById('review-btn-li').style.display = 'block';
@@ -33,6 +34,7 @@ controller.Authentication = async () => {
             document.getElementById('log-out').addEventListener('click',()=>{
                 controller.logout();
             });
+            return false;
         }
     })
 }
@@ -49,20 +51,13 @@ controller.isAdmin = async () => {
 }
 
 //Auth check for comment
-controller.showSubmitComment = () => {
-    auth.onAuthStateChanged(()=>{
+controller.showCommentInput = async () => {
+    await auth.onAuthStateChanged(()=>{
         if (auth.currentUser!==null && view.currentScreen==='reviewDetailScreen') {
-            document.getElementById("comment-input").innerHTML = `
-            <form class="mb-4 d-flex" id="comment" >
-                <input class="form-control" id="comment-content" rows="3" placeholder="Join the discussion and leave a comment!">
-                </input>
-                <button class="btn btn-block btn-lg btn-primary" id="comment-btn">
-                    Submit
-                </button>
-            </form>`;
+            document.getElementById("comment-input").style.display='block'
         } else if (auth.currentUser===null && view.currentScreen==='reviewDetailScreen'){
-            console.log(document.getElementById("comment"));
-            document.getElementById("comment").innerHTML = ``;
+            console.log(document.getElementById("comment-input"));
+            document.getElementById("comment-input").style.display='none';
         }
     });
 }
@@ -186,33 +181,6 @@ controller.getCurrentReviewDocs = async () => {
     return await (getDocs(query(collection(db,'Review'),orderBy('review_created_date','desc'),limit(5))));
 }
 
-//Show review at Homepage
-controller.showCurrentReviewPage = async (data_map,key_array,page) => {
-
-        let current_key = new Array();
-
-        let i = page*5 ;
-        while (i<(page+1)*5 && key_array[i]!==undefined){
-            current_key.push(key_array[i]);
-            i++;
-        };
-
-        // for (let i = page*5; i<(page+1)*5;i++){
-        //     current_key.push(key_array[i]);
-        // }
-        console.log(current_key);
-        
-        //Add view for doc
-        document.getElementById('featured-post').innerHTML = component.blogEntries(data_map,current_key);
-        
-
-        //Set redirect button
-        document.querySelectorAll('.reviewScreen, .review-show').forEach(element=>{
-            element.style.cursor='pointer';
-            element.addEventListener('click', () => view.setScreen('reviewDetailScreen', element.getAttribute('value')));
-        });
-}
-
 controller.showReviewPage = async () => {
     let review_query = await controller.getCurrentReviewQuery();
 
@@ -262,15 +230,40 @@ controller.showDefaultReviewPage = async () => {
         key.push(doc.id);
     });
     controller.showCurrentReviewPage(data,key,0);
-} 
+}
+
+//Show review at Homepage
+controller.showCurrentReviewPage = async (data_map,key_array,page) => {
+    let current_key = new Array();
+
+    let i = page*5 ;
+    while (i<(page+1)*5 && key_array[i]!==undefined){
+        current_key.push(key_array[i]);
+        i++;
+    };
+
+    // for (let i = page*5; i<(page+1)*5;i++){
+    //     current_key.push(key_array[i]);
+    // }
+    console.log(current_key);
+    
+    //Add view for doc
+    document.getElementById('featured-post').innerHTML = component.blogEntries(data_map,current_key);
+    
+
+    //Set redirect button
+    document.querySelectorAll('.reviewScreen, .review-show').forEach(element=>{
+        element.style.cursor='pointer';
+        element.addEventListener('click', () => view.setScreen('reviewDetailScreen', element.getAttribute('value')));
+    });
+}
+
 
 // Get review doc from firestore
 controller.getCurrentReviewDetailDoc = async (review_id) => {
-
-    const docRef = doc(db, "Review", review_id);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-        return docSnap.data();
+    const docRef = await getDoc(doc(db, "Review", review_id));
+    if (docRef.exists()) {
+        return docRef.data();
     } else {
     // docSnap.data() will be undefined in this case
         console.log("No such document!");
@@ -280,21 +273,8 @@ controller.getCurrentReviewDetailDoc = async (review_id) => {
 //Show review detail information at current review page
 controller.showCurrentReviewDetail = async (review_id) =>{
     document.getElementById('reviewInfo').innerHTML=component.reviewInfo(await controller.getCurrentReviewDetailDoc(review_id));
-    document.getElementById('commentSection').innerHTML=component.commentSection(await controller.getCurrentReviewDetailDoc(review_id));
+    document.getElementById('commentSection').innerHTML=component.commentSection();
 }
-
-
-// controller.getComment = async (review_id) =>{
-//     onSnapshot(await controller.getCurrentCommentQuery(review_id),(qr)=>{
-//         let value = new Array();
-//         qr.forEach(doc =>{
-//             console.log(doc.data());
-//             value.push(doc.data());
-//         })
-//         console.log(value);
-//     })
-// }
-
 
 //Add comment to firestore
 controller.addComment = async (review_id) =>{
@@ -311,7 +291,7 @@ controller.addComment = async (review_id) =>{
     //Add comment data object to firestore and return a Promise
     return await addDoc(collection(db, 'Comment'),initialData).then(() => {
         // Reset form
-        document.getElementById('comment').reset();
+        document.getElementById('comment-input').firstElementChild.reset();
         console.log(`User ${auth.currentUser.displayName} successfully comment`); 
         document.getElementById('comment-content').disabled = false;
         document.getElementById('comment-btn').disabled = false;      
@@ -334,26 +314,19 @@ controller.showParentComment = async (review_id) =>{
         qr.forEach(doc =>{
             str+=component.displayedParentComment(doc);         
         });
-        document.getElementById('comment-section').innerHTML=str;
+        document.getElementById('comment-output').innerHTML=str;
     });
 }
 
-
-
-//Get book information
-controller.getBookToReview = async () => {
-    return await book.resolveQuery(document.getElementById('bookSearchinput').value.replace(/\s+/g, ''));
-}   
-
 //Show book information
 controller.showBook = async () => {
-    let bookResult = await controller.getBookToReview();
+    let bookResult = await book.resolveQuery(document.getElementById('bookSearchinput').value.replace(/\s+/g, ''));
     document.getElementById('bookSearchList').innerHTML +=
     `<div class="card-body overflow-auto" style="max-height: 300px">
         <div id="bookSearchoutput"></div>
     </div>`;
 
-    document.getElementById('bookSearchoutput').innerHTML=component.bookSearchoutput(bookResult); 
+    document.getElementById('bookSearchoutput').innerHTML=component.bookSearchOutput(bookResult); 
     document.querySelectorAll(".rv-btn").forEach(e=>{
         e.addEventListener("click", (j) => {
             document.getElementById('rv-title').value = bookResult[j.target.id].title;
@@ -374,5 +347,9 @@ controller.getReviewDocs = async () => {
 }
 
 controller.getCommentDocs = async () => {
-    return await getDocs(collection(db, 'Review'));
+    return await getDocs(collection(db, 'Comment'),where());
+}
+
+controller.getUserDocs = async () => {
+    return await getDocs(collection(db,'User'));
 }
