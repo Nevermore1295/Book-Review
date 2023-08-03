@@ -1,3 +1,6 @@
 - Sau khi register thì tự động đăng nhập, dẫn đến lỗi không xác định html để hiển thị cho phù hợp với auth 
 
 - Khi Đăng xuất ở homepage sẽ gặp lỗi do id 'comment' bị onAuthStateChanged gọi lại
+
+31/07: - có 2 hàm addComment solved
+comment-section chưa chặt chẽ

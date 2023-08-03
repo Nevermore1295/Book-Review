@@ -1,8 +1,8 @@
 
 export let component = {};
 
-component.Authentication = (isUserExist) =>{
-    if (isUserExist===true){
+component.Authentication = (isUserExist) => {
+    if (isUserExist === true) {
         return ` 
             <div class="d-flex align-content-center me-1">
                 <div class="dropdown">
@@ -59,7 +59,7 @@ component.Authentication = (isUserExist) =>{
                 </div>
             </div>
             `
-}
+    }
 }
 
 
@@ -143,7 +143,6 @@ component.sideWidget = () => {
             </div>
             <div class="card-body">
                 <div class="row">
-                    
                         <ul class="list-unstyled mb-0">
                             <li><a href="#!">Action & adventure</a></li>
                             <li><a href="#!">Biography/religion</a></li>
@@ -229,10 +228,9 @@ component.sideWidget = () => {
 // }
 
 component.blogEntries = (data_map, key_array) => {
-    let str=``;
-    for (let i=0; i<key_array.length; i++)
-        {
-        str+= `<div class="card mb-4 flex-row align-items-center">
+    let str = ``;
+    for (let i = 0; i < key_array.length; i++) {
+        str += `<div class="card mb-4 flex-row align-items-center">
         <a class="reviewScreen" value="${key_array[i]}"><img src="http://books.google.com/books/content?id=bVFPAAAAYAAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"></a>
         <div class="card-body">
             <h2 class="card-title">${data_map.get(key_array[i]).review_title}</h2>
@@ -276,20 +274,20 @@ component.reviewPage = (page_number) => {
             <ul class="pagination justify-content-center my-4">
                 <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Newer</a></li>
     `;
-        
-    for (let i=1;i<page_number;i++){
-        str+=`
+
+    for (let i = 1; i < page_number; i++) {
+        str += `
                 <li class="page-item" value=${i}><a class="page-link" href="#!">${i}</a></li>
             `
     }
 
-    str +=`
+    str += `
                 <li class="page-item"><a class="page-link" href="#!">Older</a></li>
             </ul>
         </nav>
     `
     return str;
-     
+
     // <li class="page-item active" value=1><a class="page-link" href="#!">1</a></li>
     // <li class="page-item" value=2><a class="page-link" href="#!">2</a></li>
     // <li class="page-item" value=3><a class="page-link" href="#!">3</a></li>
@@ -393,17 +391,10 @@ component.commentSection = (data) => {
         <div class="card bg-light">
             <div class="card-body">
                 <!-- Comment form-->
-                <div id="comment-input"></div>
-                <form class="mb-4 d-flex" id="comment" >
-                    <input class="form-control" id="comment-content" rows="3" placeholder="Join the discussion and leave a comment!">
-                    </input>
-                    <button class="btn btn-block btn-lg btn-primary">
-                        Submit
-                    </button>
-                </form>
-                <a id="comment-section">
+                <div id="comment-input"> </div>
                     
-                </a>
+                <div id="comment-section">
+                <div>
             </div>
         </div>
     </section>
@@ -668,7 +659,6 @@ component.reviewQuery = () => {
             </div>
             <div class="card-body">
                 <div class="row">
-                    
                         <ul class="list-unstyled mb-0">
                             <li><a href="#!">Action & adventure</a></li>
                             <li><a href="#!">Biography/religion</a></li>
@@ -709,9 +699,46 @@ component.reviewQueryoutput = () => {
 };
 
 //*********************** Admin view ****************************/
-component.adminScreen = `
-${component.homeContent}
-`;
+component.adminScreen = () => {
+    return `
+    <div class="container my-4">
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    Search
+                </div>
+                <div class="card-body">
+                    <div class="input-group">
+                        <input class="form-control" type="text" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search" />
+                        <button class="btn btn-primary" id="button-search" type="button">Go!</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card mb-4">
+                <div class="card-header">
+                    Categories
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <ul class="list-unstyled mb-0">
+                            <li><a href="#!">Action & adventure</a></li>
+                            <li><a href="#!">Biography/religion</a></li>
+                            <li><a href="#!">Bussiness</a></li>
+                            <li><a href="#!">Comics</a></li>
+                            <li><a href="#!">Education</a></li>
+                            <li><a href="#!">Entertainment</a></li>
+                            <li><a href="#!">History</a></li>
+                            <li><a href="#!">Medical & Lifestyle</a></li>
+                            <li><a href="#!">Literature & fiction</a></li>
+                            <li><a href="#!">Science</a></li>
+                            <li><a href="#!">Sport</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+`};
 //*********************** Footer ****************************/
 component.footer = () => {
     return `

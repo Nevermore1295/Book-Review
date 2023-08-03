@@ -44,7 +44,10 @@ view.setScreen = (screenName, review_id) => {
                 document.getElementById('comment').addEventListener('submit', (cf) =>{
                     cf.preventDefault();
                     //Add data object to doc
-                    controller.addComment(review_id);                             
+                    document.getElementById('comment-content').disabled = true; //prevent creating multiple comment from multi-clicking
+                    document.getElementById('comment-btn').disabled = true;      
+                    controller.addComment(review_id); 
+                               
                 })
             });
 
@@ -118,6 +121,13 @@ view.setScreen = (screenName, review_id) => {
 
         break;
         
+        case 'adminScreen':
+            view.currentScreen='adminScreen';
+            document.getElementById('app').innerHTML = component.navbar() + component.adminScreen() + component.footer();
+            document.getElementById('navbar-brand').style.cursor = 'pointer';
+            document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
+        break;
+
         default:
             view.setScreen('homeScreen');
         break;
@@ -126,12 +136,13 @@ view.setScreen = (screenName, review_id) => {
 }
 
 view.setScreenButton = (button_id, screen_name, screen_event) => {
+    
     document.getElementById(button_id).style.cursor = 'pointer';
     document.getElementById(button_id).addEventListener('click', () => view.setScreen(screen_name), screen_event);
 }
 
 
-view.setScreen();
+view.setScreen('adminScreen');
 
 
 
