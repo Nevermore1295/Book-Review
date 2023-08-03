@@ -307,7 +307,7 @@ component.reviewInfo = (data) => {
             <!-- Post title-->
             <h1 class="fw-bolder mb-1">${data.review_title}</h1>
             <!-- Post meta content-->
-            <div class="text-muted fst-italic mb-2">${data.review_created_date.toDate()}</div>
+            <div class="text-muted fst-italic mb-2">Created by ${data.review_creator_id} in ${data.review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })}</div>          
             <!-- Post categories-->
             <a class="badge bg-secondary text-decoration-none link-light" href="#!">Web Design</a>
             <a class="badge bg-secondary text-decoration-none link-light" href="#!">Freebies</a>
@@ -369,7 +369,7 @@ component.displayedParentComment = (data) => {
         <img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." />
         </div>
         <div class="ms-3">
-            <div class="fw-bold">Commenter Name</div>
+            <div class="fw-bold">${data.data().comment_creator_id}</div>
             ${data.data().comment_content}
         </div>
     </div>
@@ -405,6 +405,7 @@ component.commentSection = (data) => {
         </div>
     </section>
 `}
+
 
 component.reviewContent = () => {
     return `
@@ -495,7 +496,7 @@ component.registerContent = () => {
 
 //**********************Review Creator Screen***********************
 
-component.bookSearch = () => {
+component.bookSearchContent = () => {
     return `
     <div class="container my-4" style="min-height: 500px"> 
         <h2 class="m-2">Make your review</h2>
@@ -584,11 +585,11 @@ component.imageCheck = (index) => {
     };
 }
 
-component.bookSearchoutput = (bookResult) => {
+component.bookSearchOutput = (bookResult) => {
     let str = '';
     for (let index = 0; index < bookResult.length; index++) {
         str +=
-            `
+        `
         <div class="card bg-white m-2">
             <form class="card-body d-flex justify-content-between">
                 <div class="d-flex">
@@ -608,24 +609,6 @@ component.bookSearchoutput = (bookResult) => {
     return str;
 }
 
-component.searchQueryoutput = () => {
-    let str = `
-    <div class="card bg-light m-2">
-            <form class="card-body d-flex justify-content-between">
-                <div class="d-flex">
-                    <img class="mt-1" src="
-                    ${component.imageCheck(bookResult[index].imageLinks)}" height="100" width="70">
-                    <div class="resultBasic ms-3">
-                        <h5>${bookResult[index].title}</h5>
-                        <div>Author: ${bookResult[index].authors}</div>
-                        <div>Date published: ${bookResult[index].publishedDate}</div>
-                    </div>
-                </div>   
-                <button style="height:40px" id="${index}" class="rv-btn btn btn-outline-primary mt-2" type="button">Review</button>
-            </form>
-        </div>`;
-    return str;
-}
 //*********************** Search review ****************************/
 
 component.reviewQuery = () => {

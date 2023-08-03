@@ -12,7 +12,7 @@ export let view = {};
 view.currentScreen = '';
 
 //Set view
-view.setScreen = (screenName, review_id) => {
+view.setScreen = async (screenName, review_id) => {
     switch (screenName){
         case 'homeScreen':
             view.currentScreen='homeScreen';
@@ -37,19 +37,20 @@ view.setScreen = (screenName, review_id) => {
             controller.Authentication();
             
             controller.showCurrentReviewDetail(review_id).then(()=>{
-                //Load realtime-update comment
-                controller.showCommentInput().then(() =>{
-                    document.getElementById('comment-input').addEventListener('submit', (cf) =>{
-                    cf.preventDefault();
-                    //Add data object to doc
-                    document.getElementById('comment-content').disabled = true; //prevent creating multiple comment from multi-clicking
-                    document.getElementById('comment-btn').disabled = true;      
-                    controller.addComment(review_id); 
-                               
-                })
-                })
                 
+                //Show comment bar and button
+                controller.showCommentInput().then(()=>{
+                    document.getElementById('comment-input').addEventListener('submit', (cf) =>{
+                        cf.preventDefault();
+                        //Add data object to doc
+                        document.getElementById('comment-content').disabled = true; //prevent creating multiple comment from multi-clicking
+                        document.getElementById('comment-btn').disabled = true;      
+                        controller.addComment(review_id); 
+                                   
+                    })
+                });
 
+                //Load realtime-update comment
                 controller.showParentComment(review_id);
             });
 
@@ -90,8 +91,10 @@ view.setScreen = (screenName, review_id) => {
         case 'reviewCreatorScreen':
             view.currentScreen='reviewCreatorScreen';
             //Set up HTML 
-            document.getElementById('app').innerHTML = component.navbar() + component.bookSearch() + component.footer();
+            document.getElementById('app').innerHTML = component.navbar() + component.bookSearchContent() + component.footer();
+
             controller.Authentication();
+            console.log(await controller.Authentication());
 
             //Book search bar
             document.getElementById('bookSearchbar').addEventListener('submit', (j) =>{
@@ -137,8 +140,7 @@ view.setScreen = (screenName, review_id) => {
     }
 }
 
-view.setScreenButton = (button_id, screen_name, screen_event) => {
-    
+view.setScreenButton = (button_id, screen_name, screen_event) => {   
     document.getElementById(button_id).style.cursor = 'pointer';
     document.getElementById(button_id).addEventListener('click', () => {
         view.setScreen(screen_name);
