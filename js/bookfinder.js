@@ -68,7 +68,6 @@ book.searchBookByName = async (booktitle = null, author = null, isbn = null, max
 book.resolveQuery= async(data) => {
     var list = [];
     var isbnSearch = await book.searchBookByName(null, null, data);
-
     var nameSearch = await book.searchBookByName(data, null, null, 5 - isbnSearch.length);
     for (var isbnIndex = 0; isbnIndex < isbnSearch.length; isbnIndex++) {
         list.push(isbnSearch[isbnIndex]);

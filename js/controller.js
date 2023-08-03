@@ -49,20 +49,14 @@ controller.isAdmin = async () => {
 }
 
 //Auth check for comment
-controller.showSubmitComment = () => {
-    auth.onAuthStateChanged(()=>{
+controller.showCommentInput = async() => {
+    await auth.onAuthStateChanged(()=>{
+        console.log("Auth state changed");
         if (auth.currentUser!==null && view.currentScreen==='reviewDetailScreen') {
-            document.getElementById("comment-input").innerHTML = `
-            <form class="mb-4 d-flex" id="comment" >
-                <input class="form-control" id="comment-content" rows="3" placeholder="Join the discussion and leave a comment!">
-                </input>
-                <button class="btn btn-block btn-lg btn-primary" id="comment-btn">
-                    Submit
-                </button>
-            </form>`;
+            document.getElementById("comment-input").style.display = 'block';
         } else if (auth.currentUser===null && view.currentScreen==='reviewDetailScreen'){
-            console.log(document.getElementById("comment"));
-            document.getElementById("comment").innerHTML = ``;
+            console.log(document.getElementById("comment-input"));
+            document.getElementById("comment-input").style.setProperty("display", "none", "important");
         }
     });
 }
@@ -150,6 +144,7 @@ controller.addReview = async () =>{
         review_title: document.getElementById('Review-title').value.trim(),
         review_content: document.getElementById('Review-content').value.trim(),
         review_book_id: document.getElementById('rv-bid').value,
+        review_status: 'pending'
         // review_id: await getDoc();
         //https://www.googleapis.com/books/v1/volumes/bVFPAAAAYAAJ
     }
@@ -266,8 +261,6 @@ controller.showDefaultReviewPage = async () => {
     controller.showCurrentReviewPage(data,key,0);
 } 
 
-
-
 // Get review doc from firestore
 controller.getCurrentReviewDetailDoc = async (review_id) => {
 
@@ -315,7 +308,7 @@ controller.addComment = async (review_id) =>{
     //Add comment data object to firestore and return a Promise
     await addDoc(collection(db, 'Comment'),initialData).then(() => {
         // Reset form
-        document.getElementById('comment').reset();
+        document.getElementById('comment-input').reset();
         console.log(`User ${auth.currentUser.displayName} successfully comment`); 
         document.getElementById('comment-content').disabled = false;
         document.getElementById('comment-btn').disabled = false;      
@@ -337,20 +330,13 @@ controller.showParentComment = async (review_id) =>{
         qr.forEach(doc =>{
             str+=component.displayedParentComment(doc);         
         });
-        document.getElementById('comment-section').innerHTML=str;
+        document.getElementById('comment-output').innerHTML=str;
     });
 }
 
-
-
-//Get book information
-controller.getBookToReview = async () => {
-    return await book.resolveQuery(document.getElementById('bookSearchinput').value.replace(/\s+/g, ''));
-}   
-
 //Show book information
 controller.showBook = async () => {
-    let bookResult = await controller.getBookToReview();
+    let bookResult = await book.resolveQuery(document.getElementById('bookSearchinput').value.replace(/\s+/g, ''));
     document.getElementById('bookSearchList').innerHTML +=
     `<div class="card-body overflow-auto" style="max-height: 300px">
         <div id="bookSearchoutput"></div>

@@ -1,3 +1,4 @@
+import { auth, db } from "./index.js";
 
 export let component = {};
 
@@ -9,7 +10,7 @@ component.Authentication = (isUserExist) => {
                     <i class="navbar-nav ms-auto fa-solid fa-user" type="button" data-bs-toggle="dropdown" style="font-size:25px" >
                     </i>
                     <ul class="dropdown-menu account-dropdown">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
+                        <li><a class="dropdown-item" href="#">${auth.currentUser.username}</a></li>
                         <li><a class="dropdown-item" href="#">Another action</a></li>
                         <li><a class="dropdown-item" id="log-out">Log Out</a></li>
                     </ul>
@@ -362,8 +363,11 @@ component.reviewInfo = (data) => {
 
 component.displayedParentComment = (data) => {
     return `
+    <div>
     <div class="d-flex mb-4">
-        <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
+        <div class="flex-shrink-0">
+        <img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." />
+        </div>
         <div class="ms-3">
             <div class="fw-bold">Commenter Name</div>
             ${data.data().comment_content}
@@ -391,9 +395,11 @@ component.commentSection = (data) => {
         <div class="card bg-light">
             <div class="card-body">
                 <!-- Comment form-->
-                <div id="comment-input"> </div>
-                    
-                <div id="comment-section">
+                <form class="mb-4 d-flex" id="comment-input">
+                    <input class="form-control" id="comment-content" rows="3" placeholder="Join the discussion and leave a comment!"></input>
+                    <button class="btn btn-block btn-lg btn-primary" id="comment-btn">Submit</button>
+                </form>
+                <div id="comment-output">
                 <div>
             </div>
         </div>
@@ -702,43 +708,66 @@ component.reviewQueryoutput = () => {
 component.adminScreen = () => {
     return `
     <div class="container my-4">
-        <div class="col-lg-4">
-            <div class="card mb-4">
-                <div class="card-header">
-                    Search
-                </div>
-                <div class="card-body">
-                    <div class="input-group">
-                        <input class="form-control" type="text" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search" />
-                        <button class="btn btn-primary" id="button-search" type="button">Go!</button>
-                    </div>
-                </div>
+        <div class="card mb-4">
+            <div class="card-header">
+                Pending reviews
             </div>
-            <div class="card mb-4">
-                <div class="card-header">
-                    Categories
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <ul class="list-unstyled mb-0">
-                            <li><a href="#!">Action & adventure</a></li>
-                            <li><a href="#!">Biography/religion</a></li>
-                            <li><a href="#!">Bussiness</a></li>
-                            <li><a href="#!">Comics</a></li>
-                            <li><a href="#!">Education</a></li>
-                            <li><a href="#!">Entertainment</a></li>
-                            <li><a href="#!">History</a></li>
-                            <li><a href="#!">Medical & Lifestyle</a></li>
-                            <li><a href="#!">Literature & fiction</a></li>
-                            <li><a href="#!">Science</a></li>
-                            <li><a href="#!">Sport</a></li>
-                        </ul>
+            <div class="card-body">
+                <div class="card bg-white">
+                    <div class="card-body d-flex justify-content-between">
+                        <div class="d-flex">
+                            <img class="mt-1" src="
+                            http://books.google.com/books/content?id=bVFPAAAAYAAJ&amp;printsec=frontcover&amp;img=1&amp;zoom=1&amp;edge=curl&amp;source=gbs_api" height="120" width="90">
+                            <div class="resultBasic ms-3">
+                                <h5>Title</h5>
+                                <div><b>Book:</b> Report</div>
+                                <div><b>Author:</b> New York State Library</div>
+                                <div><b>User:</b> username</div>
+                                <div><b>Date posted</b> 1916</div>
+                            </div>    
+                        </div>
+                        <div class="modify-btn">
+                                <button class="btn btn-primary"><i class="fa-solid fa-check" style="width: 18px"></i></button>
+                                <button class="btn btn-primary"><i class="fa-solid fa-xmark" style="width: 18px"></i></button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                Reviews
+                <div class="input-group w-50">
+                    <input class="form-control" type="text" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search" />
+                    <button class="btn btn-primary" id="button-search" type="button">Go!</button>
+                </div>
+            </div>
+            <div class="card-body">
+                    <div class="card bg-white">
+                        <div class="card-body d-flex justify-content-between">
+                            <div class="d-flex">
+                                <img class="mt-1" src="
+                                http://books.google.com/books/content?id=bVFPAAAAYAAJ&amp;printsec=frontcover&amp;img=1&amp;zoom=1&amp;edge=curl&amp;source=gbs_api" height="120" width="90">
+                                <div class="resultBasic ms-3">
+                                    <h5>Title</h5>
+                                    <div><b>Book:</b> Report</div>
+                                    <div><b>Author:</b> New York State Library</div>
+                                    <div><b>User:</b> username</div>
+                                    <div><b>Date posted</b> 1916</div>
+                                </div>    
+                            </div>
+                            <div class="modify-btn">
+                                    <button class="btn btn-primary"><i class="fa-solid fa-eye" style="width: 18px"></i></button>
+                                    <button class="btn btn-primary"><i class="fa-solid fa-pen-to-square" style="width: 18px"></i></button>
+                                    <button class="btn btn-primary"><i class="fa-solid fa-xmark" style="width: 18px"></i></button>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
     </div>
-`};
+`;
+};
 //*********************** Footer ****************************/
 component.footer = () => {
     return `

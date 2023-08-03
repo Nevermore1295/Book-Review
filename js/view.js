@@ -38,10 +38,8 @@ view.setScreen = (screenName, review_id) => {
             
             controller.showCurrentReviewDetail(review_id).then(()=>{
                 //Load realtime-update comment
-                controller.showSubmitComment();
-                controller.showParentComment(review_id);
-
-                document.getElementById('comment').addEventListener('submit', (cf) =>{
+                controller.showCommentInput().then(() =>{
+                    document.getElementById('comment-input').addEventListener('submit', (cf) =>{
                     cf.preventDefault();
                     //Add data object to doc
                     document.getElementById('comment-content').disabled = true; //prevent creating multiple comment from multi-clicking
@@ -49,6 +47,10 @@ view.setScreen = (screenName, review_id) => {
                     controller.addComment(review_id); 
                                
                 })
+                })
+                
+
+                controller.showParentComment(review_id);
             });
 
             //Set redirect button
@@ -81,8 +83,8 @@ view.setScreen = (screenName, review_id) => {
             });
 
             view.setScreenButton('navbar-brand','homeScreen');
-            view.setScreenButton('login-btn','homeScreen', document.getElementById('login-modal').click());
-
+            view.setScreenButton('login-btn','homeScreen');
+           
         break;
 
         case 'reviewCreatorScreen':
@@ -138,7 +140,9 @@ view.setScreen = (screenName, review_id) => {
 view.setScreenButton = (button_id, screen_name, screen_event) => {
     
     document.getElementById(button_id).style.cursor = 'pointer';
-    document.getElementById(button_id).addEventListener('click', () => view.setScreen(screen_name), screen_event);
+    document.getElementById(button_id).addEventListener('click', () => {
+        view.setScreen(screen_name);
+        screen_event});
 }
 
 
