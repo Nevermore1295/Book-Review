@@ -141,20 +141,6 @@ controller.register = async () =>{
     }
 }
 
-//Thêm comment vào firestore
-controller.addComment = async (review_id) =>{
-    //Create data object     
-    const initialData = {
-        comment_creator_id: auth.currentUser.uid,
-        comment_created_date: Timestamp.now(),
-        comment_review_id: review_id,
-        comment_parent_id: null,
-        comment_content: document.getElementById('comment-content').value.trim(),
-    };
-
-    return await addDoc(collection(db, 'Comment'),initialData);
-}
-
 //Add review to firestore
 controller.addReview = async () =>{   
     //Create data object
@@ -229,7 +215,7 @@ controller.showCurrentReviewPage = async (data_map,key_array,page) => {
         });
 }
 
-controller.showReviewPage = async () =>{
+controller.showReviewPage = async () => {
     let review_query = await controller.getCurrentReviewQuery();
 
     controller.showDefaultReviewPage();
@@ -281,8 +267,6 @@ controller.showDefaultReviewPage = async () => {
     controller.showCurrentReviewPage(data,key,0);
 } 
 
-
-
 // Get review doc from firestore
 controller.getCurrentReviewDetailDoc = async (review_id) => {
 
@@ -330,7 +314,7 @@ controller.addComment = async (review_id) =>{
     };
 
     //Add comment data object to firestore and return a Promise
-    await addDoc(collection(db, 'Comment'),initialData).then(() => {
+    return await addDoc(collection(db, 'Comment'),initialData).then(() => {
         // Reset form
         document.getElementById('comment').reset();
         console.log(`User ${auth.currentUser.displayName} successfully comment`); 
@@ -342,7 +326,8 @@ controller.addComment = async (review_id) =>{
 
 //Get parent comment query from firestore
 controller.getCurrentCommentQuery = async (comment_review_id) => {
-    return await (query(collection(db,'Comment'),and(where('comment_review_id','==',comment_review_id),where('comment_parent_id','==',null)),limit(6)));
+    //,where('comment_created_date','!=',null)),orderBy('comment_created_date')
+    return await (query(collection(db,'Comment'),and(where('comment_review_id','==',comment_review_id),where('comment_parent_id','==',null))));
 }
 
 //Show comment information
@@ -388,8 +373,10 @@ controller.showBook = async () => {
 }
 
 
-controller.getReviewQuery = async () => {
-    return await (query(collection(db, 'Review')));
+controller.getReviewDocs = async () => {
+    return await getDocs(collection(db, 'Review'));
 }
 
-
+controller.getCommentDocs = async () => {
+    return await getDocs(collection(db, 'Review'));
+}
