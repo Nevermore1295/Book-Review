@@ -86,6 +86,7 @@ view.setScreen = async (screenName, review_id) => {
             view.setScreenButton('navbar-brand','homeScreen');
             document.getElementById('login-btn').style.cursor = 'pointer';
             document.getElementById('login-btn').addEventListener('click', async () => { await view.setScreen('homeScreen'); document.getElementById('login-modal').click()});
+           
         break;
 
         case 'reviewCreatorScreen':
@@ -129,6 +130,10 @@ view.setScreen = async (screenName, review_id) => {
         case 'adminScreen':
             view.currentScreen='adminScreen';
             document.getElementById('app').innerHTML = component.navbar() + component.adminScreen() + component.footer();
+
+
+            controller.showReviewAdministration();
+
             document.getElementById('navbar-brand').style.cursor = 'pointer';
             document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
         break;
