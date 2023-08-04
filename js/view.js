@@ -84,8 +84,8 @@ view.setScreen = async (screenName, review_id) => {
             });
 
             view.setScreenButton('navbar-brand','homeScreen');
-            view.setScreenButton('login-btn','homeScreen');
-           
+            document.getElementById('login-btn').style.cursor = 'pointer';
+            document.getElementById('login-btn').addEventListener('click', async () => { await view.setScreen('homeScreen'); document.getElementById('login-modal').click()});
         break;
 
         case 'reviewCreatorScreen':
@@ -148,7 +148,7 @@ view.setScreenButton = (button_id, screen_name, screen_event) => {
 }
 
 
-view.setScreen('adminScreen');
+view.setScreen();
 
 
 

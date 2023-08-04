@@ -363,27 +363,34 @@ component.reviewInfo = (data) => {
 
 component.displayedParentComment = (data) => {
     return `
-    <div>
-    <div class="d-flex mb-4">
-        <div class="flex-shrink-0">
-        <img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." />
+    <div class="mb-3">
+        <div class="d-flex">
+            <div class="flex-shrink-0">
+            <img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." />
+            </div>
+            <div class="ms-3">
+                <div class="fw-bold">${data.data().comment_creator_id}</div>
+                <div style="word-break: break-all">${data.data().comment_content}</div>
+                <span class="reply-btn ms-2" style="text-decoration: underline" id="${data.id} style="font-size: 12px">Reply</span>
+            </div>
         </div>
-        <div class="ms-3">
-            <div class="fw-bold">${data.data().comment_creator_id}</div>
-            ${data.data().comment_content}
+        <div class="childComment">
+
         </div>
     </div>
     `
 }
 
-component.displayedChildComment = () => {
+component.displayedChildComment = (data) => {
     return `
-    <!-- Single comment-->
     <div class="d-flex">
-        <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-        <form class="ms-3">
-            <div class="fw-bold">Commenter Name</div>
-            And under those conditions, you cannot establish a capital-market evaluation of that enterprise. You can't get investors.
+        <div class="flex-shrink-0">
+            <img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." />
+        </div>
+        <div class="ms-3 d-flex flex-column">
+            <div class="fw-bold">${data.data().comment_creator_id}</div>
+            <div style="word-break: break-all">${data.data().comment_content}</div>
+            <span class="reply-btn" style="text-decoration: underline" id="${data.id} style="font-size: 12px">Reply</span>
         </div>
     </div>
 `}
@@ -545,7 +552,7 @@ component.bookSearchContent = () => {
                         <div class="row">
                             <div class="input-group input-group mb-3 col-lg">
                                 <span class="input-group-text" for="inputGroupSelect01">Category</span>
-                                <select class="form-select review-forminput" id="inputGroupSelect01" disabled>
+                                <select class="form-select review-forminput" id="rv-category" disabled>
                                 <option selected>Choose...</option>
                                 <option value="1">Action & Adventure</option>
                                 <option value="2">Biographies/religion</option>
@@ -559,6 +566,7 @@ component.bookSearchContent = () => {
                                 <option value="10">Science & technology</option>
                                 <option value="11">Sport</option>
                                 <option value="12">Medical/lifestyle</option>
+                                <option value="13">Others</option>
 
                                 </select>
                             </div>
@@ -589,7 +597,7 @@ component.bookSearchOutput = (bookResult) => {
     let str = '';
     for (let index = 0; index < bookResult.length; index++) {
         str +=
-        `
+            `
         <div class="card bg-white m-2">
             <form class="card-body d-flex justify-content-between">
                 <div class="d-flex">
@@ -709,9 +717,9 @@ component.adminScreen = () => {
                                 <div><b>Date posted</b> 1916</div>
                             </div>    
                         </div>
-                        <div class="modify-btn">
-                                <button class="btn btn-primary"><i class="fa-solid fa-check" style="width: 18px"></i></button>
-                                <button class="btn btn-primary"><i class="fa-solid fa-xmark" style="width: 18px"></i></button>
+                        <div class="modify-btn d-flex align-items-center flex-column flex-lg-row">
+                                <button class="btn btn-primary m-1"><i class="fa-solid fa-check" style="width: 18px"></i></button>
+                                <button class="btn btn-primary m-1"><i class="fa-solid fa-xmark" style="width: 18px"></i></button>
                         </div>
                     </div>
                 </div>
@@ -739,10 +747,10 @@ component.adminScreen = () => {
                                     <div><b>Date posted</b> 1916</div>
                                 </div>    
                             </div>
-                            <div class="modify-btn">
-                                    <button class="btn btn-primary"><i class="fa-solid fa-eye" style="width: 18px"></i></button>
-                                    <button class="btn btn-primary"><i class="fa-solid fa-pen-to-square" style="width: 18px"></i></button>
-                                    <button class="btn btn-primary"><i class="fa-solid fa-xmark" style="width: 18px"></i></button>
+                            <div class="modify-btn d-flex align-items-center flex-column flex-lg-row">
+                                    <button class="btn btn-primary m-1"><i class="fa-solid fa-eye" style="width: 18px"></i></button>
+                                    <button class="btn btn-primary m-1"><i class="fa-solid fa-pen-to-square" style="width: 18px"></i></button>
+                                    <button class="btn btn-primary m-1"><i class="fa-solid fa-xmark" style="width: 18px"></i></button>
                             </div>
                         </div>
                     </div>
