@@ -725,32 +725,45 @@ component.adminScreen = () => {
                     <button class="btn btn-primary" id="button-search" type="button">Go!</button>
                 </div>
             </div>
-            <div class="card-body">
-                    <div class="card bg-white">
-                        <div class="card-body d-flex justify-content-between">
-                            <div class="d-flex">
-                                <img class="mt-1" src="
-                                http://books.google.com/books/content?id=bVFPAAAAYAAJ&amp;printsec=frontcover&amp;img=1&amp;zoom=1&amp;edge=curl&amp;source=gbs_api" height="120" width="90">
-                                <div class="resultBasic ms-3">
-                                    <h5>Title</h5>
-                                    <div><b>Book:</b> Report</div>
-                                    <div><b>Author:</b> New York State Library</div>
-                                    <div><b>User:</b> username</div>
-                                    <div><b>Date posted</b> 1916</div>
-                                </div>    
-                            </div>
-                            <div class="modify-btn">
-                                    <button class="btn btn-primary"><i class="fa-solid fa-eye" style="width: 18px"></i></button>
-                                    <button class="btn btn-primary"><i class="fa-solid fa-pen-to-square" style="width: 18px"></i></button>
-                                    <button class="btn btn-primary"><i class="fa-solid fa-xmark" style="width: 18px"></i></button>
-                            </div>
-                        </div>
-                    </div>
+            <div class="card-body" id="review-ctrl">
+            </div>
+
+            <div id="review-page">
             </div>
         </div>
     </div>
 `;
 };
+
+component.adminReview = (data_map, key_array) => {
+
+    let str = ``;
+    for (let i = 0; i < key_array.length; i++) {
+        str += `
+        <div class="card bg-white">
+            <div class="card-body d-flex justify-content-between">
+                <div class="d-flex">
+                    <img class="mt-1" src="http://books.google.com/books/content?id=bVFPAAAAYAAJ&amp;printsec=frontcover&amp;img=1&amp;zoom=1&amp;edge=curl&amp;source=gbs_api" height="120" width="90">
+                    <div class="resultBasic ms-3">
+                        <h5>${data_map.get(key_array[i]).review_title}</h5>
+                        <div><b>Book:</b> Report</div>
+                        <div><b>Author:</b> ${data_map.get(key_array[i]).review_creator_id}</div>
+                        <div><b>User:</b> username</div>
+                        <div><b>Date posted:</b> ${data_map.get(key_array[i]).review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })}</div>
+                    </div>    
+                </div>
+                <div class="modify-btn ms-1" style="min-width: 150px;">
+                    <button class="btn btn-primary" id="watch"><i class="fa-solid fa-eye" style="width: 18px"></i></button>
+                    <button class="btn btn-primary" id="update"><i class="fa-solid fa-pen-to-square" style="width: 18px"></i></button>
+                    <button class="btn btn-primary delete"><i class="fa-solid fa-xmark" style="width: 18px"></i></button>
+                </div>
+            </div>
+        </div>
+        `
+    }
+    return str;
+}
+
 //*********************** Footer ****************************/
 component.footer = () => {
     return `

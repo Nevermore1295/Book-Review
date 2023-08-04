@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut ,updateProfile } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-import { getFirestore, collection, query, where, and, or, doc, addDoc, setDoc, getDocs, getDoc, orderBy, onSnapshot, Timestamp, limit, startAt, endAt} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+import { getFirestore, collection, query, where, and, or, doc, addDoc, setDoc, getDocs, getDoc, orderBy, onSnapshot, Timestamp, limit, startAt, endAt, deleteDoc} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 import { auth,db } from "./index.js";
 import { view } from "./view.js";
@@ -171,24 +171,13 @@ controller.addReview = async () =>{
     }
 }
 
-//Get review query from firestore
-controller.getCurrentReviewQuery = async () => {
-    // ,startAt(page*5),endAt((page+1)*5)
-    return await (query(collection(db,'Review'),orderBy('review_created_date','desc')));
-}
-
-//Get review query from firestore
-controller.getCurrentReviewDocs = async () => {
-    // ,startAt(page*5),endAt((page+1)*5)
-    return await (getDocs(query(collection(db,'Review'),orderBy('review_created_date','desc'),limit(5))));
-}
-
 controller.showReviewPage = async () => {
-    let review_query = await controller.getCurrentReviewQuery();
+    let review_query = await (query(collection(db,'Review'),orderBy('review_created_date','desc')));
 
-    controller.showDefaultReviewPage();
+    
 
     onSnapshot(review_query,(qr)=>{
+        controller.showDefaultReviewPage();
 
         //Define Map variable to store <key,value>
         let data_map = new Map();
@@ -213,14 +202,15 @@ controller.showReviewPage = async () => {
                 })
 
                 item.setAttribute('class','page-item active');
-                controller.showCurrentReviewPage(data_map,key_array,item.getAttribute('value')-1)
+
+                controller.showCurrentReviewPage(data_map,key_array,item.getAttribute('value')-1);
             });
         });
-   })  
+    })  
 }
 
 controller.showDefaultReviewPage = async () => {
-    let review_doc = await controller.getCurrentReviewDocs();
+    let review_doc = await getDocs(query(collection(db,'Review'),orderBy('review_created_date','desc'),limit(5)));;
     //Define Map variable to store <key,value>
     let data = new Map();
 
@@ -238,44 +228,54 @@ controller.showDefaultReviewPage = async () => {
 controller.showCurrentReviewPage = async (data_map,key_array,page) => {
     let current_key = new Array();
 
-    let i = page*5 ;
-    while (i<(page+1)*5 && key_array[i]!==undefined){
-        current_key.push(key_array[i]);
-        i++;
+    let i1 = page*5 ;
+    while (i1<(page+1)*5 && key_array[i1]!==undefined){
+        current_key.push(key_array[i1]);
+        i1++;
     };
 
-    // for (let i = page*5; i<(page+1)*5;i++){
-    //     current_key.push(key_array[i]);
-    // }
-    console.log(current_key);
+   
     
     //Add view for doc
-    document.getElementById('featured-post').innerHTML = component.blogEntries(data_map,current_key);
-    
+    switch (view.currentScreen) {
+        case 'homeScreen':
+            document.getElementById('featured-post').innerHTML = component.blogEntries(data_map,current_key);
+                
+            //Set redirect button
+            document.querySelectorAll('.reviewScreen, .review-show').forEach(element=>{
+                element.style.cursor='pointer';
+                element.addEventListener('click', () => view.setScreen('reviewDetailScreen', element.getAttribute('value')));
+            });
+            break;
+            
+        case 'adminScreen':
+            document.getElementById('review-ctrl').innerHTML = component.adminReview(data_map,current_key);
+            let i2=0;
+            document.querySelectorAll('.delete').forEach(ele => {
+                let str=current_key[i2].toString();
+                ele.addEventListener('click', ()=>{
+                    deleteDoc((doc(db, "Review", str)));
+                })
+                i2++;
+            })
 
-    //Set redirect button
-    document.querySelectorAll('.reviewScreen, .review-show').forEach(element=>{
-        element.style.cursor='pointer';
-        element.addEventListener('click', () => view.setScreen('reviewDetailScreen', element.getAttribute('value')));
-    });
-}
-
-
-// Get review doc from firestore
-controller.getCurrentReviewDetailDoc = async (review_id) => {
-    const docRef = await getDoc(doc(db, "Review", review_id));
-    if (docRef.exists()) {
-        return docRef.data();
-    } else {
-    // docSnap.data() will be undefined in this case
-        console.log("No such document!");
+            break;
     }
+
 }
 
 //Show review detail information at current review page
 controller.showCurrentReviewDetail = async (review_id) =>{
-    document.getElementById('reviewInfo').innerHTML=component.reviewInfo(await controller.getCurrentReviewDetailDoc(review_id));
-    document.getElementById('commentSection').innerHTML=component.commentSection();
+    let docRef = await getDoc(doc(db, "Review", review_id));
+
+    if (docRef.exists()) {
+        document.getElementById('reviewInfo').innerHTML=component.reviewInfo(docRef.data());
+        document.getElementById('commentSection').innerHTML=component.commentSection();
+    } else {
+    // docSnap.data() will be undefined in this case
+        console.log("No such document!");
+    }
+    
 }
 
 //Add comment to firestore
@@ -303,21 +303,21 @@ controller.addComment = async (review_id) =>{
     });
 }
 
-//Get parent comment query from firestore
-controller.getCurrentCommentQuery = async (comment_review_id) => {
-    //,where('comment_created_date','!=',null)),orderBy('comment_created_date')
-    return await (query(collection(db,'Comment'),and(where('comment_review_id','==',comment_review_id),where('comment_parent_id','==',null))));
-}
-
 //Show comment information
 controller.showParentComment = async (review_id) =>{
-    onSnapshot(await controller.getCurrentCommentQuery(review_id),(qr)=>{
-        let str='';
-        qr.forEach(doc =>{
-            str+=component.displayedParentComment(doc);         
-        });
-        document.getElementById('comment-output').innerHTML=str;
-    });
+    let parent_comment_query = await (query(
+        collection(db,'Comment'),
+        and(where('comment_review_id','==',review_id),where('comment_parent_id','==',null))
+    ));
+
+    onSnapshot(parent_comment_query,(qr)=>{
+            let str='';
+            qr.forEach(doc =>{
+                str+=component.displayedParentComment(doc);         
+            });
+            document.getElementById('comment-output').innerHTML=str;
+        }
+    );
 }
 
 //Show book information
@@ -344,14 +344,34 @@ controller.showBook = async () => {
 }
 
 
-controller.getReviewDocs = async () => {
-    return await getDocs(collection(db, 'Review'));
+// controller.getReviewDocs = async () => {
+//     return await getDocs(collection(db, 'Review'));
+// }
+
+// controller.getCommentDocs = async () => {
+//     return await getDocs(collection(db, 'Comment'));
+// }
+
+// controller.getUserDocs = async () => {
+//     return await getDocs(collection(db,'User'));
+// }
+
+controller.showReviewPendingAdministration = async () => {
+    
 }
 
-controller.getCommentDocs = async () => {
-    return await getDocs(collection(db, 'Comment'),where());
-}
 
-controller.getUserDocs = async () => {
-    return await getDocs(collection(db,'User'));
+controller.showReviewAdministration = async () => {
+    // let review_query = await controller.getReviewDocs();
+    
+    // review_query.forEach((doc) => {
+    //     document.getElementById('review-ctrl').innerHTML+=component.adminReview(doc.data());
+    //     }    
+    // )
+    
+
+    controller.showReviewPage().then(()=>{
+
+        
+    })
 }
