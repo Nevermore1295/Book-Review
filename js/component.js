@@ -725,6 +725,7 @@ component.adminScreen = () => {
                     <button class="btn btn-primary" id="button-search" type="button">Go!</button>
                 </div>
             </div>
+            
             <div class="card-body" id="review-ctrl">
             </div>
 
@@ -736,7 +737,6 @@ component.adminScreen = () => {
 };
 
 component.adminReview = (data_map, key_array) => {
-
     let str = ``;
     for (let i = 0; i < key_array.length; i++) {
         str += `
@@ -753,8 +753,8 @@ component.adminReview = (data_map, key_array) => {
                     </div>    
                 </div>
                 <div class="modify-btn ms-1" style="min-width: 150px;">
-                    <button class="btn btn-primary" id="watch"><i class="fa-solid fa-eye" style="width: 18px"></i></button>
-                    <button class="btn btn-primary" id="update"><i class="fa-solid fa-pen-to-square" style="width: 18px"></i></button>
+                    <button class="btn btn-primary watch" value="${key_array[i]}"><i class="fa-solid fa-eye" style="width: 18px"></i></button>
+                    <button class="btn btn-primary" id="update" ><i class="fa-solid fa-pen-to-square" style="width: 18px"></i></button>
                     <button class="btn btn-primary delete"><i class="fa-solid fa-xmark" style="width: 18px"></i></button>
                 </div>
             </div>
