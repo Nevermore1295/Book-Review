@@ -4,3 +4,17 @@
 
 31/07: - có 2 hàm addComment solved
 comment-section chưa chặt chẽ
+
+value="1" Action & Adventure
+value="2" Biographies/religion
+value="3" Business
+value="4" Comics
+value="5" Education
+value="6" Entertainment
+value="7" History
+value="8" Medical/lifestyle
+value="9" Literature & fiction
+value="10" Science & technology
+value="11" Sport
+value="12" Medical/lifestyle
+value="13" Others

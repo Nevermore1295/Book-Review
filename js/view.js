@@ -151,7 +151,7 @@ view.setScreenButton = (button_id, screen_name, screen_event) => {
 }
 
 
-view.setScreen('homeScreen');
+view.setScreen('adminScreen');
 
 
 

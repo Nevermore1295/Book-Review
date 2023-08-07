@@ -8,7 +8,7 @@ import { component } from "./component.js";
 import { book } from "./bookfinder.js";
 
 export const controller = {};
-
+////////////////////////////////// AUTHENCIATOR ///////////////////////////////////////
 //Auth check 
 controller.Authentication = async () => {
     auth.onAuthStateChanged(()=>{
@@ -23,8 +23,6 @@ controller.Authentication = async () => {
             });   
 
             view.setScreenButton('register','registerScreen');
-            // document.getElementById('register').addEventListener('click', () => view.setScreen('registerScreen'));
-            // document.getElementById('review-btn-li').style.display = "none";
             return true;
 
         } else {
@@ -136,7 +134,7 @@ controller.register = async () =>{
         })
     }
 }
-
+////////////////////////////////// REVIEW ///////////////////////////////////////
 //Add review to firestore
 controller.addReview = async () =>{   
     //Create data object
@@ -146,6 +144,7 @@ controller.addReview = async () =>{
         review_title: document.getElementById('Review-title').value.trim(),
         review_content: document.getElementById('Review-content').value.trim(),
         review_book_id: document.getElementById('rv-bid').value,
+        review_category: document.getElementById('rv-category').value,
         review_status: 'pending'
         // review_id: await getDoc();
         //https://www.googleapis.com/books/v1/volumes/bVFPAAAAYAAJ
@@ -153,6 +152,8 @@ controller.addReview = async () =>{
 
     if (initialData.review_title === '' || initialData.review_content === '') {
         alert('Title and content must not be blank');
+    } else if (document.getElementById('rv-category').value === 'Choose...'){
+        alert('Please choose one category');
     } else {
         await addDoc(collection(db, 'Review'),initialData).then(() => {
 
@@ -369,22 +370,35 @@ controller.addComment = async (review_id) =>{
     });
 }
 
+//Get parent comment query from firestore
+controller.getCurrentCommentQuery = async (comment_review_id) => {
+    //,where('comment_created_date','!=',null)),orderBy('comment_created_date')
+    return await (query(collection(db,'Comment'),and(where('comment_review_id','==',comment_review_id),where('comment_parent_id','==',null))));
+}
+
+
 //Show comment information
 controller.showParentComment = async (review_id) =>{
-    let parent_comment_query = await (query(
-        collection(db,'Comment'),
-        and(where('comment_review_id','==',review_id),where('comment_parent_id','==',null))
-    ));
-
-    onSnapshot(parent_comment_query,(qr)=>{
-            let str='';
-            qr.forEach(doc =>{
-                str+=component.displayedParentComment(doc);         
-            });
-            document.getElementById('comment-output').innerHTML=str;
+    onSnapshot(await controller.getCurrentCommentQuery(review_id),(qr)=>{
+        let str='';
+        let count = 0;
+        qr.forEach(doc =>{
+            str+=component.displayedParentComment(doc); 
+            count++;
+        });
+        document.getElementById('comment-output').innerHTML=str;
+        if (count > 0)
+        { 
+            document.querySelectorAll('.reply-btn').forEach(e =>{
+                e.style.cursor='pointer';
+                e.addEventListener('click', () => view.setScreen('reviewDetailScreen'));
+            })
         }
-    );
+    });
 }
+
+
+////////////////////////////////// BOOK ///////////////////////////////////////
 
 //Show book information
 controller.showBook = async () => {
@@ -429,4 +443,16 @@ controller.showReviewPendingAdministration = async () => {
 
 controller.showReviewAdministration = async () => {
     controller.updateReviewPage();
+
+}
+
+
+controller.getUserDocs = async () => {
+    return await getDocs(collection(db,'User'));
+}
+
+////////////////////////////////// CATEGORIES ///////////////////////////////////////
+
+controller.getReviewByCategory = async (category) => {
+    return await query(collection(db, 'Review'), where('review_category', '==', 1))
 }
