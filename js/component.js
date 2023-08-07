@@ -716,27 +716,11 @@ component.adminScreen = () => {
                     <button class="btn btn-primary" id="button-search" type="button">Go!</button>
                 </div>
             </div>
-            <div class="card-body">
-                    <div class="card bg-white">
-                        <div class="card-body d-flex justify-content-between">
-                            <div class="d-flex">
-                                <img class="mt-1" src="
-                                http://books.google.com/books/content?id=bVFPAAAAYAAJ&amp;printsec=frontcover&amp;img=1&amp;zoom=1&amp;edge=curl&amp;source=gbs_api" height="120" width="90">
-                                <div class="resultBasic ms-3">
-                                    <h5>Title</h5>
-                                    <div><b>Book:</b> Report</div>
-                                    <div><b>Author:</b> New York State Library</div>
-                                    <div><b>User:</b> username</div>
-                                    <div><b>Date posted</b> 1916</div>
-                                </div>    
-                            </div>
-                            <div class="modify-btn d-flex align-items-center flex-column flex-lg-row">
-                                    <button class="btn btn-primary m-1"><i class="fa-solid fa-eye" style="width: 18px"></i></button>
-                                    <button class="btn btn-primary m-1"><i class="fa-solid fa-pen-to-square" style="width: 18px"></i></button>
-                                    <button class="btn btn-primary m-1"><i class="fa-solid fa-xmark" style="width: 18px"></i></button>
-                            </div>
-                        </div>
-                    </div>
+            
+            <div class="card-body" id="review-ctrl">
+            </div>
+
+            <div id="review-page">
             </div>
         </div>
     </div>
@@ -744,7 +728,6 @@ component.adminScreen = () => {
 };
 
 component.adminReview = (data_map, key_array) => {
-
     let str = ``;
     for (let i = 0; i < key_array.length; i++) {
         str += `
@@ -761,8 +744,8 @@ component.adminReview = (data_map, key_array) => {
                     </div>    
                 </div>
                 <div class="modify-btn ms-1" style="min-width: 150px;">
-                    <button class="btn btn-primary" id="watch"><i class="fa-solid fa-eye" style="width: 18px"></i></button>
-                    <button class="btn btn-primary" id="update"><i class="fa-solid fa-pen-to-square" style="width: 18px"></i></button>
+                    <button class="btn btn-primary watch" value="${key_array[i]}"><i class="fa-solid fa-eye" style="width: 18px"></i></button>
+                    <button class="btn btn-primary" id="update" ><i class="fa-solid fa-pen-to-square" style="width: 18px"></i></button>
                     <button class="btn btn-primary delete"><i class="fa-solid fa-xmark" style="width: 18px"></i></button>
                 </div>
             </div>

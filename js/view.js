@@ -21,7 +21,7 @@ view.setScreen = async (screenName, review_id) => {
             controller.Authentication();
             console.log(auth.currentUser)
             //Show review
-            controller.showReviewPage();
+            controller.updateReviewPage();
             //Set redirect button
             view.setScreenButton('navbar-brand','homeScreen');
             view.setScreenButton('review-btn','reviewCreatorScreen');
@@ -95,7 +95,6 @@ view.setScreen = async (screenName, review_id) => {
             document.getElementById('app').innerHTML = component.navbar() + component.bookSearchContent() + component.footer();
 
             controller.Authentication();
-            console.log(await controller.Authentication());
 
             //Book search bar
             document.getElementById('bookSearchbar').addEventListener('submit', (j) =>{
@@ -130,6 +129,8 @@ view.setScreen = async (screenName, review_id) => {
         case 'adminScreen':
             view.currentScreen='adminScreen';
             document.getElementById('app').innerHTML = component.navbar() + component.adminScreen() + component.footer();
+
+            controller.showReviewAdministration();
 
             document.getElementById('navbar-brand').style.cursor = 'pointer';
             document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
