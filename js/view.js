@@ -19,7 +19,7 @@ view.setScreen = async (screenName, review_id) => {
             //Set up HTML
             document.getElementById('app').innerHTML = component.navbar() + component.header() + component.homeContent() + component.footer();
             controller.Authentication();
-
+            console.log(auth.currentUser)
             //Show review
             controller.showReviewPage();
             //Set redirect button
@@ -131,11 +131,9 @@ view.setScreen = async (screenName, review_id) => {
             view.currentScreen='adminScreen';
             document.getElementById('app').innerHTML = component.navbar() + component.adminScreen() + component.footer();
 
-
-            controller.showReviewAdministration();
-
             document.getElementById('navbar-brand').style.cursor = 'pointer';
             document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
+            controller.showPendingReviews();
         break;
 
         default:
@@ -153,7 +151,7 @@ view.setScreenButton = (button_id, screen_name, screen_event) => {
 }
 
 
-view.setScreen();
+view.setScreen('adminScreen');
 
 
 

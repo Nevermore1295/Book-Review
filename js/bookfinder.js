@@ -90,5 +90,3 @@ book.searchBookByID = async (id) => {
     var results = await response.json();
     console.log(results);
 }
-
-book.searchBookByID('bVFPAAAAYAAJ');

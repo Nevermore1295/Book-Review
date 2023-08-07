@@ -5,21 +5,22 @@ export let component = {};
 component.Authentication = (isUserExist) => {
     if (isUserExist === true) {
         return ` 
-            <div class="d-flex align-content-center me-1">
+            <div class="d-flex align-content-center me-5">
                 <div class="dropdown">
                     <i class="navbar-nav ms-auto fa-solid fa-user" type="button" data-bs-toggle="dropdown" style="font-size:25px" >
                     </i>
                     <ul class="dropdown-menu account-dropdown">
-                        <li><a class="dropdown-item" href="#">${auth.currentUser.username}</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><a class="dropdown-item" id="log-out">Log Out</a></li>
+                        <li class="dropdown-item"><b>${auth.currentUser.displayName}</b></li>
+                        <li class="dropdown-item" style="cursor: pointer">Information</li>
+                        <li class="dropdown-item" style="cursor: pointer">Your Review</li>
+                        <li class="dropdown-item" id="log-out" style="cursor: pointer">Log Out</li>
                     </ul>
                 </div>
             </div>
         `
     } else {
         return `
-        <div class="d-flex align-content-center me-1">
+        <div class="d-flex align-content-center me-5">
             <div class="dropdown">
             <!-- Button trigger modal -->
             <i type="button" id="login-modal" class="navbar-nav ms-auto fa-solid fa-user" data-bs-toggle="modal" data-bs-target="#LoginModal" style="font-size:25px"></i>
@@ -253,7 +254,7 @@ component.homeContent = () => {
     <div class="container">
         <div class="row">
             <!-- Blog entries-->
-            <div class="col-lg-8" id="blog-entries">
+            <div class="col-lg-8">
 
                 <div id="featured-post">                    
                 </div>
@@ -703,26 +704,8 @@ component.adminScreen = () => {
             <div class="card-header">
                 Pending reviews
             </div>
-            <div class="card-body">
-                <div class="card bg-white">
-                    <div class="card-body d-flex justify-content-between">
-                        <div class="d-flex">
-                            <img class="mt-1" src="
-                            http://books.google.com/books/content?id=bVFPAAAAYAAJ&amp;printsec=frontcover&amp;img=1&amp;zoom=1&amp;edge=curl&amp;source=gbs_api" height="120" width="90">
-                            <div class="resultBasic ms-3">
-                                <h5>Title</h5>
-                                <div><b>Book:</b> Report</div>
-                                <div><b>Author:</b> New York State Library</div>
-                                <div><b>User:</b> username</div>
-                                <div><b>Date posted</b> 1916</div>
-                            </div>    
-                        </div>
-                        <div class="modify-btn d-flex align-items-center flex-column flex-lg-row">
-                                <button class="btn btn-primary m-1"><i class="fa-solid fa-check" style="width: 18px"></i></button>
-                                <button class="btn btn-primary m-1"><i class="fa-solid fa-xmark" style="width: 18px"></i></button>
-                        </div>
-                    </div>
-                </div>
+            <div class="card-body overflow-auto" style="max-height: 400px; min-height: 200px" id="pendingReviewoutput">
+                
             </div>
         </div>
         <div class="card mb-4">

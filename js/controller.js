@@ -80,6 +80,7 @@ controller.login = async () =>{
 //Logout
 controller.logout = async () =>{
     await signOut(auth).then(() => {
+        console.log(`Logged out successfully`);
     // Sign-out successful.
     }).catch((error) => {
     // An error happened.
@@ -137,13 +138,17 @@ controller.register = async () =>{
 controller.addReview = async () =>{   
     //Create data object
     const initialData = {
-        review_created_date: Timestamp.now(),
         review_creator_id: auth.currentUser.uid,
+        review_created_date: Timestamp.now(),
         review_title: document.getElementById('Review-title').value.trim(),
         review_content: document.getElementById('Review-content').value.trim(),
-        review_book_id: document.getElementById('rv-bid').value,
         review_category: document.getElementById('rv-category').value,
-        review_status: 'pending'
+        review_status: 'pending',
+        review_book_id: document.getElementById('rv-bid').value,
+        review_book_thumbnail: document.getElementById('rv-thumbnail').src,
+        review_book_title: document.getElementById('rv-title').value,
+        review_book_pd: document.getElementById('rv-pd').value,
+        review_book_authors: document.getElementById('rv-authors').value
         // review_id: await getDoc();
         //https://www.googleapis.com/books/v1/volumes/bVFPAAAAYAAJ
     }
@@ -373,9 +378,7 @@ controller.showBook = async () => {
 //     return await getDocs(collection(db,'User'));
 // }
 
-controller.showReviewPendingAdministration = async () => {
-    
-}
+
 
 
 controller.getUserDocs = async () => {
@@ -387,3 +390,41 @@ controller.getUserDocs = async () => {
 controller.getReviewByCategory = async (category) => {
     return await query(collection(db, 'Review'), where('review_category', '==', 1))
 }
+
+
+
+////////////////////////////////// PENDING REVIEW ///////////////////////////////////////
+
+controller.showPendingReviews = async () => {
+    const doc = await getDocs(collection(db, 'Review'), where('review_status', '==', 'pending'));
+    let str='';
+    console.log(doc.size)
+    doc.forEach( async (q) =>{
+        str+=`
+        <div class="card bg-white my-2">
+            <div class="card-body d-flex justify-content-between">
+                <div class="d-flex">
+                    <img class="mt-1" src="${q.data().review_book_thumbnail}" height="120" width="90">
+                    <div class="resultBasic ms-3">
+                        <h5>${q.data().review_title}</h5>
+                        <div><b>Book: </b>${q.data().review_book_title}</div>
+                        <div><b>Author: </b>${q.data().review_book_authors}</div>
+                        <div><b>User:</b> username</div>
+                        <div><b>Date posted: </b>${q.data().review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })}</div>
+                    </div>    
+                </div>
+                <div class="modify-btn d-flex align-items-center flex-column flex-lg-row">
+                    <button class="btn btn-primary m-1"><i class="fa-solid fa-eye" style="width: 18px"></i></button>
+                    <button class="btn btn-primary m-1"><i class="fa-solid fa-check" style="width: 18px"></i></button>
+                    <button class="btn btn-primary m-1"><i class="fa-solid fa-xmark" style="width: 18px"></i></button>
+                </div>
+            </div>
+        </div>`;
+        console.log(q.data());
+        await book.searchBookByID(q.data().review_book_id)
+    })
+    document.getElementById('pendingReviewoutput').innerHTML += str;
+}
+
+
+controller.g
