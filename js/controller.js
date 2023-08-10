@@ -215,10 +215,17 @@ controller.updateReviewPage = async () => {
 controller.showReviewPage = async (docs) => {
    
     controller.showCurrentReviewPage(docs,0);
+
+    let page_quantity = (docs.length/5).toFixed(0);
+    console.log(page_quantity);
+
+    if (doc.length>5 && doc.length%5>0){
+        page_quantity++;
+        console.log(page_quantity);
+    }
+
     // console.log(page);
-    let page_quantity = docs.length/5+1;
     let current_page = 1;
-    console.log(current_page);
     document.getElementById('review-page').innerHTML=component.pagination(current_page,page_quantity);
 
     controller.checkPagePosition(docs, current_page, page_quantity);
@@ -227,10 +234,10 @@ controller.showReviewPage = async (docs) => {
 
 controller.checkPagePosition = (docs, current_page, page_quantity)=>{
     if (current_page===1){
-        document.getElementById('previous-page').style.display ='none';
+        document.getElementById('previous-page').disabled =true;
     } else {
+        document.getElementById('previous-page').disabled =false;
         document.getElementById('previous-page').addEventListener('click', ()=>{
-            document.getElementById('previous-page').style.display ='block';
             current_page--;
             console.log(current_page);
             controller.showCurrentReviewPage(docs,current_page-1);
@@ -240,10 +247,10 @@ controller.checkPagePosition = (docs, current_page, page_quantity)=>{
     }
 
     if (current_page>=page_quantity){
-        document.getElementById('next-page').style.display ='none';    
+        document.getElementById('next-page').disabled =true;    
     } else {
-        document.getElementById('next-page').addEventListener('click', async ()=>{
-            document.getElementById('next-page').style.display ='block';
+        document.getElementById('next-page').disabled =false;
+        document.getElementById('next-page').addEventListener('click', async ()=>{       
             current_page++;
             console.log(current_page);
             controller.showCurrentReviewPage(docs,current_page-1);

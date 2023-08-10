@@ -225,7 +225,7 @@ component.pagination = (current_page,page_quantity) => {
     return`
     <nav aria-label="Pagination">
         <hr class="my-0">
-        <ul class="pagination justify-content-end my-4 me-3">
+        <ul class="pagination align-items-center justify-content-end my-4 me-3">
             <li class="page-item" id="previous-page"><a class="page-link"><i class="fa-solid fa-angle-left"></i></a></li>
             <li class="page-item">${current_page}/${page_quantity}</li>
             <li class="page-item" id="next-page"><a class="page-link"><i class="fa-solid fa-angle-right"></i></a></li>            
@@ -246,13 +246,13 @@ component.reviewInfo = (review_data,user_data) => {
             <!-- Post meta content-->
             <div class="text-muted fst-italic mb-2">Created by ${user_data.user_name} in ${review_data.review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })}</div>          
             <!-- Post categories-->
-            <a class="badge bg-secondary text-decoration-none link-light" href="#!">${data.review_category}</a>
+            <a class="badge bg-secondary text-decoration-none link-light" href="#!">${review_data.review_category}</a>
         </header>
         
         <!-- Post content-->
         <div class="mb-4">
-            <img class="rounded ms-2 mt-2 me-3" height="300" src="${data.review_book_thumbnail}">
-            <p class="d-inline fs-5 mb-4" style="text-align: justify">${data.review_content}</p>
+            <img class="rounded ms-2 mt-2 me-3" height="300" src="${review_data.review_book_thumbnail}">
+            <p class="d-inline fs-5 mb-4" style="text-align: justify">${review_data.review_content}</p>
         </div>  
 `
 }
