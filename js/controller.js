@@ -182,39 +182,20 @@ controller.addReview = async () =>{
 controller.updateReviewPage = async () => {
     let review_query = await (query(collection(db,'Review') ,where('review_status','==','active'), orderBy('review_created_date','desc'))); 
 
-    onSnapshot(review_query, async (qr)=>{
-        // let review_active = await getDocs(collection(db,'Review'), where('review_status','==','active'), orderBy('review_created_date','desc'));
-        controller.showReviewPage(await qr.docs);
-    })
+    let review_docs = await getDocs(review_query);
+
+    controller.showCurrentReviewPage(review_docs.docs,0).then(()=>{
+        onSnapshot(review_query, async (qr)=>{
+            console.log(qr.docs);
+            // let review_active = await getDocs(collection(db,'Review'), where('review_status','==','active'), orderBy('review_created_date','desc'));
+            controller.showReviewPage(await qr.docs);
+        })
+    }) 
 }
 
 
-
-
-// controller.showReviewPage = async (docs) => {
-   
-//     controller.showCurrentReviewPage(docs,0);
-//     // console.log(page);
-//     let page_quantity = docs.length/5+1;
-//     document.getElementById('review-page').innerHTML=component.reviewPage(page_quantity);
-
-//     document.querySelectorAll('.page-item').forEach(item =>{
-        
-//         item.addEventListener('click', async ()=>{
-//             document.querySelectorAll('.page-item').forEach (childitem =>{
-//                 childitem.setAttribute('class','page-item');
-//             })
-//             item.setAttribute('class','page-item active');
-
-//             controller.showCurrentReviewPage(docs,item.getAttribute('value')-1);
-//         });
-//     });
-// }
-
-
+//Hiển thị trang
 controller.showReviewPage = async (docs) => {
-   
-    controller.showCurrentReviewPage(docs,0);
 
     let page_quantity = Math.trunc((docs.length/5));
     console.log(page_quantity);
@@ -231,6 +212,7 @@ controller.showReviewPage = async (docs) => {
    
 }
 
+//Kiểm tra tra và xử lí chuyển trang
 controller.checkPagePosition = (docs, current_page, page_quantity)=>{
     if (current_page===1){
         document.getElementById('previous-page').disabled =true;
@@ -238,7 +220,6 @@ controller.checkPagePosition = (docs, current_page, page_quantity)=>{
         document.getElementById('previous-page').disabled =false;
         document.getElementById('previous-page').addEventListener('click', ()=>{
             current_page--;
-            console.log(current_page);
             controller.showCurrentReviewPage(docs,current_page-1);
             document.getElementById('review-page').innerHTML=component.pagination(current_page,page_quantity);
             controller.checkPagePosition(docs, current_page,page_quantity);
@@ -251,7 +232,6 @@ controller.checkPagePosition = (docs, current_page, page_quantity)=>{
         document.getElementById('next-page').disabled =false;
         document.getElementById('next-page').addEventListener('click', async ()=>{       
             current_page++;
-            console.log(current_page);
             controller.showCurrentReviewPage(docs,current_page-1);
             document.getElementById('review-page').innerHTML=component.pagination(current_page,page_quantity);
             controller.checkPagePosition(docs, current_page,page_quantity);
@@ -259,8 +239,8 @@ controller.checkPagePosition = (docs, current_page, page_quantity)=>{
     }
 }
 
-//Show review at Homepage
-controller.showCurrentReviewPage = (review_docs,page_number) => {
+//Hiển thị trang hiện tại
+controller.showCurrentReviewPage = async (review_docs,page_number) => {
 
     console.log(review_docs);
     let review_array = new Array();
