@@ -80,25 +80,42 @@ component.navbar = () => {
                             <a class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                 Collections
                             </a>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                <a class="dropdown-item" href="#">Action</a>
-                                <a class="dropdown-item" href="#">Another action</a>
-                                <a class="dropdown-item" href="#">Something else here</a>
-                                <a class="dropdown-item" href="#">Action</a>
-                                
+                            <div class="dropdown-menu mt-lg-3" aria-labelledby="dropdownMenuButton1">
+                                <div class="d-flex">
+                                <div class="dropdown-row" style="width: calc(100%/3)">
+                                    <a class="dropdown-item" href="#">Action & Adventure</a>
+                                    <a class="dropdown-item" href="#">Biographies/religion</a>
+                                    <a class="dropdown-item" href="#">Business</a>
+                                    <a class="dropdown-item" href="#">Comics</a>
+                                    <a class="dropdown-item" href="#">Education</a>
+                                </div>
+                                <div class="dropdown-row" style="width: calc(100%/3)">
+                                    <a class="dropdown-item" href="#">Entertainment</a>
+                                    <a class="dropdown-item" href="#">History</a>
+                                    <a class="dropdown-item" href="#">Medical/lifestyle</a>
+                                    <a class="dropdown-item" href="#">Literature & fiction</a>
+                                    <a class="dropdown-item" href="#">Science & technology</a>
+                                </div>
+                                <div class="dropdown-row" style="width: calc(100%/3)">
+                                    <a class="dropdown-item" href="#">Sport</a>
+                                    <a class="dropdown-item" href="#">Medical/lifestyle</a>
+                                    <a class="dropdown-item" href="#">Others</a>
+                                </div>
+                                </div>
                             </div>
                         </li>
                         <li class="dropdown">
                             <a id="search-btn">Search</a>
                         </li>  
-                        <li class="dropdown">
-                            <a id="about-btn">About</a>
-                        </li>
+                        
                         <li class="dropdown" id="review-btn-li">
                             <a id="review-btn">Make a review</a>
                         </li>
                         <li class="dropdown" id="admin-btn-li">
                             <a id="admin-btn">Administration</a>
+                        </li>
+                        <li class="dropdown">
+                            <a id="about-btn">About</a>
                         </li>
                     </ul>
                     <a id="user-auth">
@@ -183,6 +200,7 @@ component.blogEntries = (review_doc) => {
 }
 
 
+
 component.homeContent = () => {
     return `
     <!-- Page content-->
@@ -203,13 +221,39 @@ component.homeContent = () => {
     </div>`
 };
 
+component.reviewPage = (page_number) => {
+    let str = `
+        <!-- Pagination-->
+        <nav aria-label="Pagination">
+            <hr class="my-0" />
+            <ul class="pagination justify-content-center my-4">
+                <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Newer</a></li>
+    `;
+
+    for (let i = 1; i < page_number; i++) {
+        str += `
+                <li class="page-item" value=${i}><a class="page-link" href="#!">${i}</a></li>
+            `
+    }
+
+    str += `
+                <li class="page-item"><a class="page-link" href="#!">Older</a></li>
+            </ul>
+        </nav>
+    `
+    return str;
+
+}
+
 component.pagination = (page_number) => {
     return`
     <nav aria-label="Pagination">
         <hr class="my-0">
-        <ul class="pagination justify-content-end my-4 me-3">
+        <ul class="pagination justify-content-end align-items-center my-4 me-3">
+            <li class="me-2">2/30</li>
             <li class="page-item"><a class="page-link"><i class="fa-solid fa-angle-left"></i></a></li>
             <li class="page-item"><a class="page-link"><i class="fa-solid fa-angle-right"></i></a></li>
+            
         </ul>
     </nav>
     `;

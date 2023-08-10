@@ -196,7 +196,7 @@ controller.showReviewPage = async (docs) => {
     controller.showCurrentReviewPage(docs,0);
     // console.log(page);
     let page_quantity = docs.length/5+1;
-    document.getElementById('review-page').innerHTML=component.reviewPage(page_quantity);
+    document.getElementById('review-page').innerHTML=component.pagination(page_quantity);
 
     document.querySelectorAll('.page-item').forEach(item =>{
         
