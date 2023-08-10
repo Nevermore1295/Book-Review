@@ -42,7 +42,7 @@ controller.isAdmin = async () => {
     let docRef = await (getDoc(doc(db, "User", auth.currentUser.uid)));
     if (await docRef.data().user_authority==2){
         document.getElementById('admin-btn-li').style.display = 'block';
-        document.getElementById('admin-btn-li').innerHTML=`<a id="admin-btn">Administration</a>`
+        
     } else {
         document.getElementById('admin-btn-li').style.display = 'none';
     }
@@ -166,8 +166,8 @@ controller.addReview = async () =>{
         `
             <div class="card mt-3">
                 <div class="card-body">
-                    <h5>Your review has been saved!</h5>
-                    <p><a>Go to homepage</a> or <a>Make another review</a></p>
+                    <h4>Your review has been saved!</h4>
+                    <p>Go to <a>homepage</a> or <a>Make another review</a></p>
                 </div>
             </div>
         `
@@ -255,7 +255,7 @@ controller.showReviewPage = async (data_map, key_array) => {
 
     // let block = (page/3);
     controller.showCurrentReviewPage(data_map,key_array,0);
-    document.getElementById('review-page').innerHTML=component.reviewPage(page);
+    document.getElementById('review-page').innerHTML=component.pagination(page);
 
     document.querySelectorAll('.page-item').forEach(item =>{
         
@@ -345,7 +345,7 @@ controller.createReviewObject = async (review_docRef)=>{
 
     let review_object = review_docRef;
 
-    review_object.review_creator_id = user_docRef.data().username;
+    review_object.review_creator_id = user_docRef.data().user_name;
 
     return review_object;
 }
@@ -465,35 +465,34 @@ controller.getReviewByCategory = async (category) => {
 ////////////////////////////////// PENDING REVIEW ///////////////////////////////////////
 
 controller.showPendingReviews = async () => {
-    const doc = await getDocs(collection(db, 'Review'), where('review_status', '==', 'pending'));
-    let str='';
-    console.log(doc.size)
-    doc.forEach( async (q) =>{
-        str+=`
-        <div class="card bg-white my-2">
-            <div class="card-body d-flex justify-content-between">
-                <div class="d-flex">
-                    <img class="mt-1" src="${q.data().review_book_thumbnail}" height="120" width="90">
-                    <div class="resultBasic ms-3">
-                        <h5>${q.data().review_title}</h5>
-                        <div><b>Book: </b>${q.data().review_book_title}</div>
-                        <div><b>Author: </b>${q.data().review_book_authors}</div>
-                        <div><b>User:</b> username</div>
-                        <div><b>Date posted: </b>${q.data().review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })}</div>
-                    </div>    
+    const result = await query(collection(db, 'Review'), where('review_status', '==', 'pending'));
+    onSnapshot(result, async (qr)=>{
+        qr = await getDocs(result,orderBy('review_created_date', 'desc'));
+        let str='';
+        console.log(doc.size)
+        qr.forEach((q) =>{
+            str+=`
+            <div class="card bg-white my-2">
+                <div class="card-body d-flex justify-content-between">
+                    <div class="d-flex">
+                        <img class="mt-1" src="${q.data().review_book_thumbnail}" height="120" width="90">
+                        <div class="resultBasic ms-3">
+                            <h5>${q.data().review_title}</h5>
+                            <div><b>Book: </b>${q.data().review_book_title}</div>
+                            <div><b>Author: </b>${q.data().review_book_authors}</div>
+                            <div><b>User:</b> username</div>
+                            <div><b>Date posted: </b>${q.data().review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })}</div>
+                        </div>    
+                    </div>
+                    <div class="modify-btn d-flex align-items-center flex-column flex-lg-row">
+                        <button class="btn btn-primary m-1"><i class="fa-solid fa-eye" style="width: 18px"></i></button>
+                        <button class="btn btn-primary m-1"><i class="fa-solid fa-check" style="width: 18px"></i></button>
+                        <button class="btn btn-primary m-1"><i class="fa-solid fa-xmark" style="width: 18px"></i></button>
+                    </div>
                 </div>
-                <div class="modify-btn d-flex align-items-center flex-column flex-lg-row">
-                    <button class="btn btn-primary m-1"><i class="fa-solid fa-eye" style="width: 18px"></i></button>
-                    <button class="btn btn-primary m-1"><i class="fa-solid fa-check" style="width: 18px"></i></button>
-                    <button class="btn btn-primary m-1"><i class="fa-solid fa-xmark" style="width: 18px"></i></button>
-                </div>
-            </div>
-        </div>`;
-        console.log(q.data());
-        await book.searchBookByID(q.data().review_book_id)
+            </div>`;
+        })
+        document.getElementById('pendingReviewoutput').innerHTML = str;
     })
-    document.getElementById('pendingReviewoutput').innerHTML += str;
+    
 }
-
-
-controller.g

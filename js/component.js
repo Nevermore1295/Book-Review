@@ -74,19 +74,19 @@ component.navbar = () => {
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto" id="navbtn">
                         <li class="dropdown">
-                            <a id="home">Home</a>
+                            <a id="home-btn">Home</a>
                         </li>
                         <li class="dropdown">
                             <a class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                 Collections
                             </a>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                <li><a class="dropdown-item" href="#">Action</a></li>
-                                <li><a class="dropdown-item" href="#">Another action</a></li>
-                                <li><a class="dropdown-item" href="#">Something else here</a></li>
-                                <li><a class="dropdown-item" href="#">Action</a></li>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                <a class="dropdown-item" href="#">Action</a>
+                                <a class="dropdown-item" href="#">Another action</a>
+                                <a class="dropdown-item" href="#">Something else here</a>
+                                <a class="dropdown-item" href="#">Action</a>
                                 
-                            </ul>
+                            </div>
                         </li>
                         <li class="dropdown">
                             <a id="search-btn">Search</a>
@@ -97,9 +97,8 @@ component.navbar = () => {
                         <li class="dropdown" id="review-btn-li">
                             <a id="review-btn">Make a review</a>
                         </li>
-
                         <li class="dropdown" id="admin-btn-li">
-                            
+                            <a id="admin-btn">Administration</a>
                         </li>
                     </ul>
                     <a id="user-auth">
@@ -166,81 +165,22 @@ component.sideWidget = () => {
 `
 }
 
-//**********************Home Screen***********************
-// component.blogEntries = (data_map, key_array) => {
-//     return `
-//     <!-- Featured blog post-->
-//     <div class="card mb-4">
-//         <a class="reviewScreen"><img class="card-img-top" src="https://dummyimage.com/850x350/dee2e6/6c757d.jpg" alt="..." /></a>
-//         <div class="card-body">
-//             <div class="small text-muted">January 1, 2023</div>
-//             <h2 class="card-title">Featured Post Title</h2>
-//             <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam. Dicta expedita corporis animi vero voluptate voluptatibus possimus, veniam magni quis!</p>
-//             <a class="btn btn-primary" class="reviewScreen">Read more →</a>
-//         </div>
-//     </div>
-//     <!-- Nested row for non-featured blog posts-->
-//     <div class="row">
-//         <div class="col-lg-6">
-//             <!-- Blog post-->
-//             <div class="card mb-4">
-//                 <a class="reviewScreen"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-//                 <div class="card-body">
-//                     <div class="small text-muted">January 1, 2023</div>
-//                     <h2 class="card-title h4">Post Title</h2>
-//                     <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla.</p>
-//                     <a class="btn btn-primary" class="reviewScreen">Read more →</a>
-//                 </div>
-//             </div>
-//             <!-- Blog post-->
-//             <div class="card mb-4">
-//                 <a class="reviewScreen"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-//                 <div class="card-body">
-//                     <div class="small text-muted">January 1, 2023</div>
-//                     <h2 class="card-title h4">Post Title</h2>
-//                     <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla.</p>
-//                     <a class="btn btn-primary" class="reviewScreen">Read more →</a>
-//                 </div>
-//             </div>
-//         </div>
-//         <div class="col-lg-6">
-//             <!-- Blog post-->
-//             <div class="card mb-4">
-//                 <a class="reviewScreen"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-//                 <div class="card-body">
-//                     <div class="small text-muted">January 1, 2023</div>
-//                     <h2 class="card-title h4">Post Title</h2>
-//                     <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla.</p>
-//                     <a class="btn btn-primary" class="reviewScreen">Read more →</a>
-//                 </div>
-//             </div>
-//             <!-- Blog post-->
-//             <div class="card mb-4">
-//                 <a class="reviewScreen"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-//                 <div class="card-body">
-//                     <div class="small text-muted">January 1, 2023</div>
-//                     <h2 class="card-title h4">Post Title</h2>
-//                     <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam.</p>
-//                     <a class="btn btn-primary" class="reviewScreen">Read more →</a>
-//                 </div>
-//             </div>
-//         </div>
-//     </div>
-//     `
-// }
+
 
 component.blogEntries = (data_map, key_array) => {
     let str = ``;
     for (let i = 0; i < key_array.length; i++) {
         str += `<div class="card mb-4 flex-row align-items-center">
-        <a class="reviewScreen" value="${key_array[i]}"><img src="http://books.google.com/books/content?id=bVFPAAAAYAAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"></a>
-        <div class="card-body">
-            <h2 class="card-title">${data_map.get(key_array[i]).review_title}</h2>
-            <span class="small text-muted">${data_map.get(key_array[i]).review_creator_id}</span>
-            <span class="small text-muted">${data_map.get(key_array[i]).review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })}</span>
-            
-            <p class="card-text overflow-hidden" style="max-height: 70px">${data_map.get(key_array[i]).review_content}</p>
-            <a class="btn btn-primary review-show" value="${key_array[i]}">Read more →</a>
+        <div class="card-body d-flex">
+            <a class="reviewScreen" value="${key_array[i]}"><img src="${data_map.get(key_array[i]).review_book_thumbnail}"></a>
+            <div class="ms-3">
+                <h2 class="card-title">${data_map.get(key_array[i]).review_title}</h2>
+                <span class="small text-muted">${data_map.get(key_array[i]).review_creator_id}</span>
+                <span class="small text-muted">${data_map.get(key_array[i]).review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })}</span>
+
+                <p class="card-text overflow-hidden" style="max-height: 70px">${data_map.get(key_array[i]).review_content}</p>
+                <a class="btn btn-primary review-show" value="${key_array[i]}">Read more →</a>
+            </div>
         </div>
     </div> `
     }
@@ -268,33 +208,16 @@ component.homeContent = () => {
     </div>`
 };
 
-component.reviewPage = (page_number) => {
-    let str = `
-        <!-- Pagination-->
-        <nav aria-label="Pagination">
-            <hr class="my-0" />
-            <ul class="pagination justify-content-center my-4">
-                <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Newer</a></li>
+component.pagination = (page_number) => {
+    return`
+    <nav aria-label="Pagination">
+        <hr class="my-0">
+        <ul class="pagination justify-content-end my-4 me-3">
+            <li class="page-item"><a class="page-link"><i class="fa-solid fa-angle-left"></i></a></li>
+            <li class="page-item"><a class="page-link"><i class="fa-solid fa-angle-right"></i></a></li>
+        </ul>
+    </nav>
     `;
-
-    for (let i = 1; i < page_number; i++) {
-        str += `
-                <li class="page-item" value=${i}><a class="page-link" href="#!">${i}</a></li>
-            `
-    }
-
-    str += `
-                <li class="page-item"><a class="page-link" href="#!">Older</a></li>
-            </ul>
-        </nav>
-    `
-    return str;
-
-    // <li class="page-item active" value=1><a class="page-link" href="#!">1</a></li>
-    // <li class="page-item" value=2><a class="page-link" href="#!">2</a></li>
-    // <li class="page-item" value=3><a class="page-link" href="#!">3</a></li>
-    // <li class="page-item disabled"><a class="page-link" href="#!">...</a></li>
-    // <li class="page-item" value=15><a class="page-link" href="#!">15</a></li>  
 }
 
 
@@ -302,7 +225,6 @@ component.reviewPage = (page_number) => {
 component.reviewInfo = (data) => {
     return `
     <!-- Post content-->
-    <article>
         <!-- Post header-->
         <header class="mb-4">
             <!-- Post title-->
@@ -310,16 +232,14 @@ component.reviewInfo = (data) => {
             <!-- Post meta content-->
             <div class="text-muted fst-italic mb-2">Created by ${data.review_creator_id} in ${data.review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })}</div>          
             <!-- Post categories-->
-            <a class="badge bg-secondary text-decoration-none link-light" href="#!">Web Design</a>
-            <a class="badge bg-secondary text-decoration-none link-light" href="#!">Freebies</a>
+            <a class="badge bg-secondary text-decoration-none link-light" href="#!">${data.review_category}</a>
         </header>
-        <!-- Preview image figure-->
-        <figure class="mb-4"><img class="img-fluid rounded" src="https://dummyimage.com/900x400/ced4da/6c757d.jpg" alt="..." /></figure>
+        
         <!-- Post content-->
-        <section class="mb-5">
-            <p class="fs-5 mb-4">${data.review_content}</p>
-        </section>
-    </article>
+        <div class="mb-4">
+            <img class="rounded ms-2 mt-2 me-3" height="300" src="${data.review_book_thumbnail}">
+            <p class="d-inline fs-5 mb-4" style="text-align: justify">${data.review_content}</p>
+        </div>  
 `
 }
 
@@ -399,7 +319,7 @@ component.displayedChildComment = (data) => {
 component.commentSection = (data) => {
     return `
     <!-- Comments section-->
-    <section class="mb-5">
+    <div class="mb-5">
         <div class="card bg-light">
             <div class="card-body">
                 <!-- Comment form-->
@@ -411,7 +331,7 @@ component.commentSection = (data) => {
                 <div>
             </div>
         </div>
-    </section>
+    </div>
 `}
 
 
@@ -421,8 +341,8 @@ component.reviewContent = () => {
     <div class="container mt-5">
         <div class="row">
             <div class="col-lg-8">
-                <a id="reviewInfo"></a>
-                <a id="commentSection"></a>
+                <div id="reviewInfo"></div>
+                <div id="commentSection"></div>
             </div>
             ${component.sideWidget()}
         </div>
@@ -555,19 +475,19 @@ component.bookSearchContent = () => {
                                 <span class="input-group-text" for="inputGroupSelect01">Category</span>
                                 <select class="form-select review-forminput" id="rv-category" disabled>
                                 <option selected>Choose...</option>
-                                <option value="1">Action & Adventure</option>
-                                <option value="2">Biographies/religion</option>
-                                <option value="3">Business</option>
-                                <option value="4">Comics</option>
-                                <option value="5">Education</option>
-                                <option value="6">Entertainment</option>
-                                <option value="7">History</option>
-                                <option value="8">Medical/lifestyle</option>
-                                <option value="9">Literature & fiction</option>
-                                <option value="10">Science & technology</option>
-                                <option value="11">Sport</option>
-                                <option value="12">Medical/lifestyle</option>
-                                <option value="13">Others</option>
+                                <option value="Action & Adventure">Action & Adventure</option>
+                                <option value="Biographies/religion">Biographies/religion</option>
+                                <option value="Business">Business</option>
+                                <option value="Comics">Comics</option>
+                                <option value="Education">Education</option>
+                                <option value="Entertainment">Entertainment</option>
+                                <option value="History">History</option>
+                                <option value="Medical/lifestyle">Medical/lifestyle</option>
+                                <option value="Literature & fiction">Literature & fiction</option>
+                                <option value="Science & technology">Science & technology</option>
+                                <option value="Sport">Sport</option>
+                                <option value="Medical/lifestyle">Medical/lifestyle</option>
+                                <option value="Others">Others</option>
 
                                 </select>
                             </div>
@@ -734,7 +654,7 @@ component.adminReview = (data_map, key_array) => {
         <div class="card bg-white">
             <div class="card-body d-flex justify-content-between">
                 <div class="d-flex">
-                    <img class="mt-1" src="http://books.google.com/books/content?id=bVFPAAAAYAAJ&amp;printsec=frontcover&amp;img=1&amp;zoom=1&amp;edge=curl&amp;source=gbs_api" height="120" width="90">
+                    <img class="mt-1" src="${data_map.get(key_array[i]).review_book_thumbnail}" height="120" width="90">
                     <div class="resultBasic ms-3">
                         <h5>${data_map.get(key_array[i]).review_title}</h5>
                         <div><b>Book:</b> Report</div>
