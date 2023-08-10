@@ -187,7 +187,7 @@ component.sideWidget = () => {
 component.blogEntries = (review_doc) => {
 
     return `<div class="card mb-4 flex-row align-items-center">
-        <a class="reviewScreen" value="${review_doc.id}"><img src="http://books.google.com/books/content?id=bVFPAAAAYAAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"></a>
+        <a class="reviewScreen" value="${review_doc.id}"><img src="${review_doc.data().review_book_thumbnail}" height="160" width="100"></a>
         <div class="card-body">
             <h2 class="card-title">${review_doc.data().review_title}</h2>
             <span class="small text-muted">${review_doc.data().review_creator_id}</span>

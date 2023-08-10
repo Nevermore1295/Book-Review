@@ -216,10 +216,10 @@ controller.showReviewPage = async (docs) => {
    
     controller.showCurrentReviewPage(docs,0);
 
-    let page_quantity = (docs.length/5).toFixed(0);
+    let page_quantity = Math.trunc((docs.length/5));
     console.log(page_quantity);
 
-    if (doc.length>5 && doc.length%5>0){
+    if (docs.length>5 && doc.length%5>0){
         page_quantity++;
         console.log(page_quantity);
     }
@@ -227,7 +227,6 @@ controller.showReviewPage = async (docs) => {
     // console.log(page);
     let current_page = 1;
     document.getElementById('review-page').innerHTML=component.pagination(current_page,page_quantity);
-
     controller.checkPagePosition(docs, current_page, page_quantity);
    
 }
@@ -296,7 +295,6 @@ controller.showCurrentReviewPage = (review_docs,page_number) => {
         break;
             
         case 'adminScreen':
-           
 
             for (let i = 0; i < review_array.length; i++) {
                 str += component.adminReview(review_array[i]);
