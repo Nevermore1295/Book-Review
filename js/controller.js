@@ -42,7 +42,7 @@ controller.isAdmin = async () => {
     let docRef = await (getDoc(doc(db, "User", auth.currentUser.uid)));
     if (await docRef.data().user_authority==2){
         document.getElementById('admin-btn-li').style.display = 'block';
-        view.setScreenButton('admin-btn-li','adminScreen')
+        
     } else {
         document.getElementById('admin-btn-li').style.display = 'none';
     }
@@ -166,8 +166,8 @@ controller.addReview = async () =>{
         `
             <div class="card mt-3">
                 <div class="card-body">
-                    <h5>Your review has been saved!</h5>
-                    <p><a>Go to homepage</a> or <a>Make another review</a></p>
+                    <h4>Your review has been saved!</h4>
+                    <p>Go to <a>homepage</a> or <a>Make another review</a></p>
                 </div>
             </div>
         `

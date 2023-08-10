@@ -22,10 +22,11 @@ view.setScreen = async (screenName, review_id) => {
             //Show review
             controller.updateReviewPage();
             //Set redirect button
+            view.setScreenButton('home-btn','homeScreen');
             view.setScreenButton('navbar-brand','homeScreen');
-            view.setScreenButton('review-btn','reviewCreatorScreen');
             view.setScreenButton('search-btn','searchScreen');
-
+            view.setScreenButton('admin-btn','adminScreen');
+            view.setScreenButton('review-btn','reviewCreatorScreen');
             break;
 
         case 'reviewDetailScreen':
@@ -54,9 +55,11 @@ view.setScreen = async (screenName, review_id) => {
             });
 
             //Set redirect button
+            view.setScreenButton('home-btn','homeScreen');
             view.setScreenButton('navbar-brand','homeScreen');
-            // document.getElementById('navbar-brand').style.cursor = 'pointer';
-            // document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
+            view.setScreenButton('search-btn','searchScreen');
+            view.setScreenButton('admin-btn','adminScreen');
+            view.setScreenButton('review-btn','reviewCreatorScreen');
 
         break;
         
@@ -84,15 +87,20 @@ view.setScreen = async (screenName, review_id) => {
 
             view.setScreenButton('navbar-brand','homeScreen');
             document.getElementById('login-btn').style.cursor = 'pointer';
-            document.getElementById('login-btn').addEventListener('click', async () => { await view.setScreen('homeScreen'); document.getElementById('login-modal').click()});
-           
+            document.getElementById('login-btn').addEventListener('click', async () => { 
+                await view.setScreen('homeScreen'); 
+                document.getElementById('login-modal').click()});
         break;
 
         case 'reviewCreatorScreen':
             view.currentScreen='reviewCreatorScreen';
             //Set up HTML 
             document.getElementById('app').innerHTML = component.navbar() + component.bookSearchContent() + component.footer();
-
+            view.setScreenButton('home-btn','homeScreen');
+            view.setScreenButton('navbar-brand','homeScreen');
+            view.setScreenButton('search-btn','searchScreen');
+            view.setScreenButton('admin-btn','adminScreen');
+            view.setScreenButton('review-btn','reviewCreatorScreen');
             controller.Authentication();
 
             //Book search bar
@@ -120,8 +128,12 @@ view.setScreen = async (screenName, review_id) => {
             view.currentScreen='searchScreen';
              //Set redirect button
             document.getElementById('app').innerHTML = component.navbar() + component.reviewQuery() + component.footer();
-            document.getElementById('navbar-brand').style.cursor = 'pointer';
-            document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
+            view.setScreenButton('navbar-brand','homeScreen');
+            view.setScreenButton('home-btn','homeScreen');
+            view.setScreenButton('navbar-brand','homeScreen');
+            view.setScreenButton('search-btn','searchScreen');
+            view.setScreenButton('admin-btn','adminScreen');
+            view.setScreenButton('review-btn','reviewCreatorScreen');
 
         break;
         
@@ -129,14 +141,13 @@ view.setScreen = async (screenName, review_id) => {
 
             view.currentScreen='adminScreen';
             document.getElementById('app').innerHTML = component.navbar() + component.adminScreen() + component.footer();
-            controller.Authentication();
-
+            view.setScreenButton('home-btn','homeScreen');
+            view.setScreenButton('navbar-brand','homeScreen');
+            view.setScreenButton('search-btn','searchScreen');
+            view.setScreenButton('admin-btn','adminScreen');
+            view.setScreenButton('review-btn','reviewCreatorScreen');
             controller.showReviewAdministration();
             controller.showPendingReviews();
-
-            document.getElementById('navbar-brand').style.cursor = 'pointer';
-            document.getElementById('navbar-brand').addEventListener('click', () => view.setScreen('homeScreen'));
-
         break;
 
         default:
@@ -149,8 +160,7 @@ view.setScreen = async (screenName, review_id) => {
 view.setScreenButton = (button_id, screen_name) => {   
     document.getElementById(button_id).style.cursor = 'pointer';
     document.getElementById(button_id).addEventListener('click', () => {
-        view.setScreen(screen_name);
-        });
+        view.setScreen(screen_name);});
 }
 
 
