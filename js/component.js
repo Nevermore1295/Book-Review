@@ -242,17 +242,18 @@ component.reviewInfo = (review_data,user_data) => {
         <!-- Post header-->
         <header class="mb-4">
             <!-- Post title-->
-            <h1 class="fw-bolder mb-1">${review_data.review_title}</h1>
+            <h1 class="fw-bolder mb-1">${review_data.review_title} </h1>
+            <a class="badge bg-secondary text-decoration-none link-light mb-2" href="#!">${review_data.review_category}</a>
             <!-- Post meta content-->
-            <div class="text-muted fst-italic mb-2">Created by ${user_data.user_name} in ${review_data.review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })}</div>          
+            <div class="text-muted fst-italic mb-2">${review_data.review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })} By ${user_data.user_name}</div>          
             <!-- Post categories-->
-            <a class="badge bg-secondary text-decoration-none link-light" href="#!">${review_data.review_category}</a>
+            
         </header>
         
         <!-- Post content-->
         <div class="mb-4">
-            <img class="rounded ms-2 mt-2 me-3" height="300" src="${review_data.review_book_thumbnail}">
-            <p class="d-inline fs-5 mb-4" style="text-align: justify">${review_data.review_content}</p>
+           
+            <p class="fs-5 mb-4" style="text-align: justify"> <img class="rounded ms-2 mt-2 me-3" height="300" src="${review_data.review_book_thumbnail}">${review_data.review_content}</p>
         </div>  
 `
 }
@@ -356,7 +357,7 @@ component.reviewContent = () => {
         <div class="row">
             <div class="col-lg-8">
                 <div id="reviewInfo"></div>
-                <div id="commentSection"></div>
+                <div id="commentSection" w-100></div>
             </div>
             ${component.sideWidget()}
         </div>
