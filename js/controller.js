@@ -191,26 +191,67 @@ controller.updateReviewPage = async () => {
 
 
 
+// controller.showReviewPage = async (docs) => {
+   
+//     controller.showCurrentReviewPage(docs,0);
+//     // console.log(page);
+//     let page_quantity = docs.length/5+1;
+//     document.getElementById('review-page').innerHTML=component.reviewPage(page_quantity);
+
+//     document.querySelectorAll('.page-item').forEach(item =>{
+        
+//         item.addEventListener('click', async ()=>{
+//             document.querySelectorAll('.page-item').forEach (childitem =>{
+//                 childitem.setAttribute('class','page-item');
+//             })
+//             item.setAttribute('class','page-item active');
+
+//             controller.showCurrentReviewPage(docs,item.getAttribute('value')-1);
+//         });
+//     });
+// }
+
+
 controller.showReviewPage = async (docs) => {
    
     controller.showCurrentReviewPage(docs,0);
     // console.log(page);
     let page_quantity = docs.length/5+1;
-    document.getElementById('review-page').innerHTML=component.reviewPage(page_quantity);
+    let current_page = 1;
+    console.log(current_page);
+    document.getElementById('review-page').innerHTML=component.pagination(current_page,page_quantity);
 
-    document.querySelectorAll('.page-item').forEach(item =>{
-        
-        item.addEventListener('click', async ()=>{
-            document.querySelectorAll('.page-item').forEach (childitem =>{
-                childitem.setAttribute('class','page-item');
-            })
-            item.setAttribute('class','page-item active');
-
-            controller.showCurrentReviewPage(docs,item.getAttribute('value')-1);
-        });
-    });
+    controller.checkPagePosition(docs, current_page, page_quantity);
+   
 }
 
+controller.checkPagePosition = (docs, current_page, page_quantity)=>{
+    if (current_page===1){
+        document.getElementById('previous-page').style.display ='none';
+    } else {
+        document.getElementById('previous-page').addEventListener('click', ()=>{
+            document.getElementById('previous-page').style.display ='block';
+            current_page--;
+            console.log(current_page);
+            controller.showCurrentReviewPage(docs,current_page-1);
+            document.getElementById('review-page').innerHTML=component.pagination(current_page,page_quantity);
+            controller.checkPagePosition(docs, current_page,page_quantity);
+        });
+    }
+
+    if (current_page>=page_quantity){
+        document.getElementById('next-page').style.display ='none';    
+    } else {
+        document.getElementById('next-page').addEventListener('click', async ()=>{
+            document.getElementById('next-page').style.display ='block';
+            current_page++;
+            console.log(current_page);
+            controller.showCurrentReviewPage(docs,current_page-1);
+            document.getElementById('review-page').innerHTML=component.pagination(current_page,page_quantity);
+            controller.checkPagePosition(docs, current_page,page_quantity);
+        });
+    }
+}
 
 //Show review at Homepage
 controller.showCurrentReviewPage = (review_docs,page_number) => {
