@@ -187,14 +187,17 @@ component.sideWidget = () => {
 component.blogEntries = (review_doc) => {
 
     return `<div class="card mb-4 flex-row align-items-center">
-        <a class="reviewScreen" value="${review_doc.id}"><img src="${review_doc.data().review_book_thumbnail}" height="160" width="100"></a>
-        <div class="card-body">
-            <h2 class="card-title">${review_doc.data().review_title}</h2>
-            <span class="small text-muted">${review_doc.data().review_creator_id}</span>
-            <span class="small text-muted">${review_doc.data().review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })}</span>
-            
-            <p class="card-text overflow-hidden" style="max-height: 70px">${review_doc.data().review_content}</p>
-            <a class="btn btn-primary review-show" value="${review_doc.id}">Read more →</a>
+        <div class="card-body d-flex justify-content-between">
+            <div class="d-flex">
+                <a class="reviewScreen" value="${review_doc.id}"><img class="mt-2" src="${review_doc.data().review_book_thumbnail}" height="160" width="100"></a>
+                <div class="ms-3">
+                    <h2 class="card-title">${review_doc.data().review_title}</h2>
+                    <span class="small text-muted">${review_doc.data().review_creator_id}</span>
+                    <span class="small text-muted">${review_doc.data().review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })}</span>
+                    <p class="card-text overflow-hidden" style="max-height: 70px">${review_doc.data().review_content}</p>
+                    <a class="btn btn-primary review-show" value="${review_doc.id}">Read more →</a>
+                </div>
+            </div>
         </div>
     </div> `;
 }
@@ -253,7 +256,7 @@ component.reviewInfo = (review_data,user_data) => {
         <!-- Post content-->
         <div class="mb-4">
            
-            <p class="fs-5 mb-4" style="text-align: justify"> <img class="rounded ms-2 mt-2 me-3" height="300" src="${review_data.review_book_thumbnail}">${review_data.review_content}</p>
+            <p class="fs-5 mb-4" style="text-align: justify"> <img class="rounded float-start ms-2 mt-2 me-3 mb-3" height="300" src="${review_data.review_book_thumbnail}">${review_data.review_content}</p>
         </div>  
 `
 }
@@ -334,8 +337,8 @@ component.displayedChildComment = (data) => {
 component.commentSection = (data) => {
     return `
     <!-- Comments section-->
-    <div class="mb-5">
-        <div class="card bg-light">
+    <div class="my-4">
+        <div class="card bg-light w-100 mt-4">
             <div class="card-body">
                 <!-- Comment form-->
                 <form class="mb-4 d-flex" id="comment-input">
