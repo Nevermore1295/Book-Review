@@ -99,7 +99,7 @@ component.navbar = () => {
                         </li>
 
                         <li class="dropdown" id="admin-btn-li">
-                            
+                            <a id="review-btn">Administration</a>
                         </li>
                     </ul>
                     <a id="user-auth">
@@ -229,22 +229,19 @@ component.sideWidget = () => {
 //     `
 // }
 
-component.blogEntries = (data_map, key_array) => {
-    let str = ``;
-    for (let i = 0; i < key_array.length; i++) {
-        str += `<div class="card mb-4 flex-row align-items-center">
-        <a class="reviewScreen" value="${key_array[i]}"><img src="http://books.google.com/books/content?id=bVFPAAAAYAAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"></a>
+component.blogEntries = (review_doc) => {
+
+    return `<div class="card mb-4 flex-row align-items-center">
+        <a class="reviewScreen" value="${review_doc.id}"><img src="http://books.google.com/books/content?id=bVFPAAAAYAAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"></a>
         <div class="card-body">
-            <h2 class="card-title">${data_map.get(key_array[i]).review_title}</h2>
-            <span class="small text-muted">${data_map.get(key_array[i]).review_creator_id}</span>
-            <span class="small text-muted">${data_map.get(key_array[i]).review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })}</span>
+            <h2 class="card-title">${review_doc.data().review_title}</h2>
+            <span class="small text-muted">${review_doc.data().review_creator_id}</span>
+            <span class="small text-muted">${review_doc.data().review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })}</span>
             
-            <p class="card-text overflow-hidden" style="max-height: 70px">${data_map.get(key_array[i]).review_content}</p>
-            <a class="btn btn-primary review-show" value="${key_array[i]}">Read more →</a>
+            <p class="card-text overflow-hidden" style="max-height: 70px">${review_doc.data().review_content}</p>
+            <a class="btn btn-primary review-show" value="${review_doc.id}">Read more →</a>
         </div>
-    </div> `
-    }
-    return str;
+    </div> `;
 }
 
 
@@ -299,16 +296,16 @@ component.reviewPage = (page_number) => {
 
 
 //**********************Review Detail Screen***********************
-component.reviewInfo = (data) => {
+component.reviewInfo = (review_data,user_data) => {
     return `
     <!-- Post content-->
     <article>
         <!-- Post header-->
         <header class="mb-4">
             <!-- Post title-->
-            <h1 class="fw-bolder mb-1">${data.review_title}</h1>
+            <h1 class="fw-bolder mb-1">${review_data.review_title}</h1>
             <!-- Post meta content-->
-            <div class="text-muted fst-italic mb-2">Created by ${data.review_creator_id} in ${data.review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })}</div>          
+            <div class="text-muted fst-italic mb-2">Created by ${user_data.user_name} in ${review_data.review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })}</div>          
             <!-- Post categories-->
             <a class="badge bg-secondary text-decoration-none link-light" href="#!">Web Design</a>
             <a class="badge bg-secondary text-decoration-none link-light" href="#!">Freebies</a>
@@ -317,7 +314,7 @@ component.reviewInfo = (data) => {
         <figure class="mb-4"><img class="img-fluid rounded" src="https://dummyimage.com/900x400/ced4da/6c757d.jpg" alt="..." /></figure>
         <!-- Post content-->
         <section class="mb-5">
-            <p class="fs-5 mb-4">${data.review_content}</p>
+            <p class="fs-5 mb-4">${review_data.review_content}</p>
         </section>
     </article>
 `
@@ -727,32 +724,51 @@ component.adminScreen = () => {
 `;
 };
 
-component.adminReview = (data_map, key_array) => {
-    let str = ``;
-    for (let i = 0; i < key_array.length; i++) {
-        str += `
-        <div class="card bg-white">
-            <div class="card-body d-flex justify-content-between">
-                <div class="d-flex">
-                    <img class="mt-1" src="http://books.google.com/books/content?id=bVFPAAAAYAAJ&amp;printsec=frontcover&amp;img=1&amp;zoom=1&amp;edge=curl&amp;source=gbs_api" height="120" width="90">
-                    <div class="resultBasic ms-3">
-                        <h5>${data_map.get(key_array[i]).review_title}</h5>
-                        <div><b>Book:</b> Report</div>
-                        <div><b>Author:</b> ${data_map.get(key_array[i]).review_creator_id}</div>
-                        <div><b>User:</b> username</div>
-                        <div><b>Date posted:</b> ${data_map.get(key_array[i]).review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })}</div>
-                    </div>    
-                </div>
-                <div class="modify-btn ms-1" style="min-width: 150px;">
-                    <button class="btn btn-primary watch" value="${key_array[i]}"><i class="fa-solid fa-eye" style="width: 18px"></i></button>
-                    <button class="btn btn-primary" id="update" ><i class="fa-solid fa-pen-to-square" style="width: 18px"></i></button>
-                    <button class="btn btn-primary delete"><i class="fa-solid fa-xmark" style="width: 18px"></i></button>
-                </div>
+component.adminPendingReview = (review_doc,user_doc) => {
+    return `
+    <div class="card bg-white my-2">
+        <div class="card-body d-flex justify-content-between">
+            <div class="d-flex">
+                <img class="mt-1" src="${review_doc.data().review_book_thumbnail}" height="120" width="90">
+                <div class="resultBasic ms-3">
+                    <h5>${review_doc.data().review_title}</h5>
+                    <div><b>Book: </b>${review_doc.data().review_book_title}</div>
+                    <div><b>Author: </b>${review_doc.data().review_book_authors}</div>
+                    <div><b>User:</b> ${user_doc.data().user_name}</div>
+                    <div><b>Date posted: </b>${review_doc.data().review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })}</div>
+                </div>    
+            </div>
+            <div class="modify-btn d-flex align-items-center flex-column flex-lg-row">
+                <button class="btn btn-primary m-1 watch" value="${review_doc.id}"><i class="fa-solid fa-eye" style="width: 18px"></i></button>
+                <button class="btn btn-primary m-1 approve" value="${review_doc.id}"><i class="fa-solid fa-check" style="width: 18px"></i></button>
+                <button class="btn btn-primary m-1 delete" value="${review_doc.id}"><i class="fa-solid fa-xmark" style="width: 18px"></i></button>
             </div>
         </div>
-        `
-    }
-    return str;
+    </div>`;   
+}
+
+component.adminReview = (review_doc, review_creator_name) => {
+    return `
+    <div class="card bg-white">
+        <div class="card-body d-flex justify-content-between">
+            <div class="d-flex">
+                <img class="mt-1" src="http://books.google.com/books/content?id=bVFPAAAAYAAJ&amp;printsec=frontcover&amp;img=1&amp;zoom=1&amp;edge=curl&amp;source=gbs_api" height="120" width="90">
+                <div class="resultBasic ms-3">
+                    <h5>${review_doc.data().review_title}</h5>
+                    <div><b>Book:</b> Report</div>
+                    <div><b>Author:</b> ${review_doc.data().review_creator_id}</div>
+                    <div><b>User:</b> username</div>
+                    <div><b>Date posted:</b> ${review_doc.data().review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })}</div>
+                </div>    
+            </div>
+            <div class="modify-btn ms-1" style="min-width: 150px;">
+                <button class="btn btn-primary watch" value="${review_doc.id}"><i class="fa-solid fa-eye" style="width: 18px"></i></button>
+                <button class="btn btn-primary update" value="${review_doc.id}"><i class="fa-solid fa-pen-to-square" style="width: 18px"></i></button>
+                <button class="btn btn-primary delete" value="${review_doc.id}"><i class="fa-solid fa-xmark" style="width: 18px"></i></button>
+            </div>
+        </div>
+    </div>
+    `;
 }
 
 //*********************** Footer ****************************/

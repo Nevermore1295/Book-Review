@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut ,updateProfile } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-import { getFirestore, collection, query, where, and, or, doc, addDoc, setDoc, getDocs, getDoc, orderBy, onSnapshot, Timestamp, limit, startAt, endAt, deleteDoc} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+import { getFirestore, collection, query, where, and, or, doc, addDoc, setDoc, updateDoc, getDocs, getDoc, orderBy, onSnapshot, Timestamp, limit, startAt, startAfter, endAt, deleteDoc} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 import { auth,db } from "./index.js";
 import { view } from "./view.js";
@@ -12,6 +12,8 @@ export const controller = {};
 //Auth check 
 controller.Authentication = async () => {
     auth.onAuthStateChanged(()=>{
+        console.log(auth.currentUser);
+
         if(auth.currentUser===null){
             document.getElementById('user-auth').innerHTML=component.Authentication(false);
             document.getElementById('review-btn-li').style.display = 'none';
@@ -23,7 +25,6 @@ controller.Authentication = async () => {
             });   
 
             view.setScreenButton('register','registerScreen');
-            return true;
 
         } else {
             document.getElementById('user-auth').innerHTML=component.Authentication(true);
@@ -32,7 +33,6 @@ controller.Authentication = async () => {
             document.getElementById('log-out').addEventListener('click',()=>{
                 controller.logout();
             });
-            return false;
         }
     })
 }
@@ -42,7 +42,7 @@ controller.isAdmin = async () => {
     let docRef = await (getDoc(doc(db, "User", auth.currentUser.uid)));
     if (await docRef.data().user_authority==2){
         document.getElementById('admin-btn-li').style.display = 'block';
-        document.getElementById('admin-btn-li').innerHTML=`<a id="admin-btn">Administration</a>`
+        view.setScreenButton('admin-btn-li','adminScreen')
     } else {
         document.getElementById('admin-btn-li').style.display = 'none';
     }
@@ -69,7 +69,7 @@ controller.login = async () =>{
         password: document.getElementById('password-login').value.trim(),
     }
 
-    console.log(initialData)
+    console.log(initialData);
     
     await signInWithEmailAndPassword(auth, initialData.email, initialData.password).then(user => {
         console.log(`User ${user.user.displayName} successfully logged in`);
@@ -179,120 +179,66 @@ controller.addReview = async () =>{
     }
 }
 
-// controller.updateReviewPage = async (data_map) => {
-//     let review_query = await (query(collection(db,'Review'),orderBy('review_created_date','desc'))); 
-
-//     onSnapshot(review_query, async (qr)=>{
-
-//         //Define Map variable to store <key,value>
-//         let data_promise = controller.getReviewMap(qr);
-//         let key_array = new Array();
-
-//         data_promise.then(async ()=>{
-//             let data_map = await data_promise;
-
-//             // //Define Array variable to store <key>
-        
-                
-//             // // //Set mapping and push key
-//             // // qr.forEach(async (doc) =>{
-//             // //     data_map.set(doc.id, await controller.createReviewObject(doc.data()));
-//             // //     key_array.push(doc.id);
-//             // // });
-            
-//             // data_map.forEach((value,key,map)=>{
-//             //     key_array.push(key);
-//             //     // console.log(key_array);
-    
-//             //     // console.log(data_map);
-//             // })
-    
-//             console.log(key_array);
-    
-//             console.log(data_map);
-    
-            
-//         }).then(()=>{
-//             controller.showReviewPage(data_map, key_array);
-//         })
-//     }) 
-// }
-
 controller.updateReviewPage = async () => {
-    let review_query = await (query(collection(db,'Review'),orderBy('review_created_date','desc'))); 
+    let review_query = await (query(collection(db,'Review') ,where('review_status','==','active'), orderBy('review_created_date','desc'))); 
 
-    onSnapshot(review_query,(qr)=>{
-
-        let data_map = new Map();
-        let key_array = new Array();
-
-        qr.forEach(async (doc) =>{
-            data_map.set(doc.id, doc.data());
-            key_array.push(doc.id);
-            // key_array.push(doc.id);
-            data_map.set(doc.id, await controller.createReviewObject(doc.data()));
-        });
-
-        // qr.forEach(async (doc) =>{
-        //     data_map.set(doc.id, await controller.createReviewObject(doc.data()));
-        //     // key_array.push(doc.id);
-        // });
-    
-        controller.showReviewPage(data_map, key_array)
-       
-
+    onSnapshot(review_query, async (qr)=>{
+        // let review_active = await getDocs(collection(db,'Review'), where('review_status','==','active'), orderBy('review_created_date','desc'));
+        controller.showReviewPage(await qr.docs);
     })
 }
 
-controller.showReviewPage = async (data_map, key_array) => {
 
-  
-    // console.log(data_map);
 
-    let page = (key_array.length/5)+1;
 
+controller.showReviewPage = async (docs) => {
+   
+    controller.showCurrentReviewPage(docs,0);
     // console.log(page);
-
-    // let block = (page/3);
-    controller.showCurrentReviewPage(data_map,key_array,0);
-    document.getElementById('review-page').innerHTML=component.reviewPage(page);
+    let page_quantity = docs.length/5+1;
+    document.getElementById('review-page').innerHTML=component.reviewPage(page_quantity);
 
     document.querySelectorAll('.page-item').forEach(item =>{
         
-        item.addEventListener('click', ()=>{
+        item.addEventListener('click', async ()=>{
             document.querySelectorAll('.page-item').forEach (childitem =>{
                 childitem.setAttribute('class','page-item');
             })
-
             item.setAttribute('class','page-item active');
 
-            controller.showCurrentReviewPage(data_map,key_array,item.getAttribute('value')-1);
+            controller.showCurrentReviewPage(docs,item.getAttribute('value')-1);
         });
     });
 }
 
 
 //Show review at Homepage
-controller.showCurrentReviewPage = (data_map,key_array,page) => {
-    let current_key = new Array();
+controller.showCurrentReviewPage = (review_docs,page_number) => {
+
+    console.log(review_docs);
+    let review_array = new Array();
+
+    let index =  page_number*5;
+
+    while (index<(page_number+1)*5 && index < review_docs.length){
+        if (review_docs[index]!==undefined){
+            review_array.push(review_docs[index]);
+        }
+        index++;
+    }
+
     
-    let i1 = page*5 ;
-
-    // +
-    // console.log(await key_array);
-    // console.log(await key_array[i1]);
-
-    while (i1<(page+1)*5 && key_array[i1]!==undefined){
-        current_key.push(key_array[i1]);
-        i1++;
-        
-    };
-    console.log(current_key);
-
+    console.log(review_array);
+    let str = ''
     //Add view for doc
     switch (view.currentScreen) {
         case 'homeScreen':
-            document.getElementById('featured-post').innerHTML = component.blogEntries(data_map, current_key);
+
+            for (let i = 0; i < review_array.length; i++) {
+                str += component.blogEntries(review_array[i]);
+            }
+            
+            document.getElementById('featured-post').innerHTML = str;
                 
             //Set redirect button
             document.querySelectorAll('.reviewScreen, .review-show').forEach(element=>{
@@ -302,21 +248,26 @@ controller.showCurrentReviewPage = (data_map,key_array,page) => {
         break;
             
         case 'adminScreen':
-            document.getElementById('review-ctrl').innerHTML = component.adminReview(data_map,current_key);
-            let i2=0;
-            document.querySelectorAll('.delete').forEach(ele => {
-                let str=current_key[i2].toString();
-                ele.addEventListener('click',async ()=>{
-                    await deleteDoc((doc(db, "Review", str)));
-                })
-                i2++;
-            })
+           
 
+            for (let i = 0; i < review_array.length; i++) {
+                str += component.adminReview(review_array[i]);
+            }
+
+            console.log(str);
+            document.getElementById('review-ctrl').innerHTML = str
+            
+
+            document.querySelectorAll('.delete').forEach(ele => {
+                ele.addEventListener('click',async ()=>{
+                    await deleteDoc(doc(db, "Review", ele.getAttribute('value')));
+                })
+            })
+        
             document.querySelectorAll('.watch').forEach(ele => {
                 ele.addEventListener('click', ()=>{
                     view.setScreen('reviewDetailScreen', ele.getAttribute('value'));
                 })
-                i2++;
             })
         break;
     }
@@ -327,8 +278,11 @@ controller.showCurrentReviewDetail = async (review_id) =>{
     let review_docRef = await getDoc(doc(db, "Review", review_id));
     
     if (review_docRef.exists()) {
+        let user_object =  await controller.getUserObjectByReview_docRef(review_docRef.data());
 
-        document.getElementById('reviewInfo').innerHTML=component.reviewInfo(await controller.createReviewObject(review_docRef.data()));
+        if (user_object!==undefined){
+            document.getElementById('reviewInfo').innerHTML=component.reviewInfo(review_docRef.data(),user_object);
+        }
 
         document.getElementById('commentSection').innerHTML=component.commentSection();
     } else {
@@ -338,16 +292,9 @@ controller.showCurrentReviewDetail = async (review_id) =>{
     
 }
 
-controller.createReviewObject = async (review_docRef)=>{
-    let review_creator_id = review_docRef.review_creator_id;
-
-    let user_docRef = await getDoc(doc(db,"User", review_creator_id));
-
-    let review_object = review_docRef;
-
-    review_object.review_creator_id = user_docRef.data().username;
-
-    return review_object;
+controller.getUserObjectByReview_docRef = async (review_docRef)=>{
+    let user_docRef = await getDoc(doc(db,"User", review_docRef.review_creator_id));
+    return user_docRef.data();
 }
 
 //Add comment to firestore
@@ -375,16 +322,14 @@ controller.addComment = async (review_id) =>{
     });
 }
 
-//Get parent comment query from firestore
-controller.getCurrentCommentQuery = async (comment_review_id) => {
-    //,where('comment_created_date','!=',null)),orderBy('comment_created_date')
-    return await (query(collection(db,'Comment'),and(where('comment_review_id','==',comment_review_id),where('comment_parent_id','==',null))));
-}
 
 
 //Show comment information
-controller.showParentComment = async (review_id) =>{
-    onSnapshot(await controller.getCurrentCommentQuery(review_id),(qr)=>{
+controller.showParentComment = async (review_id) => {
+
+    let comment_query = await (query(collection(db,'Comment'),and(where('comment_review_id','==',review_id),where('comment_parent_id','==',null))))
+
+    onSnapshot(comment_query,(qr)=>{
         let str='';
         let count = 0;
         qr.forEach(doc =>{
@@ -464,36 +409,48 @@ controller.getReviewByCategory = async (category) => {
 
 ////////////////////////////////// PENDING REVIEW ///////////////////////////////////////
 
+
 controller.showPendingReviews = async () => {
-    const doc = await getDocs(collection(db, 'Review'), where('review_status', '==', 'pending'));
-    let str='';
-    console.log(doc.size)
-    doc.forEach( async (q) =>{
-        str+=`
-        <div class="card bg-white my-2">
-            <div class="card-body d-flex justify-content-between">
-                <div class="d-flex">
-                    <img class="mt-1" src="${q.data().review_book_thumbnail}" height="120" width="90">
-                    <div class="resultBasic ms-3">
-                        <h5>${q.data().review_title}</h5>
-                        <div><b>Book: </b>${q.data().review_book_title}</div>
-                        <div><b>Author: </b>${q.data().review_book_authors}</div>
-                        <div><b>User:</b> username</div>
-                        <div><b>Date posted: </b>${q.data().review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })}</div>
-                    </div>    
-                </div>
-                <div class="modify-btn d-flex align-items-center flex-column flex-lg-row">
-                    <button class="btn btn-primary m-1"><i class="fa-solid fa-eye" style="width: 18px"></i></button>
-                    <button class="btn btn-primary m-1"><i class="fa-solid fa-check" style="width: 18px"></i></button>
-                    <button class="btn btn-primary m-1"><i class="fa-solid fa-xmark" style="width: 18px"></i></button>
-                </div>
-            </div>
-        </div>`;
-        console.log(q.data());
-        await book.searchBookByID(q.data().review_book_id)
+    let review_query = query(collection(db, 'Review'), where('review_status', '==', 'pending'), orderBy('review_created_date','desc'))
+
+    onSnapshot(await review_query, async ()=>{
+        let str=''; 
+
+        let review_docs = await getDocs(review_query);
+
+        let user_docs = await getDocs(collection(db, 'User'));
+
+        for (let i in review_docs.docs){
+            for (let j in user_docs.docs){
+                if (review_docs.docs[i] == undefined){
+                    console.log(user_docs.docs[i].id);
+                } else if (review_docs.docs[i].data().review_creator_id===user_docs.docs[j].id){
+                    
+                    str+=component.adminPendingReview(review_docs.docs[i],user_docs.docs[j]);
+                    
+                }
+            }
+        }
+    
+        document.getElementById('pendingReviewoutput').innerHTML = str;
+    
+        document.querySelectorAll('.delete').forEach(ele => {
+            ele.addEventListener('click',async ()=>{
+                await deleteDoc((doc(db, "Review", ele.getAttribute('value'))));
+            })
+        })
+
+        document.querySelectorAll('.approve').forEach(ele => {
+            ele.addEventListener('click',async ()=>{
+                await updateDoc(doc(db, 'Review', ele.getAttribute('value')), {review_status:'active'})
+            })
+        })
+    
+        document.querySelectorAll('.watch').forEach(ele => {
+            ele.addEventListener('click', ()=>{
+                view.setScreen('reviewDetailScreen', ele.getAttribute('value'));
+            })
+        })
     })
-    document.getElementById('pendingReviewoutput').innerHTML += str;
 }
 
-
-controller.g
