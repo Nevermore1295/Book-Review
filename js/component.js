@@ -221,39 +221,14 @@ component.homeContent = () => {
     </div>`
 };
 
-component.reviewPage = (page_number) => {
-    let str = `
-        <!-- Pagination-->
-        <nav aria-label="Pagination">
-            <hr class="my-0" />
-            <ul class="pagination justify-content-center my-4">
-                <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Newer</a></li>
-    `;
-
-    for (let i = 1; i < page_number; i++) {
-        str += `
-                <li class="page-item" value=${i}><a class="page-link" href="#!">${i}</a></li>
-            `
-    }
-
-    str += `
-                <li class="page-item"><a class="page-link" href="#!">Older</a></li>
-            </ul>
-        </nav>
-    `
-    return str;
-
-}
-
-component.pagination = (page_number) => {
+component.pagination = (current_page,page_quantity) => {
     return`
     <nav aria-label="Pagination">
         <hr class="my-0">
-        <ul class="pagination justify-content-end align-items-center my-4 me-3">
-            <li class="me-2">2/30</li>
-            <li class="page-item"><a class="page-link"><i class="fa-solid fa-angle-left"></i></a></li>
-            <li class="page-item"><a class="page-link"><i class="fa-solid fa-angle-right"></i></a></li>
-            
+        <ul class="pagination justify-content-end my-4 me-3">
+            <li class="page-item" id="previous-page"><a class="page-link"><i class="fa-solid fa-angle-left"></i></a></li>
+            <li class="page-item">${current_page}/${page_quantity}</li>
+            <li class="page-item" id="next-page"><a class="page-link"><i class="fa-solid fa-angle-right"></i></a></li>            
         </ul>
     </nav>
     `;
@@ -714,7 +689,7 @@ component.adminReview = (review_doc, review_creator_name) => {
     <div class="card bg-white">
         <div class="card-body d-flex justify-content-between">
             <div class="d-flex">
-                <img class="mt-1" src="http://books.google.com/books/content?id=bVFPAAAAYAAJ&amp;printsec=frontcover&amp;img=1&amp;zoom=1&amp;edge=curl&amp;source=gbs_api" height="120" width="90">
+                <img class="mt-1" src="${review_doc.data().review_book_thumbnail}" height="120" width="90">
                 <div class="resultBasic ms-3">
                     <h5>${review_doc.data().review_title}</h5>
                     <div><b>Book:</b> Report</div>
