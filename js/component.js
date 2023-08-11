@@ -184,7 +184,7 @@ component.sideWidget = () => {
 
 
 
-component.blogEntries = (review_doc) => {
+component.blogEntries = (review_doc,user_doc) => {
 
     return `<div class="card mb-4 flex-row align-items-center">
         <div class="card-body d-flex justify-content-between">
@@ -192,7 +192,8 @@ component.blogEntries = (review_doc) => {
                 <a class="reviewScreen" value="${review_doc.id}"><img class="mt-2" src="${review_doc.data().review_book_thumbnail}" height="160" width="100"></a>
                 <div class="ms-3">
                     <h2 class="card-title">${review_doc.data().review_title}</h2>
-                    <span class="small text-muted">${review_doc.data().review_creator_id}</span>
+                    <div><b>Book:</b>${review_doc.data().review_book_title}</div>
+                    <span class="small text-muted">${user_doc.data().user_name}</span>
                     <span class="small text-muted">${review_doc.data().review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })}</span>
                     <p class="card-text overflow-hidden" style="max-height: 70px">${review_doc.data().review_content}</p>
                     <a class="btn btn-primary review-show" value="${review_doc.id}">Read more →</a>
@@ -688,7 +689,7 @@ component.adminPendingReview = (review_doc,user_doc) => {
     </div>`;   
 }
 
-component.adminReview = (review_doc, review_creator_name) => {
+component.adminReview = (review_doc, user_doc) => {
     return `
     <div class="card bg-white">
         <div class="card-body d-flex justify-content-between">
@@ -696,9 +697,9 @@ component.adminReview = (review_doc, review_creator_name) => {
                 <img class="mt-1" src="${review_doc.data().review_book_thumbnail}" height="120" width="90">
                 <div class="resultBasic ms-3">
                     <h5>${review_doc.data().review_title}</h5>
-                    <div><b>Book:</b> Report</div>
-                    <div><b>Author:</b> ${review_doc.data().review_creator_id}</div>
-                    <div><b>User:</b> username</div>
+                    <div><b>Book:</b>${review_doc.data().review_book_title}</div>
+                    <div><b>Author:</b> ${review_doc.data().review_book_authors}</div>
+                    <div><b>User:</b> ${user_doc.data().user_name}</div>
                     <div><b>Date posted:</b> ${review_doc.data().review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })}</div>
                 </div>    
             </div>
