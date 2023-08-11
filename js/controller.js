@@ -21,7 +21,7 @@ controller.Authentication = async () => {
             document.getElementById('login').addEventListener('submit', (e) => {
                 e.preventDefault();
                 controller.login();
-                document.getElementById('login').reset(); 
+                // document.getElementById('login').reset(); 
             });   
 
             view.setScreenButton('register','registerScreen');
@@ -68,15 +68,26 @@ controller.login = async () =>{
         email: document.getElementById('email-login').value.trim(),
         password: document.getElementById('password-login').value.trim(),
     }
-
-    console.log(initialData);
+    if (initialData.password=="" || initialData.email=="")
+    {
+        alert("Please enter your email and password.");
+        document.getElementById('password-login').value = '';
+    }
+    else {
+        await signInWithEmailAndPassword(auth, initialData.email, initialData.password).then(user => {
+            console.log(`User ${user.user.displayName} successfully logged in`);
+            $('body').removeAttr("style");
+            $('body').removeAttr("class");
+            $('.modal-backdrop').remove();
+        }).catch(err => {
+            // Catch error
+            document.getElementById('login-error').innerHTML = `
+                <p style="color: red;">Sign in failed! Please try again</p>
+            `
+            document.getElementById('password-login').value = '';
+        });
+    }
     
-    await signInWithEmailAndPassword(auth, initialData.email, initialData.password).then(user => {
-        console.log(`User ${user.user.displayName} successfully logged in`);
-    }).catch(err => {
-        // Catch error
-        console.log(err.message);
-    });
 }
 
 //Logout

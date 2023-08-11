@@ -26,7 +26,7 @@ component.Authentication = (isUserExist) => {
             <i type="button" id="login-modal" class="navbar-nav ms-auto fa-solid fa-user" data-bs-toggle="modal" data-bs-target="#LoginModal" style="font-size:25px"></i>
             <!-- Modal -->
             <div class="modal fade" id="LoginModal" tabindex="-1" aria-labelledby="LoginModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-dialog">
                     <div class="modal-content container">
                         <div class="modal-header">
                             <h4>Login</h4>
@@ -38,14 +38,16 @@ component.Authentication = (isUserExist) => {
                             <form id="login">
                                 <div class="form-outline mb-4">
                                     <label class="form-label" for="form2Example1">Email address</label>
-                                    <input type="email" id="email-login" class="form-control validate text-4b88a2" />
+                                    <input type="email" id="email-login" class="form-control" />
                                 </div>
-                                <div class="form-outline mb-4">
+                                <div class="form-outline">
                                     <label class="form-label" for="form2Example2">Password</label>
-                                    <input type="password" id="password-login" class="form-control validate text-4b88a2" />
-                                </div>      
+                                    <input type="password" id="password-login" class="form-control" />
+                                </div>
+                                <div class="mb-4 mt-2" id="login-error">
+                                </div>
                                 <div class="row mb-4 d-flex justify-content-between" >
-                                    <button id="signin-button" class="btn btn-primary btn-sm btn-block col-2 mb-4 close" data-bs-dismiss="modal" aria-label="Close">Sign in</button>
+                                    <button id="signin-button" class="btn btn-primary btn-sm btn-block col-2 mb-4">Sign in</button>
                                     <div class="col-4">   
                                         <a href="#!">Forgot password?</a>
                                     </div>
@@ -245,12 +247,16 @@ component.reviewInfo = (review_data,user_data) => {
         <!-- Post header-->
         <header class="mb-4">
             <!-- Post title-->
-            <h1 class="fw-bolder mb-1">${review_data.review_title} </h1>
-            <a class="badge bg-secondary text-decoration-none link-light mb-2" href="#!">${review_data.review_category}</a>
-            <!-- Post meta content-->
-            <div class="text-muted fst-italic mb-2">${review_data.review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })} By ${user_data.user_name}</div>          
-            <!-- Post categories-->
-            
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="post-title">
+                    <h1 class="fw-bolder mb-1">${review_data.review_title} </h1>
+                    <a class="badge bg-secondary text-decoration-none link-light mb-2" href="#!">${review_data.review_category}</a>
+                </div>
+                <!-- Post meta content-->
+                <div class="text-muted fst-italic mb-2">${review_data.review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })} By ${user_data.user_name}</div>          
+            </div>
+            <p class="fs-5 mb-1">Book: <span class="fw-bolder">${review_data.review_book_title}</span></p>
+            <p class="fs-5 mb-1">Authors: <span class="fw-bolder">${review_data.review_book_authors}</span></p>
         </header>
         
         <!-- Post content-->
@@ -568,22 +574,22 @@ component.reviewQuery = () => {
                     <button class="btn btn-primary btn-lg" type="button">Search</button>
                 </div>
         </form>
-        <div id="reviewQueryList">
-            <div class="overflow-auto" style="max-height: 700px; min-height: 200px"> 
-                <div class="reviewQueryoutput">
-                    <div class="card bg-white">
-                        <div class="card-body d-flex justify-content-between">
-                            <div class="d-flex">
-                                <img class="mt-1" src="
-                                http://books.google.com/books/content?id=bVFPAAAAYAAJ&amp;printsec=frontcover&amp;img=1&amp;zoom=1&amp;edge=curl&amp;source=gbs_api" height="120" width="90">
-                                <div class="resultBasic ms-3">
-                                    <h5>Title</h5>
-                                    <div><b>Book:</b> Report</div>
-                                    <div><b>Author:</b> New York State Library</div>
-                                    <div><b>User:</b> username</div>
-                                    <div><b>Date published:</b> 1916</div>
-                                </div>
-                            </div>
+        <div class="card mb-4" id="reviewQueryList">
+            <div class="card-header">
+                Pending reviews
+            </div>
+            <div class="card-body overflow-auto" style="max-height: 400px; min-height: 200px" id="pendingReviewoutput">
+                <div class="card bg-white my-2">
+                    <div class="card-body d-flex justify-content-between">
+                        <div class="d-flex">
+                            <img class="mt-1" src="" height="120" width="90">
+                            <div class="resultBasic ms-3">
+                                <h5>title</h5>
+                                <div><b>Book: </b></div>
+                                <div><b>Author: </b></div>
+                                <div><b>User:</b> </div>
+                                <div><b>Date posted: </b></div>
+                            </div>    
                         </div>
                     </div>
                 </div>
@@ -595,20 +601,19 @@ component.reviewQuery = () => {
             </div>
             <div class="card-body">
                 <div class="row">
-                        <ul class="list-unstyled mb-0">
-                            <li><a href="#!">Action & adventure</a></li>
-                            <li><a href="#!">Biography/religion</a></li>
-                            <li><a href="#!">Bussiness</a></li>
-                            <li><a href="#!">Comics</a></li>
-                            <li><a href="#!">Education</a></li>
-                            <li><a href="#!">Entertainment</a></li>
-                            <li><a href="#!">History</a></li>
-                            <li><a href="#!">Medical & Lifestyle</a></li>
-                            <li><a href="#!">Literature & fiction</a></li>
-                            <li><a href="#!">Science</a></li>
-                            <li><a href="#!">Sport</a></li>
-                        </ul>
-                    </div>
+                    <ul class="list-unstyled mb-0">
+                        <li><a href="#!">Action & adventure</a></li>
+                        <li><a href="#!">Biography/religion</a></li>
+                        <li><a href="#!">Bussiness</a></li>
+                        <li><a href="#!">Comics</a></li>
+                        <li><a href="#!">Education</a></li>
+                        <li><a href="#!">Entertainment</a></li>
+                        <li><a href="#!">History</a></li>
+                        <li><a href="#!">Medical & Lifestyle</a></li>
+                        <li><a href="#!">Literature & fiction</a></li>
+                        <li><a href="#!">Science</a></li>
+                        <li><a href="#!">Sport</a></li>
+                    </ul>
                 </div>
             </div>
         </div>
