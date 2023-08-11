@@ -93,6 +93,9 @@ controller.login = async () =>{
 //Logout
 controller.logout = async () =>{
     await signOut(auth).then(() => {
+        if (view.currentScreen==='adminScreen'){
+            view.setScreen('homeScreen');
+        }
         console.log(`Logged out successfully`);
     // Sign-out successful.
     }).catch((error) => {
@@ -195,23 +198,25 @@ controller.updateReviewPage = async () => {
 
     let review_docs = await getDocs(review_query);
 
-    controller.showCurrentReviewPage(review_docs.docs,0).then(()=>{
-        onSnapshot(review_query, async (qr)=>{
+    let user_docs = await getDocs(collection(db, 'User'));   
+
+    controller.showCurrentReviewPage(review_docs.docs, user_docs ,0).then(()=>{
+        onSnapshot(review_query, async (qr)=>{   
             console.log(qr.docs);
             // let review_active = await getDocs(collection(db,'Review'), where('review_status','==','active'), orderBy('review_created_date','desc'));
-            controller.showReviewPage(await qr.docs);
+            controller.showReviewPage(await qr.docs, user_docs);
         })
     }) 
 }
 
 
 //Hiển thị trang
-controller.showReviewPage = async (docs) => {
+controller.showReviewPage = async (review_docs, user_docs) => {
 
-    let page_quantity = Math.trunc((docs.length/5));
+    let page_quantity = Math.trunc((review_docs.length/5));
     console.log(page_quantity);
 
-    if (docs.length>5 && doc.length%5>0){
+    if (review_docs.length>5 && doc.length%5>0){
         page_quantity++;
         console.log(page_quantity);
     }
@@ -219,21 +224,21 @@ controller.showReviewPage = async (docs) => {
     // console.log(page);
     let current_page = 1;
     document.getElementById('review-page').innerHTML=component.pagination(current_page,page_quantity);
-    controller.checkPagePosition(docs, current_page, page_quantity);
+    controller.checkPagePosition(review_docs, user_docs, current_page, page_quantity);
    
 }
 
 //Kiểm tra tra và xử lí chuyển trang
-controller.checkPagePosition = (docs, current_page, page_quantity)=>{
+controller.checkPagePosition = (review_docs, user_docs, current_page, page_quantity)=>{
     if (current_page===1){
         document.getElementById('previous-page').disabled =true;
     } else {
         document.getElementById('previous-page').disabled =false;
         document.getElementById('previous-page').addEventListener('click', ()=>{
             current_page--;
-            controller.showCurrentReviewPage(docs,current_page-1);
+            controller.showCurrentReviewPage(review_docs, user_docs,current_page-1);
             document.getElementById('review-page').innerHTML=component.pagination(current_page,page_quantity);
-            controller.checkPagePosition(docs, current_page,page_quantity);
+            controller.checkPagePosition(review_docs, user_docs, current_page,page_quantity);
         });
     }
 
@@ -243,15 +248,15 @@ controller.checkPagePosition = (docs, current_page, page_quantity)=>{
         document.getElementById('next-page').disabled =false;
         document.getElementById('next-page').addEventListener('click', async ()=>{       
             current_page++;
-            controller.showCurrentReviewPage(docs,current_page-1);
+            controller.showCurrentReviewPage(review_docs, user_docs,current_page-1);
             document.getElementById('review-page').innerHTML=component.pagination(current_page,page_quantity);
-            controller.checkPagePosition(docs, current_page,page_quantity);
+            controller.checkPagePosition(review_docs, user_docs, current_page,page_quantity);
         });
     }
 }
 
 //Hiển thị trang hiện tại
-controller.showCurrentReviewPage = async (review_docs,page_number) => {
+controller.showCurrentReviewPage = async (review_docs,user_docs,page_number) => {
 
     console.log(review_docs);
     let review_array = new Array();
@@ -268,12 +273,17 @@ controller.showCurrentReviewPage = async (review_docs,page_number) => {
     
     console.log(review_array);
     let str = ''
+         
     //Add view for doc
     switch (view.currentScreen) {
-        case 'homeScreen':
+        case 'homeScreen':    
 
-            for (let i = 0; i < review_array.length; i++) {
-                str += component.blogEntries(review_array[i]);
+            for (let i in review_array) {
+                for (let j in user_docs.docs){
+                    if (review_array[i].data().review_creator_id===user_docs.docs[j].id){
+                        str+=component.blogEntries(review_array[i],user_docs.docs[j]);
+                    }
+                }                
             }
             
             document.getElementById('featured-post').innerHTML = str;
@@ -286,12 +296,14 @@ controller.showCurrentReviewPage = async (review_docs,page_number) => {
         break;
             
         case 'adminScreen':
-
-            for (let i = 0; i < review_array.length; i++) {
-                str += component.adminReview(review_array[i]);
+ 
+            for (let i in review_array) {
+                for (let j in user_docs.docs){
+                    if (review_array[i].data().review_creator_id===user_docs.docs[j].id){
+                        str += component.adminReview(review_array[i],user_docs.docs[j]);
+                    }
+                }                
             }
-
-            console.log(str);
             document.getElementById('review-ctrl').innerHTML = str
             
 
@@ -428,12 +440,6 @@ controller.showBook = async () => {
 
 controller.showReviewAdministration = async () => {
     controller.updateReviewPage();
-
-}
-
-
-controller.getUserDocs = async () => {
-    return await getDocs(collection(db,'User'));
 }
 
 ////////////////////////////////// CATEGORIES ///////////////////////////////////////
@@ -491,3 +497,22 @@ controller.showPendingReviews = async () => {
     })
 }
 
+
+////////////////////////////////// SEARCH REVIEW ///////////////////////////////////////
+controller.searchReview = async () =>{
+
+    let review_docs = await getDocs(collection(db,'Review'));  
+
+    let search_button = document.getElementById();
+    search_button.addEventListener('click',()=>{
+        let search_value = document.getElementById().value;
+        
+        for (let i in review_docs.docs){
+            if (review_docs[i].data().review_title===search_value){
+
+            } else if (review_docs[i].data().review_book_title===search_value){
+
+            }
+        }
+    })
+}
