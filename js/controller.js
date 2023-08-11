@@ -29,7 +29,7 @@ controller.Authentication = async () => {
         } else {
             document.getElementById('user-auth').innerHTML=component.Authentication(true);
             document.getElementById('review-btn-li').style.display = 'block';
-            controller.isAdmin();
+            controller.authCheck();
             document.getElementById('log-out').addEventListener('click',()=>{
                 controller.logout();
             });
@@ -37,15 +37,26 @@ controller.Authentication = async () => {
     })
 }
 
-controller.isAdmin = async () => {
+
+controller.authCheck = async () => {
     // .data().user_authority
     let docRef = await (getDoc(doc(db, "User", auth.currentUser.uid)));
     if (await docRef.data().user_authority==2){
         document.getElementById('admin-btn-li').style.display = 'block';
-        
+        document.getElementById('admin-btn-li').innerHTML = 
+        `
+            <a id="admin-btn">Administration</a>
+        `;
+        view.setScreenButton('admin-btn','adminScreen');
     } else {
         document.getElementById('admin-btn-li').style.display = 'none';
     }
+    document.getElementById('review-btn-li').style.display = 'block';
+        document.getElementById('review-btn-li').innerHTML = 
+        `
+            <a id="review-btn">Make a review</a>
+        `;
+        view.setScreenButton('review-btn','reviewCreatorScreen');
 }
 
 //Auth check for comment
@@ -116,13 +127,16 @@ controller.register = async () =>{
 
     if (initialData.user_name.trim() === '') {
         //Kiểm tra khoảng trống username
-        console.log('Missing username');
-    } else if (initialData.user_name.trim().length < 6) {
+        alert('Missing username');
+    } else if (initialData.user_name.trim().length < 4) {
         //Kiểm tra độ dài username
-        console.log('Username must be at least 6 characters')
+        alert('Username must be at least 4 characters')
+    } else if (initialData.user_email.trim() === '')
+    {
+        alert('Missing email')
     } else if (initialData.user_password !== document.getElementById('pwconfirmation').value) {
         //Xác nhận mật khẩu
-        console.log('Password and password confirmation must be the same')
+        alert('Password and password confirmation must be the same')
     } else if (initialData.user_password === document.getElementById('pwconfirmation').value) {
         let exist = false;
         const q = await query(collection(db, 'users'), where('username', '==', initialData.user_name.trim()));
@@ -133,12 +147,17 @@ controller.register = async () =>{
                 }
             })
             if (!exist) {
-                await createUserWithEmailAndPassword(auth, initialData.user_email, initialData.user_password).then(cred => {
+                await createUserWithEmailAndPassword(auth, initialData.user_email, initialData.user_password).then( async cred => {
                     // Create data firestore
                     const docRef = doc(db, 'User', cred.user.uid)
                     setDoc(docRef, initialData, { merge: false })
-                    console.log(`User ${initialData.user_name} successfully registered`)
-                    updateProfile(auth.currentUser, {displayName: initialData.user_name,})
+                    console.log(`User ${initialData.user_name} successfully registered`);
+                    updateProfile(auth.currentUser, {displayName: initialData.user_name,});
+                    await signInWithEmailAndPassword(auth, initialData.user_email, initialData.user_password).then(user => {
+                        console.log(`User ${user.user.displayName} successfully logged in`)
+                        view.setScreen('homeScreen');
+                    });
+                        
                 }).catch(err => {
                     // Catch error
                     console.log(err.message)
@@ -310,6 +329,12 @@ controller.showCurrentReviewPage = async (review_docs,user_docs,page_number) => 
             document.querySelectorAll('.delete').forEach(ele => {
                 ele.addEventListener('click',async ()=>{
                     await deleteDoc(doc(db, "Review", ele.getAttribute('value')));
+                })
+            })
+
+            document.querySelectorAll('.edit').forEach(ele => {
+                ele.addEventListener('click',async ()=>{
+                    view.setScreen('reviewEditorScreen', ele.getAttribute('value'));
                 })
             })
         
@@ -514,5 +539,35 @@ controller.searchReview = async () =>{
 
             }
         }
+    })
+}
+
+
+////////////////////////////////// Editor /////////////////////////////////////////
+
+controller.setEditorInfo = async (review_id) => {
+    let review_doc = await getDoc(doc(db,'Review', review_id));
+    console.log(review_doc.data());
+    document.getElementById('editor-thumbnail').src = review_doc.data().review_book_thumbnail;
+    document.getElementById('editor-book-title').value = review_doc.data().review_book_title;
+    document.getElementById('editor-authors').value = review_doc.data().review_book_authors;
+    document.getElementById('editor-bid').value = review_doc.data().review_book_id;
+    document.getElementById('editor-category').value = review_doc.data().review_category;
+    document.getElementById('editor-title').value = review_doc.data().review_title;
+    document.getElementById('editor-content').value = review_doc.data().review_content;
+
+    document.getElementById('editor-save-btn').addEventListener('click',async (e) => {
+        e.preventDefault();
+        await updateDoc(doc(db, 'Review', review_id), {
+            review_status:'update-pending',
+            review_category: document.getElementById('editor-category').value,
+            review_title: document.getElementById('editor-title').value.trim(),
+            review_content: document.getElementById('editor-content').value.trim()
+    })
+    });
+
+    document.getElementById('editor-discard-btn').addEventListener('click', (e) =>{
+        e.preventDefault();
+        view.setScreen('homeScreen');
     })
 }

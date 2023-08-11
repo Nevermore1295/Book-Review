@@ -114,7 +114,6 @@ component.navbar = () => {
                             <a id="review-btn">Make a review</a>
                         </li>
                         <li class="dropdown" id="admin-btn-li">
-                            <a id="admin-btn">Administration</a>
                         </li>
                         <li class="dropdown">
                             <a id="about-btn">About</a>
@@ -186,7 +185,7 @@ component.sideWidget = () => {
 
 
 
-component.blogEntries = (review_doc,user_doc) => {
+component.blogEntries = (review_doc, user_doc) => {
 
     return `<div class="card mb-4 flex-row align-items-center">
         <div class="card-body d-flex justify-content-between">
@@ -227,8 +226,8 @@ component.homeContent = () => {
     </div>`
 };
 
-component.pagination = (current_page,page_quantity) => {
-    return`
+component.pagination = (current_page, page_quantity) => {
+    return `
     <nav aria-label="Pagination">
         <hr class="my-0">
         <ul class="pagination align-items-center justify-content-end my-4 me-3">
@@ -242,7 +241,7 @@ component.pagination = (current_page,page_quantity) => {
 
 
 //**********************Review Detail Screen***********************
-component.reviewInfo = (review_data,user_data) => {
+component.reviewInfo = (review_data, user_data) => {
     return `
     <!-- Post content-->
         <!-- Post header-->
@@ -640,6 +639,73 @@ component.reviewQueryoutput = () => {
     `
 };
 
+component.reviewEditor = () => {
+    return `
+    <div class="container my-4" style="min-height: 500px"> 
+        <div class="card mt-3">
+            <div class="card-header">
+                Edit review
+            </div>
+            <div class="card-body row">
+                <img class="mb-3 col-lg-2" id="editor-thumbnail" src="../assets/Question_mark_(black).png" style="height:160px; width:128px"> 
+                <div class="book-info col-lg-10">
+                    <div class="input-group input-group-sm mb-3 w-100">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Book title</span>
+                        </div>
+                        <input type="text" class="form-control" id="editor-book-title" aria-describedby="basic-addon1" disabled value="Book name">
+                    </div>
+                    <div class="row">
+                        <div class="input-group input-group-sm mb-3 me-1 col-lg float-start">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Author</span>
+                            </div>
+                            <input type="text" class="form-control" id="editor-authors" aria-describedby="basic-addon1" disabled value="Author name">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-group input-group-sm mb-3 col-lg">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Book-ID</span>
+                            </div>
+                            <input type="text" class="form-control" id="editor-bid" aria-describedby="basic-addon1" disabled>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-group input-group mb-3 col-lg">
+                            <span class="input-group-text" for="inputGroupSelect01">Category</span>
+                            <select class="form-select review-forminput" id="editor-category">
+                            <option selected>Choose...</option>
+                            <option value="Action & Adventure">Action & Adventure</option>
+                            <option value="Biographies/religion">Biographies/religion</option>
+                            <option value="Business">Business</option>
+                            <option value="Comics">Comics</option>
+                            <option value="Education">Education</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="History">History</option>
+                            <option value="Medical/lifestyle">Medical/lifestyle</option>
+                            <option value="Literature & fiction">Literature & fiction</option>
+                            <option value="Science & technology">Science & technology</option>
+                            <option value="Sport">Sport</option>
+                            <option value="Medical/lifestyle">Medical/lifestyle</option>
+                            <option value="Others">Others</option>
+                            </select>
+                        </div>
+                    </div>
+                    <form id="editor-form">
+                        <h6>Review Title</h6>
+                        <textarea class="form-control review-forminput mb-2" id="editor-title" rows="1"></textarea>
+                        <h6>Review</h6>
+                        <textarea class="form-control review-forminput mb-2" id="editor-content" rows="6"></textarea>
+                        <button class="btn btn-lg btn-primary review-forminput float-end me-2" id="editor-save-btn" > Save </button>
+                        <button class="btn btn-lg btn-secondary review-forminput float-end me-2" id="editor-discard-btn" > Discard </button>
+                    <form>
+                </div>
+            </div>
+        </div>
+    </div>`
+
+};
 //*********************** Admin view ****************************/
 component.adminScreen = () => {
     return `
@@ -671,7 +737,7 @@ component.adminScreen = () => {
 `;
 };
 
-component.adminPendingReview = (review_doc,user_doc) => {
+component.adminPendingReview = (review_doc, user_doc) => {
     return `
     <div class="card bg-white my-2">
         <div class="card-body d-flex justify-content-between">
@@ -691,7 +757,7 @@ component.adminPendingReview = (review_doc,user_doc) => {
                 <button class="btn btn-primary m-1 delete" value="${review_doc.id}"><i class="fa-solid fa-xmark" style="width: 18px"></i></button>
             </div>
         </div>
-    </div>`;   
+    </div>`;
 }
 
 component.adminReview = (review_doc, user_doc) => {
@@ -710,7 +776,7 @@ component.adminReview = (review_doc, user_doc) => {
             </div>
             <div class="modify-btn ms-1" style="min-width: 150px;">
                 <button class="btn btn-primary watch" value="${review_doc.id}"><i class="fa-solid fa-eye" style="width: 18px"></i></button>
-                <button class="btn btn-primary update" value="${review_doc.id}"><i class="fa-solid fa-pen-to-square" style="width: 18px"></i></button>
+                <button class="btn btn-primary edit" value="${review_doc.id}"><i class="fa-solid fa-pen-to-square" style="width: 18px"></i></button>
                 <button class="btn btn-primary delete" value="${review_doc.id}"><i class="fa-solid fa-xmark" style="width: 18px"></i></button>
             </div>
         </div>

@@ -25,9 +25,9 @@ view.setScreen = async (screenName, review_id) => {
             view.setScreenButton('home-btn','homeScreen');
             view.setScreenButton('navbar-brand','homeScreen');
             view.setScreenButton('search-btn','searchScreen');
-            view.setScreenButton('admin-btn','adminScreen');
             view.setScreenButton('review-btn','reviewCreatorScreen');
             break;
+
 
         case 'reviewDetailScreen':
             view.currentScreen='reviewDetailScreen';
@@ -58,7 +58,6 @@ view.setScreen = async (screenName, review_id) => {
             view.setScreenButton('home-btn','homeScreen');
             view.setScreenButton('navbar-brand','homeScreen');
             view.setScreenButton('search-btn','searchScreen');
-            view.setScreenButton('admin-btn','adminScreen');
             view.setScreenButton('review-btn','reviewCreatorScreen');
 
         break;
@@ -74,14 +73,7 @@ view.setScreen = async (screenName, review_id) => {
                 e.preventDefault();
 
                 //Add data object to doc
-                controller.register().then(() => {
-                    // Reset form
-                    view.setScreen('homeScreen');
-                }).catch(err => {
-                    // Catch error
-                    console.log(err.message)
-                });
-                //Register user
+                controller.register();
 
             });
 
@@ -99,7 +91,6 @@ view.setScreen = async (screenName, review_id) => {
             view.setScreenButton('home-btn','homeScreen');
             view.setScreenButton('navbar-brand','homeScreen');
             view.setScreenButton('search-btn','searchScreen');
-            view.setScreenButton('admin-btn','adminScreen');
             view.setScreenButton('review-btn','reviewCreatorScreen');
             controller.Authentication();
 
@@ -133,10 +124,21 @@ view.setScreen = async (screenName, review_id) => {
             view.setScreenButton('navbar-brand','homeScreen');
             view.setScreenButton('home-btn','homeScreen');
             view.setScreenButton('navbar-brand','homeScreen');
-            view.setScreenButton('search-btn','searchScreen');
-            view.setScreenButton('admin-btn','adminScreen');
+            view.setScreenButton('search-btn','searchScreen');;
             view.setScreenButton('review-btn','reviewCreatorScreen');
 
+        break;
+
+        case 'reviewEditorScreen':
+            view.currentScreen='reviewEditor';
+            document.getElementById('app').innerHTML = component.navbar() + component.reviewEditor(review_id) + component.footer();
+            controller.setEditorInfo(review_id);
+            view.setScreenButton('navbar-brand','homeScreen');
+            view.setScreenButton('home-btn','homeScreen');
+            view.setScreenButton('navbar-brand','homeScreen');
+            view.setScreenButton('search-btn','searchScreen');
+            view.setScreenButton('review-btn','reviewCreatorScreen');
+            controller.getReviewDetail()
         break;
         
         case 'adminScreen':
@@ -147,7 +149,6 @@ view.setScreen = async (screenName, review_id) => {
             view.setScreenButton('home-btn','homeScreen');
             view.setScreenButton('navbar-brand','homeScreen');
             view.setScreenButton('search-btn','searchScreen');
-            view.setScreenButton('admin-btn','adminScreen');
             view.setScreenButton('review-btn','reviewCreatorScreen');
             controller.showReviewAdministration();
             controller.showPendingReviews();
@@ -167,7 +168,7 @@ view.setScreenButton = (button_id, screen_name) => {
 }
 
 
-view.setScreen('homeScreen');
+view.setScreen('adminScreen');
 
 
 
