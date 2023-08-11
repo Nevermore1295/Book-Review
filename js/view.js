@@ -88,12 +88,11 @@ view.setScreen = async (screenName, review_id) => {
             view.currentScreen='reviewCreatorScreen';
             //Set up HTML 
             document.getElementById('app').innerHTML = component.navbar() + component.bookSearchContent() + component.footer();
+            controller.Authentication();
             view.setScreenButton('home-btn','homeScreen');
             view.setScreenButton('navbar-brand','homeScreen');
             view.setScreenButton('search-btn','searchScreen');
             view.setScreenButton('review-btn','reviewCreatorScreen');
-            controller.Authentication();
-
             //Book search bar
             document.getElementById('bookSearchbar').addEventListener('submit', (j) =>{
                 j.preventDefault();
@@ -119,7 +118,7 @@ view.setScreen = async (screenName, review_id) => {
             view.currentScreen='searchScreen';
              //Set redirect button
             document.getElementById('app').innerHTML = component.navbar() + component.reviewSearchScreen() + component.footer();
-
+            controller.Authentication();
             controller.searchReview();
             view.setScreenButton('navbar-brand','homeScreen');
             view.setScreenButton('home-btn','homeScreen');
@@ -132,17 +131,16 @@ view.setScreen = async (screenName, review_id) => {
         case 'reviewEditorScreen':
             view.currentScreen='reviewEditor';
             document.getElementById('app').innerHTML = component.navbar() + component.reviewEditor(review_id) + component.footer();
+            controller.Authentication();
             controller.setEditorInfo(review_id);
             view.setScreenButton('navbar-brand','homeScreen');
             view.setScreenButton('home-btn','homeScreen');
             view.setScreenButton('navbar-brand','homeScreen');
             view.setScreenButton('search-btn','searchScreen');
             view.setScreenButton('review-btn','reviewCreatorScreen');
-            controller.getReviewDetail()
         break;
         
         case 'adminScreen':
-
             view.currentScreen='adminScreen';
             document.getElementById('app').innerHTML = component.navbar() + component.adminScreen() + component.footer();
             controller.Authentication();
@@ -168,7 +166,7 @@ view.setScreenButton = (button_id, screen_name) => {
 }
 
 
-view.setScreen('adminScreen');
+view.setScreen();
 
 
 

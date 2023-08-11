@@ -13,11 +13,9 @@ export const controller = {};
 controller.Authentication = async () => {
     auth.onAuthStateChanged(()=>{
         console.log(auth.currentUser);
-
         if(auth.currentUser===null){
             document.getElementById('user-auth').innerHTML=component.Authentication(false);
-            document.getElementById('review-btn-li').style.display = 'none';
-            document.getElementById('admin-btn-li').style.display = 'none';
+            
             document.getElementById('login').addEventListener('submit', (e) => {
                 e.preventDefault();
                 controller.login();
@@ -107,6 +105,8 @@ controller.logout = async () =>{
         if (view.currentScreen==='adminScreen'){
             view.setScreen('homeScreen');
         }
+        document.getElementById('review-btn-li').style.display = 'none';
+        document.getElementById('admin-btn-li').style.display = 'none';
         console.log(`Logged out successfully`);
     // Sign-out successful.
     }).catch((error) => {
@@ -578,6 +578,8 @@ controller.setEditorInfo = async (review_id) => {
             review_category: document.getElementById('editor-category').value,
             review_title: document.getElementById('editor-title').value.trim(),
             review_content: document.getElementById('editor-content').value.trim()
+    }).then (()=>{
+        view.setScreen('reviewDetailScreen', review_id);
     })
     });
 

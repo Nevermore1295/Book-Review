@@ -110,10 +110,10 @@ component.navbar = () => {
                             <a id="search-btn">Search</a>
                         </li>  
                         
-                        <li class="dropdown" id="review-btn-li">
+                        <li class="dropdown" id="review-btn-li" style="display: none">
                             <a id="review-btn">Make a review</a>
                         </li>
-                        <li class="dropdown" id="admin-btn-li">
+                        <li class="dropdown" id="admin-btn-li" style="display: none">
                         </li>
                         <li class="dropdown">
                             <a id="about-btn">About</a>

@@ -21,4 +21,6 @@ value="13" Others
 
 
 
-login sai không thông báo lỗi
+delete reply
+comment username
+your reviews
