@@ -528,17 +528,32 @@ controller.searchReview = async () =>{
 
     let review_docs = await getDocs(collection(db,'Review'));  
 
-    let search_button = document.getElementById();
-    search_button.addEventListener('click',()=>{
-        let search_value = document.getElementById().value;
+    let user_docs = await getDocs(collection(db, 'User'));
+
+    document.getElementById('reviewQuerySearchbar').addEventListener('submit',(btn)=>{
+        btn.preventDefault();
+
+        let str= '';
+
+        let search_value = document.getElementById('review-Searchbar-input').value;
         
         for (let i in review_docs.docs){
-            if (review_docs[i].data().review_title===search_value){
+            for (let j in user_docs.docs){
+                if (review_docs.docs[i] == undefined){
+                    console.log(user_docs.docs[i].id);
+                } else if (review_docs.docs[i].data().review_creator_id===user_docs.docs[j].id){
 
-            } else if (review_docs[i].data().review_book_title===search_value){
+                    if (RegExp(search_value.trim().toLowerCase()).test(review_docs.docs[i].data().review_title.toLowerCase())){
+                        str += component.reviewQueryoutput(review_docs.docs[i],user_docs.docs[j])
+                    } else if (RegExp(search_value.trim().toLowerCase()).test(review_docs.docs[i].data().review_book_title.toLowerCase())){
+                        str += component.reviewQueryoutput(review_docs.docs[i],user_docs.docs[j])
+                    }   
 
+                }
             }
         }
+
+        document.getElementById('reviewQueryList').innerHTML = str
     })
 }
 
