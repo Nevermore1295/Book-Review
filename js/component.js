@@ -565,35 +565,21 @@ component.bookSearchOutput = (bookResult) => {
 
 //*********************** Search review ****************************/
 
-component.reviewQuery = () => {
+component.reviewSearchScreen = () => {
     return `
     <div class="container my-4">
         <h2 class="m-2">Find reviews</h2>
         <form class="input-group input-group-lg p-4" id="reviewQuerySearchbar">
                 <input type="text" class="form-control" placeholder="Book/Review" id="review-Searchbar-input">
                 <div class="input-group-append">
-                    <button class="btn btn-primary btn-lg" type="button">Search</button>
+                    <button class="btn btn-primary btn-lg" type="submit" id="review-Searchbar-btn">Search</button>
                 </div>
         </form>
-        <div class="card mb-4" id="reviewQueryList">
+        <div class="card mb-4" >
             <div class="card-header">
-                Pending reviews
+                Reviews
             </div>
-            <div class="card-body overflow-auto" style="max-height: 400px; min-height: 200px" id="pendingReviewoutput">
-                <div class="card bg-white my-2">
-                    <div class="card-body d-flex justify-content-between">
-                        <div class="d-flex">
-                            <img class="mt-1" src="" height="120" width="90">
-                            <div class="resultBasic ms-3">
-                                <h5>title</h5>
-                                <div><b>Book: </b></div>
-                                <div><b>Author: </b></div>
-                                <div><b>User:</b> </div>
-                                <div><b>Date posted: </b></div>
-                            </div>    
-                        </div>
-                    </div>
-                </div>
+            <div class="card-body overflow-auto" style="max-height: 400px; min-height: 200px" id="reviewQueryList">
             </div>
         </div>
         <div class="card mb-4">
@@ -622,17 +608,31 @@ component.reviewQuery = () => {
 `
 };
 
-component.reviewQueryoutput = () => {
+// <div class="card-body d-flex justify-content-between">
+//     <div class="d-flex">
+//         <img class="mt-1" src="" height="120" width="90">
+//         <div class="resultBasic ms-3">
+//             <h5>title</h5>
+//             <div><b>Book: </b></div>
+//             <div><b>Author: </b></div>
+//             <div><b>User:</b> </div>
+//             <div><b>Date posted: </b></div>
+//         </div>    
+//     </div>
+// </div>
+
+
+component.reviewQueryoutput = (review_doc,user_doc) => {
     return `
         <div class="bookresult card bg-light m-2">
             <div class="card-body d-flex justify-content-between">
                 <div class="resultInfo d-flex">
-                    <img class="mt-1" src="http://books.google.com/books/content?id=_TEJzgEACAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api" height="100">
+                    <img class="mt-1" src="${review_doc.data().review_book_thumbnail}" height="100">
                     <div class="resultBasic ms-3">
-                        <h4>Title</h4>
-                        <h6>Author: author name</h6>
-                        <h6>Posted by: username</h6>
-                        <h6>Date posted: Date</h6>
+                        <h4>${review_doc.data().review_title}</h4>
+                        <h6>Book: ${review_doc.data().review_book_title}</h6>
+                        <h6>Author: ${review_doc.data().review_book_authors}</h6>
+                        <h6>${review_doc.data().review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })} by ${user_doc.data().user_name}</h6>
                     </div>
                 </div>
             </div>

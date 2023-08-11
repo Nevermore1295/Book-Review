@@ -127,7 +127,7 @@ view.setScreen = async (screenName, review_id) => {
         case 'searchScreen':
             view.currentScreen='searchScreen';
              //Set redirect button
-            document.getElementById('app').innerHTML = component.navbar() + component.reviewQuery() + component.footer();
+            document.getElementById('app').innerHTML = component.navbar() + component.reviewSearchScreen() + component.footer();
 
             controller.searchReview();
             view.setScreenButton('navbar-brand','homeScreen');
