@@ -39,3 +39,10 @@ a {
 .review-show {
   color: white !important;
 }
+
+
+$zindex-dropdown:                   1000;
+$zindex-sticky:                     1020;
+$zindex-fixed:                      1030;
+$zindex-modal-backdrop:             1040;
+

@@ -51,7 +51,7 @@ view.setScreen = async (screenName, review_id) => {
                 });
 
                 //Load realtime-update comment
-                controller.showParentComment(review_id);
+                controller.showComment(review_id);
             });
 
             //Set redirect button
@@ -139,6 +139,17 @@ view.setScreen = async (screenName, review_id) => {
             view.setScreenButton('search-btn','searchScreen');
             view.setScreenButton('review-btn','reviewCreatorScreen');
         break;
+
+        case 'userReviewScreen':
+            view.currentScreen='userReviewScreen';
+            document.getElementById('app').innerHTML = component.navbar() + component.userReview() + component.footer();
+            controller.Authentication();
+            view.setScreenButton('home-btn','homeScreen');
+            view.setScreenButton('navbar-brand','homeScreen');
+            view.setScreenButton('search-btn','searchScreen');
+            view.setScreenButton('review-btn','reviewCreatorScreen');
+            controller.showUserReviews();
+        break;
         
         case 'adminScreen':
             view.currentScreen='adminScreen';
@@ -166,7 +177,7 @@ view.setScreenButton = (button_id, screen_name) => {
 }
 
 
-view.setScreen();
+view.setScreen('searchScreen');
 
 
 

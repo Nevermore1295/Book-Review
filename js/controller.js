@@ -12,10 +12,9 @@ export const controller = {};
 //Auth check 
 controller.Authentication = async () => {
     auth.onAuthStateChanged(()=>{
-        console.log(auth.currentUser);
         if(auth.currentUser===null){
             document.getElementById('user-auth').innerHTML=component.Authentication(false);
-            
+            document.getElementById('modal-control').innerHTML = component.loginModal();
             document.getElementById('login').addEventListener('submit', (e) => {
                 e.preventDefault();
                 controller.login();
@@ -27,7 +26,11 @@ controller.Authentication = async () => {
         } else {
             document.getElementById('user-auth').innerHTML=component.Authentication(true);
             document.getElementById('review-btn-li').style.display = 'block';
+            document.getElementById('modal-control').innerHTML = ``;
             controller.authCheck();
+            document.getElementById('user-review').addEventListener('click',()=>{
+                view.setScreen('userReviewScreen');
+            })
             document.getElementById('log-out').addEventListener('click',()=>{
                 controller.logout();
             });
@@ -379,7 +382,6 @@ controller.addComment = async (review_id) =>{
         comment_creator_id: auth.currentUser.uid,
         comment_created_date: Timestamp.now(),
         comment_review_id: review_id,
-        comment_parent_id: null,
         comment_content: document.getElementById('comment-content').value.trim(),
     };
 
@@ -399,15 +401,15 @@ controller.addComment = async (review_id) =>{
 
 
 //Show comment information
-controller.showParentComment = async (review_id) => {
+controller.showComment = async (review_id) => {
 
-    let comment_query = await (query(collection(db,'Comment'),and(where('comment_review_id','==',review_id),where('comment_parent_id','==',null))))
-
-    onSnapshot(comment_query,(qr)=>{
+    let comment_query = await (query(collection(db,'Comment'),and(where('comment_review_id','==',review_id),)))
+    onSnapshot(comment_query, async (qr)=>{
         let str='';
         let count = 0;
         qr.forEach(doc =>{
-            str+=component.displayedParentComment(doc); 
+            console.log(doc.data());
+            str+=component.showComment(doc); 
             count++;
         });
         document.getElementById('comment-output').innerHTML=str;
@@ -553,7 +555,53 @@ controller.searchReview = async () =>{
             }
         }
 
-        document.getElementById('reviewQueryList').innerHTML = str
+        document.getElementById('reviewQueryList').innerHTML = str;
+         //Set redirect button
+         document.querySelectorAll('.imgScreen, .titleScreen').forEach(element=>{
+            element.style.cursor='pointer';
+            element.addEventListener('click', () => view.setScreen('reviewDetailScreen', element.getAttribute('id')));
+        });
+    })
+}
+
+////////////////////////////////// User Reviews ////////////////////////////////////
+
+controller.showUserReviews = async () => {
+    console.log(auth.currentUser);
+    let review_query = query(collection(db, 'Review'), where('review_creator_id', '==', auth.currentUser.uid))
+
+    onSnapshot(await review_query, async ()=>{
+        let str=''; 
+
+        let review_docs = await getDocs(review_query);
+
+        let user_docs = await getDocs(collection(db, 'User'));
+
+        for (let i in review_docs.docs){
+            for (let j in user_docs.docs){
+                if (review_docs.docs[i] == undefined){
+                    console.log(user_docs.docs[i].id);
+                } else if (review_docs.docs[i].data().review_creator_id===user_docs.docs[j].id){
+                    
+                    str+=component.adminPendingReview(review_docs.docs[i],user_docs.docs[j]);
+                    
+                }
+            }
+        }
+    
+        document.getElementById('user-review-list').innerHTML = str;
+    
+        document.querySelectorAll('.approve').forEach(ele => {
+            ele.addEventListener('click',async ()=>{
+                await updateDoc(doc(db, 'Review', ele.getAttribute('value')), {review_status:'active'})
+            })
+        })
+    
+        document.querySelectorAll('.watch').forEach(ele => {
+            ele.addEventListener('click', ()=>{
+                view.setScreen('reviewDetailScreen', ele.getAttribute('value'));
+            })
+        })
     })
 }
 

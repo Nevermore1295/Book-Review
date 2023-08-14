@@ -9,10 +9,10 @@ component.Authentication = (isUserExist) => {
                 <div class="dropdown">
                     <i class="navbar-nav ms-auto fa-solid fa-user" type="button" data-bs-toggle="dropdown" style="font-size:25px" >
                     </i>
-                    <ul class="dropdown-menu account-dropdown">
+                    <ul class="dropdown-menu account-dropdown ms-4 ms-lg-0">
                         <li class="dropdown-item"><b>${auth.currentUser.displayName}</b></li>
                         <li class="dropdown-item" style="cursor: pointer">Information</li>
-                        <li class="dropdown-item" style="cursor: pointer">Your Review</li>
+                        <li class="dropdown-item" id="user-review" style="cursor: pointer">Your Review</li>
                         <li class="dropdown-item" id="log-out" style="cursor: pointer">Log Out</li>
                     </ul>
                 </div>
@@ -24,52 +24,55 @@ component.Authentication = (isUserExist) => {
             <div class="dropdown">
             <!-- Button trigger modal -->
             <i type="button" id="login-modal" class="navbar-nav ms-auto fa-solid fa-user" data-bs-toggle="modal" data-bs-target="#LoginModal" style="font-size:25px"></i>
-            <!-- Modal -->
-            <div class="modal fade" id="LoginModal" tabindex="-1" aria-labelledby="LoginModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content container">
-                        <div class="modal-header">
-                            <h4>Login</h4>
-                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body container">
-                            <form id="login">
-                                <div class="form-outline mb-4">
-                                    <label class="form-label" for="form2Example1">Email address</label>
-                                    <input type="email" id="email-login" class="form-control" />
-                                </div>
-                                <div class="form-outline">
-                                    <label class="form-label" for="form2Example2">Password</label>
-                                    <input type="password" id="password-login" class="form-control" />
-                                </div>
-                                <div class="mb-4 mt-2" id="login-error">
-                                </div>
-                                <div class="row mb-4 d-flex justify-content-between" >
-                                    <button id="signin-button" class="btn btn-primary btn-sm btn-block col-2 mb-4">Sign in</button>
-                                    <div class="col-4">   
-                                        <a href="#!">Forgot password?</a>
-                                    </div>
-                                </div>
-                                <div class="text-center">
-                                    <p>Not a member? <a class="text-primary close" type="button" data-bs-dismiss="modal" aria-label="Close" id="register">Register</a></p>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                    </div>
-                </div>
-            </div>
+            
             `
     }
 }
 
+component.loginModal = () =>{
+    return `
+        <!-- Modal -->
+        <div class="modal fade" id="LoginModal" tabindex="-1" aria-labelledby="LoginModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content login-popup container">
+                    <div class="modal-header">
+                        <h4>Login</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" >
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body container">
+                        <form id="login">
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="form2Example1">Email address</label>
+                                <input type="email" id="email-login" class="form-control" />
+                            </div>
+                            <div class="form-outline">
+                                <label class="form-label" for="form2Example2">Password</label>
+                                <input type="password" id="password-login" class="form-control" />
+                            </div>
+                            <div class="mb-4 mt-2" id="login-error">
+                            </div>
+                            <div class="row mb-4 d-flex justify-content-between" >
+                                <button id="signin-button" class="btn btn-primary btn-sm btn-block col-2 mb-4">Sign in</button>
+                                <div class="col-4">   
+                                    <a href="#!">Forgot password?</a>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <p>Not a member? <a class="text-primary close" type="button" data-bs-dismiss="modal" aria-label="Close" id="register">Register</a></p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `
+}
 
 component.navbar = () => {
     return `
-        <nav class="header navbar navbar-expand-lg shadow navbar-light bg-white">
+        <nav class="header navbar navbar-expand-lg sticky-top shadow navbar-light bg-white">
             <div class="container">
                 <a class="navbar-brand" id="navbar-brand">BookReview</a>
                 <button class="navbar-toggler button-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
@@ -83,7 +86,7 @@ component.navbar = () => {
                                 Collections
                             </a>
                             <div class="dropdown-menu mt-lg-3" aria-labelledby="dropdownMenuButton1">
-                                <div class="d-flex">
+                                <div class="d-flex flex-column flex-sm-row">
                                 <div class="dropdown-row" style="width: calc(100%/3)">
                                     <a class="dropdown-item" href="#">Action & Adventure</a>
                                     <a class="dropdown-item" href="#">Biographies/religion</a>
@@ -132,7 +135,7 @@ component.header = () => {
     <header class="py-5 bg-light border-bottom mb-4">
         <div class="container">
             <div class="text-center my-5">
-                <h1 class="fw-bolder">Welcome to Blog Home!</h1>
+                <h1 class="fw-bolder">Book Review</h1>
                 <p class="lead mb-0">A Bootstrap 5 starter layout for your next blog homepage</p>
             </div>
         </div>
@@ -196,7 +199,7 @@ component.blogEntries = (review_doc, user_doc) => {
                     <div><b>Book:</b>${review_doc.data().review_book_title}</div>
                     <span class="small text-muted">${user_doc.data().user_name}</span>
                     <span class="small text-muted">${review_doc.data().review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })}</span>
-                    <p class="card-text overflow-hidden" style="max-height: 70px">${review_doc.data().review_content}</p>
+                    <div class="card-text overflow-hidden text-break mb-2" style="max-height: 70px">${review_doc.data().review_content}</div>
                     <a class="btn btn-primary review-show" value="${review_doc.id}">Read more →</a>
                 </div>
             </div>
@@ -267,46 +270,8 @@ component.reviewInfo = (review_data, user_data) => {
 `
 }
 
-//Demo
-// component.displayedParentComment = (data) => {
-//     return `
-//     <div class="d-flex mb-4">
-//         <!-- Parent comment-->
-//         <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." />
-//         </div>
-//         <div class="ms-3">
-//             <div class="fw-bold">
-//                 Commenter Name
-//             </div>
-//             If you're going to lead a space frontier, it has to be government; it'll never be private enterprise. Because the space frontier is dangerous, and it's expensive, and it has unquantified risks.
-//             <!-- Child comment 1-->
-//             <div class="d-flex mt-4">
-//                 <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." />
-//                 </div>
-//                 <div class="ms-3">
-//                     <div class="fw-bold">
-//                         Commenter Name
-//                     </div>
-//                     And under those conditions, you cannot establish a capital-market evaluation of that enterprise. You can't get investors.
-//                 </div>
-//             </div>
-//             <!-- Child comment 2-->
-//             <div class="d-flex mt-4">
-//                 <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." />
-//                 </div>
-//                 <div class="ms-3">
-//                     <div class="fw-bold">
-//                         Commenter Name
-//                     </div>
-//                     When you put money directly to a problem, it makes a good headline.
-//                 </div>
-//             </div>
-//         </div>
-//     </div>
-//     `
-// }
 
-component.displayedParentComment = (data) => {
+component.showComment = (data) => {
     return `
     <div class="mb-3">
         <div class="d-flex">
@@ -316,7 +281,6 @@ component.displayedParentComment = (data) => {
             <div class="ms-3">
                 <div class="fw-bold">${data.data().comment_creator_id}</div>
                 <div style="word-break: break-all">${data.data().comment_content}</div>
-                <span class="reply-btn ms-2" style="text-decoration: underline" id="${data.id} style="font-size: 12px">Reply</span>
             </div>
         </div>
         <div class="childComment">
@@ -325,20 +289,6 @@ component.displayedParentComment = (data) => {
     </div>
     `
 }
-
-component.displayedChildComment = (data) => {
-    return `
-    <div class="d-flex">
-        <div class="flex-shrink-0">
-            <img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." />
-        </div>
-        <div class="ms-3 d-flex flex-column">
-            <div class="fw-bold">${data.data().comment_creator_id}</div>
-            <div style="word-break: break-all">${data.data().comment_content}</div>
-            <span class="reply-btn" style="text-decoration: underline" id="${data.id} style="font-size: 12px">Reply</span>
-        </div>
-    </div>
-`}
 
 component.commentSection = (data) => {
     return `
@@ -607,28 +557,14 @@ component.reviewSearchScreen = () => {
 `
 };
 
-// <div class="card-body d-flex justify-content-between">
-//     <div class="d-flex">
-//         <img class="mt-1" src="" height="120" width="90">
-//         <div class="resultBasic ms-3">
-//             <h5>title</h5>
-//             <div><b>Book: </b></div>
-//             <div><b>Author: </b></div>
-//             <div><b>User:</b> </div>
-//             <div><b>Date posted: </b></div>
-//         </div>    
-//     </div>
-// </div>
-
-
 component.reviewQueryoutput = (review_doc,user_doc) => {
     return `
         <div class="bookresult card bg-light m-2">
             <div class="card-body d-flex justify-content-between">
                 <div class="resultInfo d-flex">
-                    <img class="mt-1" src="${review_doc.data().review_book_thumbnail}" height="100">
+                    <img class="mt-1 imgScreen" id="${review_doc.id}" src="${review_doc.data().review_book_thumbnail}" height="160" width="100">
                     <div class="resultBasic ms-3">
-                        <h4>${review_doc.data().review_title}</h4>
+                        <h4 class="titleScreen" id="${review_doc.id}">${review_doc.data().review_title}</h4>
                         <h6>Book: ${review_doc.data().review_book_title}</h6>
                         <h6>Author: ${review_doc.data().review_book_authors}</h6>
                         <h6>${review_doc.data().review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })} by ${user_doc.data().user_name}</h6>
@@ -706,6 +642,25 @@ component.reviewEditor = () => {
     </div>`
 
 };
+
+//*********************** User's review ****************************/
+
+component.userReview = () => {
+    return `
+    <div class="container my-4">
+        <h2 class="m-2"> Your reviews</h2>
+        <div class="card mb-4" >
+            <div class="card-header">
+                Reviews
+            </div>
+            <div class="card-body overflow-auto" style="max-height: 400px; min-height: 300px" id="user-review-list">
+                You have no review.
+            </div>
+        </div>
+    </div>
+`
+};
+
 //*********************** Admin view ****************************/
 component.adminScreen = () => {
     return `
@@ -787,7 +742,7 @@ component.adminReview = (review_doc, user_doc) => {
 //*********************** Footer ****************************/
 component.footer = () => {
     return `
-    <footer class="py-5 bg-white shadow">
+    <footer class="py-5 mt-5 bg-white shadow">
         <div class="container">
             <p class="m-0 text-center">Copyright &copy; Your Website 2023</p>
         </div>
