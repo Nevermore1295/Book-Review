@@ -70,6 +70,27 @@ component.loginModal = () =>{
     `
 }
 
+component.deleteModal = () => {
+    return`<div class="modal fade" tabindex="-1" id="DeleteModal" aria-labelledby="DeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Delete Confirmation</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">No</button>
+          <button type="button" class="btn btn-primary" id ="editor-delete-btn">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>`
+
+}
+
 component.navbar = () => {
     return `
         <nav class="header navbar navbar-expand-lg sticky-top shadow navbar-light bg-white">
@@ -235,7 +256,7 @@ component.pagination = (current_page, page_quantity) => {
         <hr class="my-0">
         <ul class="pagination align-items-center justify-content-end my-4 me-3">
             <li class="page-item" id="previous-page"><a class="page-link"><i class="fa-solid fa-angle-left"></i></a></li>
-            <li class="page-item">${current_page}/${page_quantity}</li>
+            <li class="page-item"><a class="page-link" id = "page-num">${current_page}/${page_quantity}</a></li>
             <li class="page-item" id="next-page"><a class="page-link"><i class="fa-solid fa-angle-right"></i></a></li>            
         </ul>
     </nav>
@@ -635,6 +656,7 @@ component.reviewEditor = () => {
                         <textarea class="form-control review-forminput mb-2" id="editor-content" rows="6"></textarea>
                         <button class="btn btn-lg btn-primary review-forminput float-end me-2" id="editor-save-btn" > Save </button>
                         <button class="btn btn-lg btn-secondary review-forminput float-end me-2" id="editor-discard-btn" > Discard </button>
+                        <i class="btn btn-lg btn-danger review-forminput float-end me-2" id="delete-confirm-btn" data-bs-toggle="modal" data-bs-target="#DeleteModal" > Delete </i>
                     <form>
                 </div>
             </div>
@@ -660,6 +682,28 @@ component.userReview = () => {
     </div>
 `
 };
+
+component.userReviewItem = (review_doc) => {
+    return `
+    <div class="card bg-white my-2">
+        <div class="card-body d-flex justify-content-between">
+            <div class="d-flex">
+                <img class="mt-1" src="${review_doc.data().review_book_thumbnail}" height="120" width="90">
+                <div class="resultBasic ms-3">
+                    <h5>${review_doc.data().review_title}</h5>
+                    <div><b>Book: </b>${review_doc.data().review_book_title}</div>
+                    <div><b>Author: </b>${review_doc.data().review_book_authors}</div>
+                    <div><b>Date posted: </b>${review_doc.data().review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })}</div>
+                    <div><b>Status: </b>${review_doc.data().review_status}</div>
+                </div>    
+            </div>
+            <div class="modify-btn d-flex align-items-center flex-column flex-lg-row">
+                <button class="btn btn-primary m-1 watch" value="${review_doc.id}"><i class="fa-solid fa-eye" style="width: 18px"></i></button>
+                <button class="btn btn-primary edit" value="${review_doc.id}"><i class="fa-solid fa-pen-to-square" style="width: 18px"></i></button>
+            </div>
+        </div>
+    </div>`;
+}
 
 //*********************** Admin view ****************************/
 component.adminScreen = () => {

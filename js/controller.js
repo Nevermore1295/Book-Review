@@ -327,13 +327,6 @@ controller.showCurrentReviewPage = async (review_docs,user_docs,page_number) => 
                 }                
             }
             document.getElementById('review-ctrl').innerHTML = str
-            
-
-            document.querySelectorAll('.delete').forEach(ele => {
-                ele.addEventListener('click',async ()=>{
-                    await deleteDoc(doc(db, "Review", ele.getAttribute('value')));
-                })
-            })
 
             document.querySelectorAll('.edit').forEach(ele => {
                 ele.addEventListener('click',async ()=>{
@@ -572,34 +565,28 @@ controller.showUserReviews = async () => {
 
     onSnapshot(await review_query, async ()=>{
         let str=''; 
-
         let review_docs = await getDocs(review_query);
-
-        let user_docs = await getDocs(collection(db, 'User'));
-
         for (let i in review_docs.docs){
-            for (let j in user_docs.docs){
+            
                 if (review_docs.docs[i] == undefined){
-                    console.log(user_docs.docs[i].id);
-                } else if (review_docs.docs[i].data().review_creator_id===user_docs.docs[j].id){
-                    
-                    str+=component.adminPendingReview(review_docs.docs[i],user_docs.docs[j]);
-                    
+                    console.log(user_docs.docs[i].id);    
+                } else {
+                    str+=component.userReviewItem(review_docs.docs[i])
                 }
-            }
+                
         }
     
         document.getElementById('user-review-list').innerHTML = str;
     
-        document.querySelectorAll('.approve').forEach(ele => {
-            ele.addEventListener('click',async ()=>{
-                await updateDoc(doc(db, 'Review', ele.getAttribute('value')), {review_status:'active'})
-            })
-        })
-    
         document.querySelectorAll('.watch').forEach(ele => {
             ele.addEventListener('click', ()=>{
                 view.setScreen('reviewDetailScreen', ele.getAttribute('value'));
+            })
+        })
+
+        document.querySelectorAll('.edit').forEach(ele => {
+            ele.addEventListener('click',async ()=>{
+                view.setScreen('reviewEditorScreen', ele.getAttribute('value'));
             })
         })
     })
@@ -630,6 +617,13 @@ controller.setEditorInfo = async (review_id) => {
         view.setScreen('reviewDetailScreen', review_id);
     })
     });
+    document.getElementById('modal-control').innerHTML = component.deleteModal();
+    document.getElementById('editor-delete-btn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            await deleteDoc(doc(db, "Review", review_id));
+            view.setScreen('homeScreen');
+
+    })
 
     document.getElementById('editor-discard-btn').addEventListener('click', (e) =>{
         e.preventDefault();

@@ -177,7 +177,7 @@ view.setScreenButton = (button_id, screen_name) => {
 }
 
 
-view.setScreen('searchScreen');
+view.setScreen();
 
 
 

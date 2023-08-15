@@ -36,4 +36,10 @@ a {
   color: white !important;
 }
 
+#page-num:hover {
+  color: black !important;
+  background-color: #fff !important;
+  text-decoration: none;
+}
+
 /*# sourceMappingURL=style.css.map */
