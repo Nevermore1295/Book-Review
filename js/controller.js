@@ -223,11 +223,8 @@ controller.updateReviewPage = async () => {
     let user_docs = await getDocs(collection(db, 'User'));   
 
     controller.showCurrentReviewPage(review_docs.docs, user_docs ,0).then(()=>{
-        onSnapshot(review_query, async (qr)=>{   
-            console.log(qr.docs);
             // let review_active = await getDocs(collection(db,'Review'), where('review_status','==','active'), orderBy('review_created_date','desc'));
-            controller.showReviewPage(await qr.docs, user_docs);
-        })
+        controller.showReviewPage(review_docs.docs, user_docs);
     }) 
 }
 
@@ -236,11 +233,9 @@ controller.updateReviewPage = async () => {
 controller.showReviewPage = async (review_docs, user_docs) => {
 
     let page_quantity = Math.trunc((review_docs.length/5));
-    console.log(page_quantity);
 
     if (review_docs.length>5 && doc.length%5>0){
         page_quantity++;
-        console.log(page_quantity);
     }
 
     // console.log(page);
@@ -280,7 +275,6 @@ controller.checkPagePosition = (review_docs, user_docs, current_page, page_quant
 //Hiển thị trang hiện tại
 controller.showCurrentReviewPage = async (review_docs,user_docs,page_number) => {
 
-    console.log(review_docs);
     let review_array = new Array();
 
     let index =  page_number*5;
@@ -292,8 +286,6 @@ controller.showCurrentReviewPage = async (review_docs,user_docs,page_number) => 
         index++;
     }
 
-    
-    console.log(review_array);
     let str = ''
          
     //Add view for doc
@@ -355,10 +347,10 @@ controller.showCurrentReviewDetail = async (review_id) =>{
     let review_docRef = await getDoc(doc(db, "Review", review_id));
     
     if (review_docRef.exists()) {
-        let user_object =  await controller.getUserObjectByReview_docRef(review_docRef.data());
+        let user_docRef =  await getDoc(doc(db,"User", review_docRef.data().review_creator_id));
 
-        if (user_object!==undefined){
-            document.getElementById('reviewInfo').innerHTML=component.reviewInfo(review_docRef.data(),user_object);
+        if (user_docRef!==undefined){
+            document.getElementById('reviewInfo').innerHTML=component.reviewInfo(review_docRef.data(),user_docRef.data());
         }
 
         document.getElementById('commentSection').innerHTML=component.commentSection();
@@ -369,10 +361,6 @@ controller.showCurrentReviewDetail = async (review_id) =>{
     
 }
 
-controller.getUserObjectByReview_docRef = async (review_docRef)=>{
-    let user_docRef = await getDoc(doc(db,"User", review_docRef.review_creator_id));
-    return user_docRef.data();
-}
 
 //Add comment to firestore
 controller.addComment = async (review_id) =>{
@@ -403,15 +391,35 @@ controller.addComment = async (review_id) =>{
 //Show comment information
 controller.showComment = async (review_id) => {
 
-    let comment_query = await (query(collection(db,'Comment'),and(where('comment_review_id','==',review_id),)))
-    onSnapshot(comment_query, async (qr)=>{
+    let comment_query = await (query(collection(db,'Comment'),where('comment_review_id','==',review_id)));
+    onSnapshot(comment_query, async ()=>{
+        
+        
+
+        let comment_docs = await getDocs(comment_query);
+
+        console.log(comment_docs.docs);
+
+        let user_docs = await getDocs(collection(db, 'User'));
+
+        console.log(user_docs.docs);
+
         let str='';
         let count = 0;
-        qr.forEach(doc =>{
-            console.log(doc.data());
-            str+=component.showComment(doc); 
-            count++;
-        });
+        
+        for (let i in comment_docs.docs){
+            for (let j in user_docs.docs){
+                if (comment_docs.docs[i] == undefined){
+                    console.log(user_docs.docs[i].id);
+                } else if (comment_docs.docs[i].data().comment_creator_id===user_docs.docs[j].id){
+                    str+=component.showComment(comment_docs.docs[i],user_docs.docs[j]); 
+                    count++;
+                }
+            }
+
+            
+        }
+        console.log(count);
         document.getElementById('comment-output').innerHTML=str;
         if (count > 0)
         { 
@@ -483,45 +491,44 @@ controller.getReviewByCategory = async (category) => {
 controller.showPendingReviews = async () => {
     let review_query = query(collection(db, 'Review'), where('review_status', '==', 'pending'), orderBy('review_created_date','desc'))
 
-    onSnapshot(await review_query, async ()=>{
-        let str=''; 
+    let str=''; 
 
-        let review_docs = await getDocs(review_query);
+    let review_docs = await getDocs(review_query);
 
-        let user_docs = await getDocs(collection(db, 'User'));
+    let user_docs = await getDocs(collection(db, 'User'));
 
-        for (let i in review_docs.docs){
-            for (let j in user_docs.docs){
-                if (review_docs.docs[i] == undefined){
-                    console.log(user_docs.docs[i].id);
-                } else if (review_docs.docs[i].data().review_creator_id===user_docs.docs[j].id){
-                    
-                    str+=component.adminPendingReview(review_docs.docs[i],user_docs.docs[j]);
-                    
-                }
+    for (let i in review_docs.docs){
+        for (let j in user_docs.docs){
+            if (review_docs.docs[i] == undefined){
+                console.log(user_docs.docs[i].id);
+            } else if (review_docs.docs[i].data().review_creator_id===user_docs.docs[j].id){
+                
+                str+=component.adminPendingReview(review_docs.docs[i],user_docs.docs[j]);
+                
             }
         }
-    
-        document.getElementById('pendingReviewoutput').innerHTML = str;
-    
-        document.querySelectorAll('.delete').forEach(ele => {
-            ele.addEventListener('click',async ()=>{
-                await deleteDoc((doc(db, "Review", ele.getAttribute('value'))));
-            })
-        })
+    }
 
-        document.querySelectorAll('.approve').forEach(ele => {
-            ele.addEventListener('click',async ()=>{
-                await updateDoc(doc(db, 'Review', ele.getAttribute('value')), {review_status:'active'})
-            })
-        })
-    
-        document.querySelectorAll('.watch').forEach(ele => {
-            ele.addEventListener('click', ()=>{
-                view.setScreen('reviewDetailScreen', ele.getAttribute('value'));
-            })
+    document.getElementById('pendingReviewoutput').innerHTML = str;
+
+    document.querySelectorAll('.delete').forEach(ele => {
+        ele.addEventListener('click',async ()=>{
+            await deleteDoc((doc(db, "Review", ele.getAttribute('value'))));
         })
     })
+
+    document.querySelectorAll('.approve').forEach(ele => {
+        ele.addEventListener('click',async ()=>{
+            await updateDoc(doc(db, 'Review', ele.getAttribute('value')), {review_status:'active'})
+        })
+    })
+
+    document.querySelectorAll('.watch').forEach(ele => {
+        ele.addEventListener('click', ()=>{
+            view.setScreen('reviewDetailScreen', ele.getAttribute('value'));
+        })
+    })
+ 
 }
 
 
@@ -544,16 +551,15 @@ controller.searchReview = async () =>{
                 if (review_docs.docs[i] == undefined){
                     console.log(user_docs.docs[i].id);
                 } else if (review_docs.docs[i].data().review_creator_id===user_docs.docs[j].id){
-
                     if (RegExp(search_value.trim().toLowerCase()).test(review_docs.docs[i].data().review_title.toLowerCase())){
                         str += component.reviewQueryoutput(review_docs.docs[i],user_docs.docs[j])
                     } else if (RegExp(search_value.trim().toLowerCase()).test(review_docs.docs[i].data().review_book_title.toLowerCase())){
                         str += component.reviewQueryoutput(review_docs.docs[i],user_docs.docs[j])
                     }   
-
                 }
             }
         }
+
 
         document.getElementById('reviewQueryList').innerHTML = str;
          //Set redirect button
@@ -570,37 +576,35 @@ controller.showUserReviews = async () => {
     console.log(auth.currentUser);
     let review_query = query(collection(db, 'Review'), where('review_creator_id', '==', auth.currentUser.uid))
 
-    onSnapshot(await review_query, async ()=>{
-        let str=''; 
+    let str=''; 
 
-        let review_docs = await getDocs(review_query);
+    let review_docs = await getDocs(review_query);
 
-        let user_docs = await getDocs(collection(db, 'User'));
+    let user_docs = await getDocs(collection(db, 'User'));
 
-        for (let i in review_docs.docs){
-            for (let j in user_docs.docs){
-                if (review_docs.docs[i] == undefined){
-                    console.log(user_docs.docs[i].id);
-                } else if (review_docs.docs[i].data().review_creator_id===user_docs.docs[j].id){
-                    
-                    str+=component.adminPendingReview(review_docs.docs[i],user_docs.docs[j]);
-                    
-                }
+    for (let i in review_docs.docs){
+        for (let j in user_docs.docs){
+            if (review_docs.docs[i] == undefined){
+                console.log(user_docs.docs[i].id);
+            } else if (review_docs.docs[i].data().review_creator_id===user_docs.docs[j].id){
+                
+                str+=component.adminPendingReview(review_docs.docs[i],user_docs.docs[j]);
+                
             }
         }
-    
-        document.getElementById('user-review-list').innerHTML = str;
-    
-        document.querySelectorAll('.approve').forEach(ele => {
-            ele.addEventListener('click',async ()=>{
-                await updateDoc(doc(db, 'Review', ele.getAttribute('value')), {review_status:'active'})
-            })
+    }
+
+    document.getElementById('user-review-list').innerHTML = str;
+
+    document.querySelectorAll('.approve').forEach(ele => {
+        ele.addEventListener('click',async ()=>{
+            await updateDoc(doc(db, 'Review', ele.getAttribute('value')), {review_status:'active'})
         })
-    
-        document.querySelectorAll('.watch').forEach(ele => {
-            ele.addEventListener('click', ()=>{
-                view.setScreen('reviewDetailScreen', ele.getAttribute('value'));
-            })
+    })
+
+    document.querySelectorAll('.watch').forEach(ele => {
+        ele.addEventListener('click', ()=>{
+            view.setScreen('reviewDetailScreen', ele.getAttribute('value'));
         })
     })
 }

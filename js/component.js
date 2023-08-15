@@ -1,4 +1,4 @@
-import { auth, db } from "./index.js";
+import { auth } from "./index.js";
 
 export let component = {};
 
@@ -271,7 +271,7 @@ component.reviewInfo = (review_data, user_data) => {
 }
 
 
-component.showComment = (data) => {
+component.showComment = (comment_doc,user_doc) => {
     return `
     <div class="mb-3">
         <div class="d-flex">
@@ -279,8 +279,8 @@ component.showComment = (data) => {
             <img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." />
             </div>
             <div class="ms-3">
-                <div class="fw-bold">${data.data().comment_creator_id}</div>
-                <div style="word-break: break-all">${data.data().comment_content}</div>
+                <div class="fw-bold">${user_doc.data().user_name}</div>
+                <div style="word-break: break-all">${comment_doc.data().comment_content}</div>
             </div>
         </div>
         <div class="childComment">
