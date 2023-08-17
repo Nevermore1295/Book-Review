@@ -21,7 +21,7 @@ controller.Authentication = async () => {
                 // document.getElementById('login').reset(); 
             });   
 
-            view.setScreenButton('register','registerScreen');
+            view.setScreenButtonByID('register','registerScreen');
 
         } else {
             document.getElementById('user-auth').innerHTML=component.Authentication(true);
@@ -48,7 +48,7 @@ controller.authCheck = async () => {
         `
             <a id="admin-btn">Administration</a>
         `;
-        view.setScreenButton('admin-btn','adminScreen');
+        view.setScreenButtonByID('admin-btn','adminScreen');
     } else {
         document.getElementById('admin-btn-li').style.display = 'none';
     }
@@ -57,7 +57,7 @@ controller.authCheck = async () => {
         `
             <a id="review-btn">Make a review</a>
         `;
-        view.setScreenButton('review-btn','reviewCreatorScreen');
+        view.setScreenButtonByID('review-btn','reviewCreatorScreen');
 }
 
 //Auth check for comment
@@ -215,26 +215,28 @@ controller.addReview = async () =>{
     }
 }
 
-controller.updateReviewPage = async () => {
+controller.showReviewList = async () => {
     let review_query = await (query(collection(db,'Review') ,where('review_status','==','active'), orderBy('review_created_date','desc'))); 
 
     let review_docs = await getDocs(review_query);
 
     let user_docs = await getDocs(collection(db, 'User'));   
 
-    controller.showCurrentReviewPage(review_docs.docs, user_docs ,0).then(()=>{
+    controller.showCurrentReviewList(review_docs.docs, user_docs ,0).then(()=>{
             // let review_active = await getDocs(collection(db,'Review'), where('review_status','==','active'), orderBy('review_created_date','desc'));
-        controller.showReviewPage(review_docs.docs, user_docs);
+        controller.Pagination(review_docs.docs, user_docs);
     }) 
 }
 
 
 //Hiển thị trang
-controller.showReviewPage = async (review_docs, user_docs) => {
+controller.Pagination = async (review_docs, user_docs) => {
 
     let page_quantity = Math.trunc((review_docs.length/5));
 
-    if (review_docs.length>5 && doc.length%5>0){
+    if (review_docs.length<=5){
+        page_quantity = 1
+    } else if (review_docs.length%5!=0){
         page_quantity++;
     }
 
@@ -253,7 +255,7 @@ controller.checkPagePosition = (review_docs, user_docs, current_page, page_quant
         document.getElementById('previous-page').disabled =false;
         document.getElementById('previous-page').addEventListener('click', ()=>{
             current_page--;
-            controller.showCurrentReviewPage(review_docs, user_docs,current_page-1);
+            controller.showCurrentReviewList(review_docs, user_docs,current_page-1);
             document.getElementById('review-page').innerHTML=component.pagination(current_page,page_quantity);
             controller.checkPagePosition(review_docs, user_docs, current_page,page_quantity);
         });
@@ -265,7 +267,7 @@ controller.checkPagePosition = (review_docs, user_docs, current_page, page_quant
         document.getElementById('next-page').disabled =false;
         document.getElementById('next-page').addEventListener('click', async ()=>{       
             current_page++;
-            controller.showCurrentReviewPage(review_docs, user_docs,current_page-1);
+            controller.showCurrentReviewList(review_docs, user_docs,current_page-1);
             document.getElementById('review-page').innerHTML=component.pagination(current_page,page_quantity);
             controller.checkPagePosition(review_docs, user_docs, current_page,page_quantity);
         });
@@ -273,7 +275,7 @@ controller.checkPagePosition = (review_docs, user_docs, current_page, page_quant
 }
 
 //Hiển thị trang hiện tại
-controller.showCurrentReviewPage = async (review_docs,user_docs,page_number) => {
+controller.showCurrentReviewList = async (review_docs,user_docs,page_number) => {
 
     let review_array = new Array();
 
@@ -291,7 +293,6 @@ controller.showCurrentReviewPage = async (review_docs,user_docs,page_number) => 
     //Add view for doc
     switch (view.currentScreen) {
         case 'homeScreen':    
-
             for (let i in review_array) {
                 for (let j in user_docs.docs){
                     if (review_array[i].data().review_creator_id===user_docs.docs[j].id){
@@ -310,7 +311,7 @@ controller.showCurrentReviewPage = async (review_docs,user_docs,page_number) => 
         break;
             
         case 'adminScreen':
- 
+            
             for (let i in review_array) {
                 for (let j in user_docs.docs){
                     if (review_array[i].data().review_creator_id===user_docs.docs[j].id){
@@ -329,6 +330,13 @@ controller.showCurrentReviewPage = async (review_docs,user_docs,page_number) => 
             document.querySelectorAll('.watch').forEach(ele => {
                 ele.addEventListener('click', ()=>{
                     view.setScreen('reviewDetailScreen', ele.getAttribute('value'));
+                })
+            })
+
+            
+            document.querySelectorAll('.delete').forEach(ele => {
+                ele.addEventListener('click', async ()=>{
+                    await deleteDoc(doc(db, "Review", ele.getAttribute('value')));
                 })
             })
         break;
@@ -386,16 +394,10 @@ controller.showComment = async (review_id) => {
 
     let comment_query = await (query(collection(db,'Comment'),where('comment_review_id','==',review_id)));
     onSnapshot(comment_query, async ()=>{
-        
-        
 
         let comment_docs = await getDocs(comment_query);
 
-        console.log(comment_docs.docs);
-
         let user_docs = await getDocs(collection(db, 'User'));
-
-        console.log(user_docs.docs);
 
         let str='';
         let count = 0;
@@ -464,12 +466,6 @@ controller.showBook = async () => {
 // }
 
 
-
-
-controller.showReviewAdministration = async () => {
-    controller.updateReviewPage();
-}
-
 ////////////////////////////////// CATEGORIES ///////////////////////////////////////
 
 controller.getReviewByCategory = async (category) => {
@@ -484,58 +480,88 @@ controller.getReviewByCategory = async (category) => {
 controller.showPendingReviews = async () => {
     let review_query = query(collection(db, 'Review'), where('review_status', '==', 'pending'), orderBy('review_created_date','desc'))
 
-    let str=''; 
-
-    let review_docs = await getDocs(review_query);
-
-    let user_docs = await getDocs(collection(db, 'User'));
-
-    for (let i in review_docs.docs){
-        for (let j in user_docs.docs){
-            if (review_docs.docs[i] == undefined){
-                console.log(user_docs.docs[i].id);
-            } else if (review_docs.docs[i].data().review_creator_id===user_docs.docs[j].id){
-                
-                str+=component.adminPendingReview(review_docs.docs[i],user_docs.docs[j]);
-                
+    onSnapshot(review_query, async ()=>{
+        let review_docs = await getDocs(review_query);
+        if (review_docs.docs.length>0){
+            let str=''; 
+    
+            let user_docs = await getDocs(collection(db, 'User'));
+    
+            for (let i in review_docs.docs){
+                for (let j in user_docs.docs){
+                    if (review_docs.docs[i] == undefined){
+                        console.log(user_docs.docs[i].id);
+                    } else if (review_docs.docs[i].data().review_creator_id===user_docs.docs[j].id){
+                        
+                        str+=component.adminPendingReview(review_docs.docs[i],user_docs.docs[j]);
+                        
+                    }
+                }
             }
+        
+            document.getElementById('pendingReviewoutput').innerHTML = str;
+        
+            document.querySelectorAll('.delete').forEach(ele => {
+                ele.addEventListener('click',async ()=>{
+                    await deleteDoc(doc(db, "Review", ele.getAttribute('value')));
+                })
+            })
+        
+            document.querySelectorAll('.approve').forEach(ele => {
+                ele.addEventListener('click',async ()=>{
+                    await updateDoc(doc(db, 'Review', ele.getAttribute('value')), {review_status:'active'})
+                })
+            })
+        
+            document.querySelectorAll('.watch').forEach(ele => {
+                ele.addEventListener('click', ()=>{
+                    view.setScreen('reviewDetailScreen', ele.getAttribute('value'));
+                })
+            })
         }
-    }
-
-    document.getElementById('pendingReviewoutput').innerHTML = str;
-
-    document.querySelectorAll('.delete').forEach(ele => {
-        ele.addEventListener('click',async ()=>{
-            await deleteDoc((doc(db, "Review", ele.getAttribute('value'))));
-        })
-    })
-
-    document.querySelectorAll('.approve').forEach(ele => {
-        ele.addEventListener('click',async ()=>{
-            await updateDoc(doc(db, 'Review', ele.getAttribute('value')), {review_status:'active'})
-        })
-    })
-
-    document.querySelectorAll('.watch').forEach(ele => {
-        ele.addEventListener('click', ()=>{
-            view.setScreen('reviewDetailScreen', ele.getAttribute('value'));
-        })
-    })
- 
+    })   
 }
 
 
 ////////////////////////////////// SEARCH REVIEW ///////////////////////////////////////
-controller.searchReview = async () =>{
-
+controller.searchReview = async (collection_value) =>{
     let review_docs = await getDocs(collection(db,'Review'));  
 
     let user_docs = await getDocs(collection(db, 'User'));
 
+    let str= '';
+    if (collection_value==null){
+        for (let i in review_docs.docs){
+            for (let j in user_docs.docs){
+                if (review_docs.docs[i] == undefined){
+                    console.log(user_docs.docs[i].id);
+                } else if (review_docs.docs[i].data().review_creator_id===user_docs.docs[j].id){
+                    str += component.reviewQueryoutput(review_docs.docs[i],user_docs.docs[j])
+                }
+            }
+        }
+    } else {
+        for (let i in review_docs.docs){
+            if (review_docs.docs[i].data().review_category===collection_value){
+                console.log(review_docs.docs[i].data());
+                for (let j in user_docs.docs){
+                    if (review_docs.docs[i] == undefined){
+                        console.log(user_docs.docs[i].id);
+                    } else if (review_docs.docs[i].data().review_creator_id===user_docs.docs[j].id){
+                        str += component.reviewQueryoutput(review_docs.docs[i],user_docs.docs[j])
+                    }
+                }
+            }
+        }
+    }
+  
+
+    document.getElementById('reviewQueryList').innerHTML = str;
+
     document.getElementById('reviewQuerySearchbar').addEventListener('submit',(btn)=>{
         btn.preventDefault();
 
-        let str= '';
+        str= '';
 
         let search_value = document.getElementById('review-Searchbar-input').value;
         
@@ -572,13 +598,11 @@ controller.showUserReviews = async () => {
     let str=''; 
     let review_docs = await getDocs(review_query);
     for (let i in review_docs.docs){
-        
-            if (review_docs.docs[i] == undefined){
-                console.log(user_docs.docs[i].id);    
-            } else {
-                str+=component.userReviewItem(review_docs.docs[i])
-            }
-            
+        if (review_docs.docs[i] == undefined){
+            console.log(user_docs.docs[i].id);    
+        } else {
+            str+=component.userReviewItem(review_docs.docs[i])
+        }         
     }
 
     document.getElementById('user-review-list').innerHTML = str;

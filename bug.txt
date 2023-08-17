@@ -24,3 +24,4 @@ tài khoản đã bị xóa vẫn lưu comment
 comment username
 your reviews
 review seach button
+duplicate add review
