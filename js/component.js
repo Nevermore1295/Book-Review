@@ -53,9 +53,9 @@ component.loginModal = () =>{
                             </div>
                             <div class="mb-4 mt-2" id="login-error">
                             </div>
-                            <div class="row mb-4 d-flex justify-content-between" >
-                                <button id="signin-button" class="btn btn-primary btn-sm btn-block col-2 mb-4">Sign in</button>
-                                <div class="col-4">   
+                            <div class="row mb-4 d-flex justify-content-between align-items-center" >
+                                <button id="signin-button" class="btn btn-primary btn-sm btn-block col-3 col-sm-2">Sign in</button>
+                                <div class="col-6 col-sm-4">   
                                     <a href="#!">Forgot password?</a>
                                 </div>
                             </div>
@@ -107,26 +107,26 @@ component.navbar = () => {
                             <a class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                 Collections
                             </a>
-                            <div class="dropdown-menu mt-lg-3" aria-labelledby="dropdownMenuButton1">
-                                <div class="d-flex flex-column flex-sm-row">
-                                <div class="dropdown-row px-3" style="width: calc(100%/3)">
-                                    <a class="dropdown-item collection-1">Action & Adventure</a>
-                                    <a class="dropdown-item collection-2" href="#">Biographies/religion</a>
-                                    <a class="dropdown-item collection-3" href="#">Business</a>
-                                    <a class="dropdown-item collection-4" href="#">Comics</a>
-                                    <a class="dropdown-item collection-5" href="#">Education</a>
-                                </div>
-                                <div class="dropdown-row px-3" style="width: calc(100%/3)">
-                                    <a class="dropdown-item collection-6">Entertainment</a>
-                                    <a class="dropdown-item collection-7">History</a>
-                                    <a class="dropdown-item collection-8">Medical/lifestyle</a>
-                                    <a class="dropdown-item collection-9">Literature & fiction</a>
-                                    <a class="dropdown-item collection-10">Science & technology</a>
-                                </div>
-                                <div class="dropdown-row px-3 " style="width: calc(100%/3)">
-                                    <a class="dropdown-item collection-11">Sport</a>
-                                    <a class="dropdown-item collection-12">Others</a>
-                                </div>
+                            <div class="dropdown-menu mt-lg-3" aria-labelledby="dropdownMenuButton1" style="width: 600px">
+                                <div class="d-flex flex-column flex-sm-row justify-content-between">
+                                    <div class="dropdown-row" style="width: calc(100%/3)">
+                                        <a class="dropdown-item collection-1">Action & Adventure</a>
+                                        <a class="dropdown-item collection-2" href="#">Biographies/religion</a>
+                                        <a class="dropdown-item collection-3" href="#">Business</a>
+                                        <a class="dropdown-item collection-4" href="#">Comics</a>
+                                        <a class="dropdown-item collection-5" href="#">Education</a>
+                                    </div>
+                                    <div class="dropdown-row" style="width: calc(100%/3)">
+                                        <a class="dropdown-item collection-6">Entertainment</a>
+                                        <a class="dropdown-item collection-7">History</a>
+                                        <a class="dropdown-item collection-8">Medical/lifestyle</a>
+                                        <a class="dropdown-item collection-9">Literature & fiction</a>
+                                        <a class="dropdown-item collection-10">Science & technology</a>
+                                    </div>
+                                    <div class="dropdown-row" style="width: calc(100%/3)">
+                                        <a class="dropdown-item collection-11">Sport</a>
+                                        <a class="dropdown-item collection-12">Others</a>
+                                    </div>
                                 </div>
                             </div>
                         </li>
@@ -173,10 +173,10 @@ component.sideWidget = () => {
                 Search
             </div>
             <div class="card-body">
-                <div class="input-group">
-                    <input class="form-control" type="text" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search" />
+                <form class="input-group" id="search-widget">
+                    <input class="form-control" type="text" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search" id="search-widget-input" />
                     <button class="btn btn-primary" id="button-search" type="button">Go!</button>
-                </div>
+                </form>
             </div>
         </div>
         <!-- Categories widget-->
