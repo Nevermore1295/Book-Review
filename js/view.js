@@ -16,7 +16,7 @@ view.setScreen = async (screenName, review_id, collection_value) => {
     switch (screenName){
         case 'homeScreen':
             view.currentScreen='homeScreen';
-            //Set up HTML
+            //Khởi tạo component HTML
             document.getElementById('app').innerHTML = component.navbar() + component.header() + component.homeContent() + component.footer();
             controller.Authentication();
             //Show review
@@ -59,16 +59,11 @@ view.setScreen = async (screenName, review_id, collection_value) => {
         case 'reviewDetailScreen':
             view.currentScreen='reviewDetailScreen';
 
-             //Set up HTML
+            //Khởi tạo component HTML
             document.getElementById('app').innerHTML = component.navbar() + component.reviewContent() + component.footer();
             controller.Authentication();
-            
+            //Xuất review
             controller.showCurrentReviewDetail(review_id);
-            // .then(()=>{
-
-            //     //Show comment bar and button
-            //     controller.commentAuthCheck(review_id);
-            // });
 
             //Set redirect button
             view.setScreenButtonByID('home-btn','homeScreen');
@@ -82,17 +77,15 @@ view.setScreen = async (screenName, review_id, collection_value) => {
         case 'registerScreen':
             view.currentScreen='registerScreen';
 
-            //Set up HTML
+            //Khởi tạo component HTML
             document.getElementById('app').innerHTML = component.blankNavbar() + component.registerContent() + component.footer();
-
+            //Create an account
             document.getElementById('register').addEventListener('submit', (e) => {
                 e.preventDefault();
-
                 //Add data object to doc
                 controller.register();
-
             });
-
+            //Nút login quay lại Homescreen
             view.setScreenButtonByID('navbar-brand','homeScreen');
             document.getElementById('login-btn').style.cursor = 'pointer';
             document.getElementById('login-btn').addEventListener('click', async () => { 
@@ -102,32 +95,28 @@ view.setScreen = async (screenName, review_id, collection_value) => {
 
         case 'reviewCreatorScreen':
             view.currentScreen='reviewCreatorScreen';
-            //Set up HTML 
+            //Khởi tạo component HTML
             document.getElementById('app').innerHTML = component.navbar() + component.bookSearchContent() + component.footer();
             controller.Authentication();
             view.setScreenButtonByID('home-btn','homeScreen');
             view.setScreenButtonByID('navbar-brand','homeScreen');
             view.setScreenButtonByID('search-btn','searchScreen');
             view.setScreenButtonByID('review-btn','reviewCreatorScreen');
-            //Book search bar
+            //Thanh tìm kiếm sách để tạo review
             document.getElementById('bookSearchbar').addEventListener('submit', (j) =>{
                 j.preventDefault();
-                
                 controller.showBook().then(() => {
                     // Reset form
                     document.getElementById('bookSearchbar').reset();
-
                     //Review Form
                     document.getElementById('Review').addEventListener('submit', (e)=>{
                         e.preventDefault();
                         //Add data object to doc 
-                      
                         controller.addReview();
                        
                     })
                 })
             });
-
             //Set redirect button
             view.setScreenButtonByID('navbar-brand','homeScreen');
             break;
@@ -136,7 +125,9 @@ view.setScreen = async (screenName, review_id, collection_value) => {
             view.currentScreen='searchScreen';
              //Set redirect button
             document.getElementById('app').innerHTML = component.navbar() + component.reviewSearchScreen() + component.footer();
+            //Xác minh user hiện tại
             controller.Authentication();
+            //Tìm kiếm review
             controller.searchReview(collection_value);
 
             document.querySelectorAll('.collection-5').forEach((ele)=>{
@@ -169,8 +160,11 @@ view.setScreen = async (screenName, review_id, collection_value) => {
 
         case 'reviewEditorScreen':
             view.currentScreen='reviewEditor';
+            //Khởi tạo component HTML
             document.getElementById('app').innerHTML = component.navbar() + component.reviewEditor(review_id) + component.footer();
+            //Xác minh user hiện tại
             controller.Authentication();
+            //Lấy info của review hiện tại để edit
             controller.setEditorInfo(review_id);
             view.setScreenButtonByID('navbar-brand','homeScreen');
             view.setScreenButtonByID('home-btn','homeScreen');
@@ -181,25 +175,32 @@ view.setScreen = async (screenName, review_id, collection_value) => {
 
         case 'userReviewScreen':
             view.currentScreen='userReviewScreen';
+            //Khởi tạo component HTML
             document.getElementById('app').innerHTML = component.navbar() + component.userReview() + component.footer();
+            //Xác minh user hiện tại
             controller.Authentication();
             view.setScreenButtonByID('home-btn','homeScreen');
             view.setScreenButtonByID('navbar-brand','homeScreen');
             view.setScreenButtonByID('search-btn','searchScreen');
             view.setScreenButtonByID('review-btn','reviewCreatorScreen');
+            //Xuất các bài review thuộc sở hữu của user hiện tại
             controller.showUserReviews();
         break;
         
         case 'adminScreen':
             view.currentScreen='adminScreen';
+            //Khởi tạo component HTML
             document.getElementById('app').innerHTML = component.navbar() + component.adminScreen() + component.footer();
+            //Xác minh user hiện tại
             controller.Authentication();
 
             view.setScreenButtonByID('home-btn','homeScreen');
             view.setScreenButtonByID('navbar-brand','homeScreen');
             view.setScreenButtonByID('search-btn','searchScreen');
             view.setScreenButtonByID('review-btn','reviewCreatorScreen');
+            //Xuất review ở trạng thái pending
             controller.showPendingReviews();
+            //Xuất review ở trạng thái active
             controller.showReviewList();
         break;
 
@@ -209,7 +210,7 @@ view.setScreen = async (screenName, review_id, collection_value) => {
 
     }
 }
-
+//Gán chuyển hướng cho nút theo ID
 view.setScreenButtonByID = (button_id, screen_name, review_id, collection_value) => {
        
     let button_id_str = '#'+button_id;
@@ -218,7 +219,7 @@ view.setScreenButtonByID = (button_id, screen_name, review_id, collection_value)
         view.setScreen(screen_name,review_id,collection_value);
     });
 }
-
+//Gán chuyển hướng cho nút theo Class
 view.setScreenButtonByClassName = (button_class_name, screen_name, review_id, collection_value) => {
        
     let button_class_name_str = '.'+button_class_name;
@@ -230,6 +231,8 @@ view.setScreenButtonByClassName = (button_class_name, screen_name, review_id, co
     })
 }
 
+
+//Khởi tạo view ban đầu
 view.setScreen();
 
 
