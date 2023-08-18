@@ -63,8 +63,13 @@ view.setScreen = async (screenName, review_id, collection_value) => {
             document.getElementById('app').innerHTML = component.navbar() + component.reviewContent() + component.footer();
             controller.Authentication();
             
-            controller.showCurrentReviewDetail(review_id);
-            
+            controller.showCurrentReviewDetail(review_id)
+            // .then(()=>{
+
+            //     //Show comment bar and button
+            //     controller.commentAuthCheck(review_id);
+            // });
+
             //Set redirect button
             view.setScreenButtonByID('home-btn','homeScreen');
             view.setScreenButtonByID('navbar-brand','homeScreen');
@@ -115,8 +120,10 @@ view.setScreen = async (screenName, review_id, collection_value) => {
                     //Review Form
                     document.getElementById('Review').addEventListener('submit', (e)=>{
                         e.preventDefault();
-                        //Add data object to doc
+                        //Add data object to doc 
+                        document.getElementById('Review').disabled = true;
                         controller.addReview();
+                       
                     })
                 })
             });

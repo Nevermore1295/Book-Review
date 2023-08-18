@@ -82,8 +82,9 @@ component.deleteModal = () => {
           <p>Are you sure you want to delete?</p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">No</button>
-          <button type="button" class="btn btn-primary" id ="editor-delete-btn">Yes</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id ="editor-delete-btn">Yes</button>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">No</button>
+
         </div>
       </div>
     </div>
@@ -108,21 +109,21 @@ component.navbar = () => {
                             </a>
                             <div class="dropdown-menu mt-lg-3" aria-labelledby="dropdownMenuButton1">
                                 <div class="d-flex flex-column flex-sm-row">
-                                <div class="dropdown-row" style="width: calc(100%/3)">
+                                <div class="dropdown-row px-3" style="width: calc(100%/3)">
                                     <a class="dropdown-item collection-1">Action & Adventure</a>
                                     <a class="dropdown-item collection-2" href="#">Biographies/religion</a>
                                     <a class="dropdown-item collection-3" href="#">Business</a>
                                     <a class="dropdown-item collection-4" href="#">Comics</a>
                                     <a class="dropdown-item collection-5" href="#">Education</a>
                                 </div>
-                                <div class="dropdown-row" style="width: calc(100%/3)">
+                                <div class="dropdown-row px-3" style="width: calc(100%/3)">
                                     <a class="dropdown-item collection-6">Entertainment</a>
                                     <a class="dropdown-item collection-7">History</a>
                                     <a class="dropdown-item collection-8">Medical/lifestyle</a>
                                     <a class="dropdown-item collection-9">Literature & fiction</a>
                                     <a class="dropdown-item collection-10">Science & technology</a>
                                 </div>
-                                <div class="dropdown-row" style="width: calc(100%/3)">
+                                <div class="dropdown-row px-3 " style="width: calc(100%/3)">
                                     <a class="dropdown-item collection-11">Sport</a>
                                     <a class="dropdown-item collection-12">Others</a>
                                 </div>
@@ -333,13 +334,11 @@ component.commentSection = (data) => {
     return `
     <!-- Comments section-->
     <div class="my-4">
-        <div class="card bg-light w-100 mt-4">
-            <div class="card-body">
+        <div class="card bg-light w-100 mt-4" id ="comment-card">
+            <div class="card-body" >
                 <!-- Comment form-->
-                <form class="mb-4 d-flex" id="comment-input">
-                    <input class="form-control" id="comment-content" rows="3" placeholder="Join the discussion and leave a comment!"></input>
-                    <button class="btn btn-block btn-lg btn-primary" id="comment-btn">Submit</button>
-                </form>
+                <div id="comment-input">
+                </div>
                 <div id="comment-output">
                 <div>
             </div>
@@ -621,7 +620,12 @@ component.reviewEditor = () => {
                 Edit review
             </div>
             <div class="card-body row">
-                <img class="mb-3 col-lg-2" id="editor-thumbnail" src="../assets/Question_mark_(black).png" style="height:160px; width:128px"> 
+                <div class="d-flex justify-content-between">
+                    <img class="mb-3 col-lg-2" id="editor-thumbnail" src="../assets/Question_mark_(black).png" style="height:160px; width:128px">
+                    <div>
+                        <i class="btn btn-danger review-forminput float-end me-2" id="delete-confirm-btn" data-bs-toggle="modal" data-bs-target="#DeleteModal" ><i class="fa-solid fa-trash-can"></i></i>
+                    </div>
+                </div>
                 <div class="book-info col-lg-10">
                     <div class="input-group input-group-sm mb-3 w-100">
                         <div class="input-group-prepend">
@@ -673,7 +677,7 @@ component.reviewEditor = () => {
                         <textarea class="form-control review-forminput mb-2" id="editor-content" rows="6"></textarea>
                         <button class="btn btn-lg btn-primary review-forminput float-end me-2" id="editor-save-btn" > Save </button>
                         <button class="btn btn-lg btn-secondary review-forminput float-end me-2" id="editor-discard-btn" > Discard </button>
-                        <i class="btn btn-lg btn-danger review-forminput float-end me-2" id="delete-confirm-btn" data-bs-toggle="modal" data-bs-target="#DeleteModal" > Delete </i>
+                        
                     <form>
                 </div>
             </div>
