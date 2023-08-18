@@ -61,14 +61,43 @@ controller.authCheck = async () => {
 }
 
 //Auth check for comment
-controller.showCommentInput = async() => {
-    await auth.onAuthStateChanged(()=>{
+controller.commentAuthCheck = async (review_id) => {
+    await auth.onAuthStateChanged(async ()=>{
+        let comment_query = query(collection(db,'Comment'),where('comment_review_id','==',review_id));
+        console.log(comment_query);
+        let comment_query_docs = await getDocs(comment_query);
         console.log("Auth state changed");
-        if (auth.currentUser!==null && view.currentScreen==='reviewDetailScreen') {
-            document.getElementById("comment-input").style.display = 'block';
-        } else if (auth.currentUser===null && view.currentScreen==='reviewDetailScreen'){
-            console.log(document.getElementById("comment-input"));
-            document.getElementById("comment-input").style.setProperty("display", "none", "important");
+        if (view.currentScreen==='reviewDetailScreen'){
+            if (auth.currentUser!==null) {
+                document.getElementById('commentSection').innerHTML=component.commentSection();
+                document.getElementById('comment-input').innerHTML =`
+                <form class="mb-4 d-flex" id="comment-form">
+                    <input class="form-control" id="comment-content" rows="3" placeholder="Join the discussion and leave a comment!"></input>
+                    <button class="btn btn-block btn-lg btn-primary" id="comment-btn">Submit</button>
+                </form>
+                `
+                document.getElementById('comment-form').addEventListener('submit', (cf) =>{
+                    cf.preventDefault();
+                    //Add data object to doc
+                    document.getElementById('comment-content').disabled = true; //prevent creating multiple comment from multi-clicking
+                    document.getElementById('comment-btn').disabled = true;      
+                    controller.addComment(review_id); 
+                               
+                })
+                await controller.showComment(comment_query);
+            } else {
+                if (comment_query_docs.size!=0){
+                    console.log(comment_query_docs.docs);
+                    document.getElementById('commentSection').innerHTML=component.commentSection();
+                    await controller.showComment(comment_query);
+                } 
+                // console.log(document.getElementById("comment-input"));
+                // document.getElementById("comment-input").style.setProperty("display", "none", "important");
+                // if (document.getElementById('comment-output').innerHTML=='') {
+                //     document.getElementById('comment-card').style.setProperty("display","none","important");
+                // }
+
+            }
         }
     });
 }
@@ -197,7 +226,6 @@ controller.addReview = async () =>{
         alert('Please choose one category');
     } else {
         await addDoc(collection(db, 'Review'),initialData).then(() => {
-
         document.getElementById('review-funcscreen').innerHTML = 
         `
             <div class="card mt-3">
@@ -345,8 +373,7 @@ controller.showCurrentReviewDetail = async (review_id) =>{
         if (user_docRef!==undefined){
             document.getElementById('reviewInfo').innerHTML=component.reviewInfo(review_docRef.data(),user_docRef.data());
         }
-
-        document.getElementById('commentSection').innerHTML=component.commentSection();
+        
     } else {
     // docSnap.data() will be undefined in this case
         console.log("No such document!");
@@ -369,7 +396,7 @@ controller.addComment = async (review_id) =>{
     //Add comment data object to firestore and return a Promise
     return await addDoc(collection(db, 'Comment'),initialData).then(() => {
         // Reset form
-        document.getElementById('comment-input').reset();
+        document.getElementById('comment-form').reset();
         console.log(`User ${auth.currentUser.displayName} successfully comment`); 
         document.getElementById('comment-content').disabled = false;
         document.getElementById('comment-btn').disabled = false;      
@@ -382,45 +409,23 @@ controller.addComment = async (review_id) =>{
 
 
 //Show comment information
-controller.showComment = async (review_id) => {
+controller.showComment = async (comment_query) => {
 
-    let comment_query = await (query(collection(db,'Comment'),where('comment_review_id','==',review_id)));
+
     onSnapshot(comment_query, async ()=>{
-        
-        
-
         let comment_docs = await getDocs(comment_query);
-
-        console.log(comment_docs.docs);
-
         let user_docs = await getDocs(collection(db, 'User'));
-
-        console.log(user_docs.docs);
-
         let str='';
-        let count = 0;
-        
         for (let i in comment_docs.docs){
             for (let j in user_docs.docs){
                 if (comment_docs.docs[i] == undefined){
                     console.log(user_docs.docs[i].id);
                 } else if (comment_docs.docs[i].data().comment_creator_id===user_docs.docs[j].id){
                     str+=component.showComment(comment_docs.docs[i],user_docs.docs[j]); 
-                    count++;
                 }
             }
-
-            
         }
-        console.log(count);
         document.getElementById('comment-output').innerHTML=str;
-        if (count > 0)
-        { 
-            document.querySelectorAll('.reply-btn').forEach(e =>{
-                e.style.cursor='pointer';
-                e.addEventListener('click', () => view.setScreen('reviewDetailScreen'));
-            })
-        }
     });
 }
 
@@ -568,10 +573,10 @@ controller.searchReview = async () =>{
 controller.showUserReviews = async () => {
     console.log(auth.currentUser);
     let review_query = query(collection(db, 'Review'), where('review_creator_id', '==', auth.currentUser.uid))
-
     let str=''; 
     let review_docs = await getDocs(review_query);
-    for (let i in review_docs.docs){
+    if (review_docs.docs.length>0){
+        for (let i in review_docs.docs){
         
             if (review_docs.docs[i] == undefined){
                 console.log(user_docs.docs[i].id);    
@@ -579,21 +584,22 @@ controller.showUserReviews = async () => {
                 str+=component.userReviewItem(review_docs.docs[i])
             }
             
+        }
+
+        document.getElementById('user-review-list').innerHTML = str;
+        document.querySelectorAll('.watch').forEach(ele => {
+            ele.addEventListener('click', ()=>{
+                view.setScreen('reviewDetailScreen', ele.getAttribute('value'));
+            })
+        })
+    
+        document.querySelectorAll('.edit').forEach(ele => {
+            ele.addEventListener('click',async ()=>{
+                view.setScreen('reviewEditorScreen', ele.getAttribute('value'));
+            })
+        })
+
     }
-
-    document.getElementById('user-review-list').innerHTML = str;
-
-    document.querySelectorAll('.watch').forEach(ele => {
-        ele.addEventListener('click', ()=>{
-            view.setScreen('reviewDetailScreen', ele.getAttribute('value'));
-        })
-    })
-
-    document.querySelectorAll('.edit').forEach(ele => {
-        ele.addEventListener('click',async ()=>{
-            view.setScreen('reviewEditorScreen', ele.getAttribute('value'));
-        })
-    })
 }
 
 

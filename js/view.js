@@ -37,21 +37,9 @@ view.setScreen = async (screenName, review_id) => {
             controller.Authentication();
             
             controller.showCurrentReviewDetail(review_id).then(()=>{
-                
-                //Show comment bar and button
-                controller.showCommentInput().then(()=>{
-                    document.getElementById('comment-input').addEventListener('submit', (cf) =>{
-                        cf.preventDefault();
-                        //Add data object to doc
-                        document.getElementById('comment-content').disabled = true; //prevent creating multiple comment from multi-clicking
-                        document.getElementById('comment-btn').disabled = true;      
-                        controller.addComment(review_id); 
-                                   
-                    })
-                });
 
-                //Load realtime-update comment
-                controller.showComment(review_id);
+                //Show comment bar and button
+                controller.commentAuthCheck(review_id);
             });
 
             //Set redirect button
