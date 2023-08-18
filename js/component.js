@@ -109,21 +109,21 @@ component.navbar = () => {
                             </a>
                             <div class="dropdown-menu mt-lg-3" aria-labelledby="dropdownMenuButton1">
                                 <div class="d-flex flex-column flex-sm-row">
-                                <div class="dropdown-row" style="width: calc(100%/3)">
+                                <div class="dropdown-row px-3" style="width: calc(100%/3)">
                                     <a class="dropdown-item collection-1">Action & Adventure</a>
                                     <a class="dropdown-item collection-2" href="#">Biographies/religion</a>
                                     <a class="dropdown-item collection-3" href="#">Business</a>
                                     <a class="dropdown-item collection-4" href="#">Comics</a>
                                     <a class="dropdown-item collection-5" href="#">Education</a>
                                 </div>
-                                <div class="dropdown-row" style="width: calc(100%/3)">
+                                <div class="dropdown-row px-3" style="width: calc(100%/3)">
                                     <a class="dropdown-item collection-6">Entertainment</a>
                                     <a class="dropdown-item collection-7">History</a>
                                     <a class="dropdown-item collection-8">Medical/lifestyle</a>
                                     <a class="dropdown-item collection-9">Literature & fiction</a>
                                     <a class="dropdown-item collection-10">Science & technology</a>
                                 </div>
-                                <div class="dropdown-row" style="width: calc(100%/3)">
+                                <div class="dropdown-row px-3 " style="width: calc(100%/3)">
                                     <a class="dropdown-item collection-11">Sport</a>
                                     <a class="dropdown-item collection-12">Others</a>
                                 </div>
