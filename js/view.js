@@ -21,6 +21,8 @@ view.setScreen = async (screenName, review_id, collection_value) => {
             controller.Authentication();
             //Show review
             controller.showReviewList();
+            controller.showAuthorSetting();
+            
             //Set redirect button
 
             view.setScreenButtonByClassName('collection-1','searchScreen','','Action & Adventure');
@@ -61,11 +63,12 @@ view.setScreen = async (screenName, review_id, collection_value) => {
             document.getElementById('app').innerHTML = component.navbar() + component.reviewContent() + component.footer();
             controller.Authentication();
             
-            controller.showCurrentReviewDetail(review_id).then(()=>{
+            controller.showCurrentReviewDetail(review_id)
+            // .then(()=>{
 
-                //Show comment bar and button
-                controller.commentAuthCheck(review_id);
-            });
+            //     //Show comment bar and button
+            //     controller.commentAuthCheck(review_id);
+            // });
 
             //Set redirect button
             view.setScreenButtonByID('home-btn','homeScreen');

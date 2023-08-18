@@ -60,13 +60,16 @@ controller.authCheck = async () => {
         view.setScreenButtonByID('review-btn','reviewCreatorScreen');
 }
 
+controller.showAuthorSetting = async (review_creator_id) =>{
+}
+
 //Auth check for comment
-controller.commentAuthCheck = async (review_id) => {
+controller.commentAuthCheck = async (review_id, author_id) => {
     await auth.onAuthStateChanged(async ()=>{
         let comment_query = query(collection(db,'Comment'),where('comment_review_id','==',review_id));
         console.log(comment_query);
         let comment_query_docs = await getDocs(comment_query);
-        console.log("Auth state changed");
+
         if (view.currentScreen==='reviewDetailScreen'){
             if (auth.currentUser!==null) {
                 document.getElementById('commentSection').innerHTML=component.commentSection();
@@ -200,6 +203,7 @@ controller.register = async () =>{
         })
     }
 }
+
 ////////////////////////////////// REVIEW ///////////////////////////////////////
 //Add review to firestore
 controller.addReview =  () =>{   
@@ -370,16 +374,28 @@ controller.showCurrentReviewList = async (review_docs,user_docs,page_number) => 
 
             
             document.querySelectorAll('.delete').forEach(ele => {
-                ele.addEventListener('click', async ()=>{
-                    await deleteDoc(doc(db, "Review", ele.getAttribute('value')));
+                ele.addEventListener('click', async ()=>{   
+
+                    let comment_docs = await getDocs(query(collection(db,"Comment"),where('comment_review_id',"==",ele.getAttribute('value'))));
+                    
+                    for (let i in comment_docs.docs){
+                        console.log(comment_docs.docs[i].data().comment_review_id);
+                        deleteDoc(doc(db, "Comment", comment_docs.docs[i].id));
+                    }
+
+                    deleteDoc(doc(db, "Review", ele.getAttribute('value')));
+            
+                    // await deleteDoc(doc(db, "Comment", e))
                 })
             })
+
         break;
     }
 }
 
 //Show review detail information at current review page
 controller.showCurrentReviewDetail = async (review_id) =>{
+    
     let review_docRef = await getDoc(doc(db, "Review", review_id));
     
     if (review_docRef.exists()) {
@@ -388,7 +404,11 @@ controller.showCurrentReviewDetail = async (review_id) =>{
         if (user_docRef!==undefined){
             document.getElementById('reviewInfo').innerHTML=component.reviewInfo(review_docRef.data(),user_docRef.data());
         }
-        
+
+        document.getElementById('commentSection').innerHTML=component.commentSection();
+
+        //Show comment bar and button
+        controller.commentAuthCheck(review_id,user_docRef.id);
     } else {
     // docSnap.data() will be undefined in this case
         console.log("No such document!");
@@ -444,6 +464,7 @@ controller.showComment = async (comment_query) => {
             }
         }
         document.getElementById('comment-output').innerHTML=str;
+
     });
 }
 
