@@ -118,7 +118,7 @@ view.setScreen = async (screenName, review_id, collection_value) => {
                     document.getElementById('Review').addEventListener('submit', (e)=>{
                         e.preventDefault();
                         //Add data object to doc 
-                        document.getElementById('Review').disabled = true;
+                      
                         controller.addReview();
                        
                     })
