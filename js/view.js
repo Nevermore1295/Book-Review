@@ -63,7 +63,7 @@ view.setScreen = async (screenName, review_id, collection_value) => {
             document.getElementById('app').innerHTML = component.navbar() + component.reviewContent() + component.footer();
             controller.Authentication();
             
-            controller.showCurrentReviewDetail(review_id)
+            controller.showCurrentReviewDetail(review_id);
             // .then(()=>{
 
             //     //Show comment bar and button
