@@ -110,23 +110,22 @@ component.navbar = () => {
                             <div class="dropdown-menu mt-lg-3" aria-labelledby="dropdownMenuButton1">
                                 <div class="d-flex flex-column flex-sm-row">
                                 <div class="dropdown-row" style="width: calc(100%/3)">
-                                    <a class="dropdown-item" href="#">Action & Adventure</a>
-                                    <a class="dropdown-item" href="#">Biographies/religion</a>
-                                    <a class="dropdown-item" href="#">Business</a>
-                                    <a class="dropdown-item" href="#">Comics</a>
-                                    <a class="dropdown-item" href="#">Education</a>
+                                    <a class="dropdown-item collection-1">Action & Adventure</a>
+                                    <a class="dropdown-item collection-2" href="#">Biographies/religion</a>
+                                    <a class="dropdown-item collection-3" href="#">Business</a>
+                                    <a class="dropdown-item collection-4" href="#">Comics</a>
+                                    <a class="dropdown-item collection-5" href="#">Education</a>
                                 </div>
                                 <div class="dropdown-row" style="width: calc(100%/3)">
-                                    <a class="dropdown-item" href="#">Entertainment</a>
-                                    <a class="dropdown-item" href="#">History</a>
-                                    <a class="dropdown-item" href="#">Medical/lifestyle</a>
-                                    <a class="dropdown-item" href="#">Literature & fiction</a>
-                                    <a class="dropdown-item" href="#">Science & technology</a>
+                                    <a class="dropdown-item collection-6">Entertainment</a>
+                                    <a class="dropdown-item collection-7">History</a>
+                                    <a class="dropdown-item collection-8">Medical/lifestyle</a>
+                                    <a class="dropdown-item collection-9">Literature & fiction</a>
+                                    <a class="dropdown-item collection-10">Science & technology</a>
                                 </div>
                                 <div class="dropdown-row" style="width: calc(100%/3)">
-                                    <a class="dropdown-item" href="#">Sport</a>
-                                    <a class="dropdown-item" href="#">Medical/lifestyle</a>
-                                    <a class="dropdown-item" href="#">Others</a>
+                                    <a class="dropdown-item collection-11">Sport</a>
+                                    <a class="dropdown-item collection-12">Others</a>
                                 </div>
                                 </div>
                             </div>
@@ -188,17 +187,17 @@ component.sideWidget = () => {
             <div class="card-body">
                 <div class="row">
                         <ul class="list-unstyled mb-0">
-                            <li><a href="#!">Action & adventure</a></li>
-                            <li><a href="#!">Biography/religion</a></li>
-                            <li><a href="#!">Bussiness</a></li>
-                            <li><a href="#!">Comics</a></li>
-                            <li><a href="#!">Education</a></li>
-                            <li><a href="#!">Entertainment</a></li>
-                            <li><a href="#!">History</a></li>
-                            <li><a href="#!">Medical & Lifestyle</a></li>
-                            <li><a href="#!">Literature & fiction</a></li>
-                            <li><a href="#!">Science</a></li>
-                            <li><a href="#!">Sport</a></li>
+                            <li><a class="collection-1" href="#">Action & adventure</a></li>
+                            <li><a class="collection-2" href="#">Biography/religion</a></li>
+                            <li><a class="collection-3" href="#">Bussiness</a></li>
+                            <li><a class="collection-4" href="#">Comics</a></li>
+                            <li><a class="collection-5" href="#">Education</a></li>
+                            <li><a class="collection-6" href="#!">Entertainment</a></li>
+                            <li><a class="collection-7" href="#!">History</a></li>
+                            <li><a class="collection-8" href="#!">Medical & Lifestyle</a></li>
+                            <li><a class="collection-9" href="#!">Literature & fiction</a></li>
+                            <li><a class="collection-10" href="#!">Science</a></li>
+                            <li><a class="collection-11" href="#!">Sport</a></li>
                         </ul>
                     </div>
                 </div>
@@ -480,7 +479,6 @@ component.bookSearchContent = () => {
                                 <option value="Literature & fiction">Literature & fiction</option>
                                 <option value="Science & technology">Science & technology</option>
                                 <option value="Sport">Sport</option>
-                                <option value="Medical/lifestyle">Medical/lifestyle</option>
                                 <option value="Others">Others</option>
 
                                 </select>
@@ -558,17 +556,17 @@ component.reviewSearchScreen = () => {
             <div class="card-body">
                 <div class="row">
                     <ul class="list-unstyled mb-0">
-                        <li><a href="#!">Action & adventure</a></li>
-                        <li><a href="#!">Biography/religion</a></li>
-                        <li><a href="#!">Bussiness</a></li>
-                        <li><a href="#!">Comics</a></li>
-                        <li><a href="#!">Education</a></li>
-                        <li><a href="#!">Entertainment</a></li>
-                        <li><a href="#!">History</a></li>
-                        <li><a href="#!">Medical & Lifestyle</a></li>
-                        <li><a href="#!">Literature & fiction</a></li>
-                        <li><a href="#!">Science</a></li>
-                        <li><a href="#!">Sport</a></li>
+                        <li><a class="collection-1" href="#">Action & adventure</a></li>
+                        <li><a class="collection-2" href="#">Biography/religion</a></li>
+                        <li><a class="collection-3" href="#">Bussiness</a></li>
+                        <li><a class="collection-4" href="#">Comics</a></li>
+                        <li><a class="collection-5" >Education</a></li>
+                        <li><a class="collection-6" href="#!">Entertainment</a></li>
+                        <li><a class="collection-7" href="#!">History</a></li>
+                        <li><a class="collection-8" href="#!">Medical & Lifestyle</a></li>
+                        <li><a class="collection-9" href="#!">Literature & fiction</a></li>
+                        <li><a class="collection-10" href="#!">Science</a></li>
+                        <li><a class="collection-11" href="#!">Sport</a></li>
                     </ul>
                 </div>
             </div>
