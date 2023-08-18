@@ -87,13 +87,17 @@ controller.commentAuthCheck = async (review_id, author_id) => {
                     controller.addComment(review_id); 
                                
                 })
-                await controller.showComment(comment_query);
+
+                controller.showComment(comment_query);
+
             } else {
                 if (comment_query_docs.size!=0){
                     console.log(comment_query_docs.docs);
                     document.getElementById('commentSection').innerHTML=component.commentSection();
-                    await controller.showComment(comment_query);
-                } 
+                    controller.showComment(comment_query);
+                } else {
+                    document.getElementById('commentSection').innerHTML='';
+                }
                 // console.log(document.getElementById("comment-input"));
                 // document.getElementById("comment-input").style.setProperty("display", "none", "important");
                 // if (document.getElementById('comment-output').innerHTML=='') {
@@ -393,22 +397,24 @@ controller.showCurrentReviewList = async (review_docs,user_docs,page_number) => 
     }
 }
 
-//Show review detail information at current review page
+//Hiển thị thông tin chi trang hiện tại
 controller.showCurrentReviewDetail = async (review_id) =>{
     
+    //Lấy docs của review theo review_id
     let review_docRef = await getDoc(doc(db, "Review", review_id));
     
     if (review_docRef.exists()) {
+
+         //Lấy docs của user theo review_creator_id
         let user_docRef =  await getDoc(doc(db,"User", review_docRef.data().review_creator_id));
 
         if (user_docRef!==undefined){
+
             document.getElementById('reviewInfo').innerHTML=component.reviewInfo(review_docRef.data(),user_docRef.data());
         }
 
         document.getElementById('commentSection').innerHTML=component.commentSection();
 
-        //Show comment bar and button
-        controller.commentAuthCheck(review_id,user_docRef.id);
     } else {
     // docSnap.data() will be undefined in this case
         console.log("No such document!");
@@ -417,10 +423,10 @@ controller.showCurrentReviewDetail = async (review_id) =>{
 }
 
 
-//Add comment to firestore
+//Thêm comment vào firestore
 controller.addComment = async (review_id) =>{
 
-    //Get comment information and create a comment data object  
+    //Lấy thông tin comment và khởi tạo một đối tượng comment
     const initialData = {
         comment_creator_id: auth.currentUser.uid,
         comment_created_date: Timestamp.now(),
@@ -428,37 +434,49 @@ controller.addComment = async (review_id) =>{
         comment_content: document.getElementById('comment-content').value.trim(),
     };
 
-    //Add comment data object to firestore and return a Promise
+    //Thêm đối tượng vào firestore và trả về 1 promise
     return await addDoc(collection(db, 'Comment'),initialData).then(() => {
-        // Reset form
+        
+        //Reset lại form 
         document.getElementById('comment-form').reset();
-        console.log(`User ${auth.currentUser.displayName} successfully comment`); 
+
+        //Khóa tạm thời comment
         document.getElementById('comment-content').disabled = false;
         document.getElementById('comment-btn').disabled = false;      
     }).catch(err => {
-        // Catch error
+        //Bắt lỗi
         console.log(err.message);
     });
 }
 
 
 
-//Show comment information
+//Hiển thị các comment
 controller.showComment = async (comment_query) => {
 
-
+    //Đọc thay đổi query
     onSnapshot(comment_query, async ()=>{
 
+        //Lấy docs của comment 
         let comment_docs = await getDocs(comment_query);
 
+        //Lấy docs của user
         let user_docs = await getDocs(collection(db, 'User'));
 
+        //Khai báo chuỗi
         let str='';
+
+
         for (let i in comment_docs.docs){
             for (let j in user_docs.docs){
                 if (comment_docs.docs[i] == undefined){
                     console.log(user_docs.docs[i].id);
-                } else if (comment_docs.docs[i].data().comment_creator_id===user_docs.docs[j].id){
+                    
+                } else 
+
+                    //Tìm cặp giá trị comment và comment_creator 
+                    if (comment_docs.docs[i].data().comment_creator_id===user_docs.docs[j].id){
+                    //Nối chuỗi
                     str+=component.showComment(comment_docs.docs[i],user_docs.docs[j]); 
                 }
             }
@@ -469,17 +487,25 @@ controller.showComment = async (comment_query) => {
 }
 
 
-////////////////////////////////// BOOK ///////////////////////////////////////
+////////////////////////////////// REVIEW CREATOR SCREEN ///////////////////////////////////////
 
-//Show book information
+//Hiển thị thông tin sách
 controller.showBook = async () => {
+
+    //Lấy giá trị sách
     let bookResult = await book.resolveQuery(document.getElementById('bookSearchinput').value.replace(/\s+/g, ''));
+
+    //Khởi tạo vị trí
     document.getElementById('bookSearchList').innerHTML +=
     `<div class="card-body overflow-auto" style="max-height: 300px">
         <div id="bookSearchoutput"></div>
     </div>`;
 
+
+    //Hiển thị thông tin các sách
     document.getElementById('bookSearchoutput').innerHTML=component.bookSearchOutput(bookResult); 
+
+    //Đặt giá trị của sách cho các phần tử trong form 
     document.querySelectorAll(".rv-btn").forEach(e=>{
         e.addEventListener("click", (j) => {
             document.getElementById('rv-title').value = bookResult[j.target.id].title;
@@ -495,66 +521,60 @@ controller.showBook = async () => {
 }
 
 
-// controller.getReviewDocs = async () => {
-//     return await getDocs(collection(db, 'Review'));
-// }
-
-// controller.getCommentDocs = async () => {
-//     return await getDocs(collection(db, 'Comment'));
-// }
-
-// controller.getUserDocs = async () => {
-//     return await getDocs(collection(db,'User'));
-// }
-
-
-////////////////////////////////// CATEGORIES ///////////////////////////////////////
-
-controller.getReviewByCategory = async (category) => {
-    return await query(collection(db, 'Review'), where('review_category', '==', 1))
-}
-
-
-
-////////////////////////////////// PENDING REVIEW ///////////////////////////////////////
-
-
+////////////////////////////////// ADMIN SCREEN ///////////////////////////////////////
+//Hiển thị các review trong danh sách chờ
 controller.showPendingReviews = async () => {
+
+    //Lấy query của review trong danh sách chờ
     let review_query = query(collection(db, 'Review'), where('review_status', '==', 'pending'), orderBy('review_created_date','desc'))
 
+    //Đọc thay đổi query
     onSnapshot(review_query, async ()=>{
+
+        //Lấy docs của review trong danh sách chờ
         let review_docs = await getDocs(review_query);
+
+        //Kiểm tra số lượng docs
         if (review_docs.docs.length>0){
+            //Khởi tạo kí tự
             let str=''; 
     
             let user_docs = await getDocs(collection(db, 'User'));
     
+           
             for (let i in review_docs.docs){
                 for (let j in user_docs.docs){
                     if (review_docs.docs[i] == undefined){
                         console.log(user_docs.docs[i].id);
-                    } else if (review_docs.docs[i].data().review_creator_id===user_docs.docs[j].id){
-                        
+                    } else
+                    //Tìm cặp giá trị review và review_creator 
+                    if (review_docs.docs[i].data().review_creator_id===user_docs.docs[j].id){
+                        //Nối chuỗi
                         str+=component.adminPendingReview(review_docs.docs[i],user_docs.docs[j]);
                         
                     }
                 }
             }
         
+            //Hiển thị review trong danh sách chờ
             document.getElementById('pendingReviewoutput').innerHTML = str;
         
+
+            //Cài đặt nút xóa Review
             document.querySelectorAll('.delete').forEach(ele => {
                 ele.addEventListener('click',async ()=>{
                     await deleteDoc(doc(db, "Review", ele.getAttribute('value')));
                 })
             })
         
+            //Cài đặt nút thêm Review vào danh sách hoạt động
             document.querySelectorAll('.approve').forEach(ele => {
                 ele.addEventListener('click',async ()=>{
                     await updateDoc(doc(db, 'Review', ele.getAttribute('value')), {review_status:'active'})
                 })
             })
         
+            //Cài đặt xem chi tiết Review
             document.querySelectorAll('.watch').forEach(ele => {
                 ele.addEventListener('click', ()=>{
                     view.setScreen('reviewDetailScreen', ele.getAttribute('value'));
@@ -565,97 +585,165 @@ controller.showPendingReviews = async () => {
 }
 
 
-////////////////////////////////// SEARCH REVIEW ///////////////////////////////////////
-controller.searchReview = async (collection_value) =>{
+////////////////////////////////// SEARCH REVIEW SCREEN ///////////////////////////////////////
+//Tìm kiếm bài review
+controller.searchReview = async (category_name) =>{
+    //Lấy docs của review
     let review_docs = await getDocs(collection(db,'Review'));  
 
+
+    //Lấy docs của user
     let user_docs = await getDocs(collection(db, 'User'));
 
-    let str= '';
-    if (collection_value==null){
+    //Kiểm tra xem có tìm kiếm theo category trước hay không
+    if (category_name==null){
+        //Khởi tạo chuỗi
+        let str = '';
+
         for (let i in review_docs.docs){
             for (let j in user_docs.docs){
                 if (review_docs.docs[i] == undefined){
                     console.log(user_docs.docs[i].id);
-                } else if (review_docs.docs[i].data().review_creator_id===user_docs.docs[j].id){
+                } else 
+                    //Tìm cặp giá trị review và review_creators
+                    if (review_docs.docs[i].data().review_creator_id===user_docs.docs[j].id){
+                    //Nối chuỗi
                     str += component.reviewQueryoutput(review_docs.docs[i],user_docs.docs[j])
                 }
             }
         }
+
+        //Hiển thị danh sách review tìm được
+        document.getElementById('reviewQueryList').innerHTML = str;
+
+        //Cài đặt nút chuyển hướng trang
+        document.querySelectorAll('.imgScreen, .titleScreen').forEach(element=>{
+            element.style.cursor='pointer';
+            element.addEventListener('click', () => view.setScreen('reviewDetailScreen', element.getAttribute('id')));
+        });
+
     } else {
-        for (let i in review_docs.docs){
-            if (review_docs.docs[i].data().review_category===collection_value){
-                console.log(review_docs.docs[i].data());
-                for (let j in user_docs.docs){
-                    if (review_docs.docs[i] == undefined){
-                        console.log(user_docs.docs[i].id);
-                    } else if (review_docs.docs[i].data().review_creator_id===user_docs.docs[j].id){
-                        str += component.reviewQueryoutput(review_docs.docs[i],user_docs.docs[j])
-                    }
+        //Tìm kiếm bài review theo đề mục
+        controller.searchReviewByCategory(review_docs,user_docs,category_name);
+    }
+
+    //Tìm kiếm bài review theo tên
+    controller.searchReviewByName(review_docs,user_docs);
+}
+
+//Tìm kiếm bài review theo đề mục
+controller.searchReviewByCategory = (review_docs,user_docs,category_name) =>{
+    //Khởi tạo chuỗi
+    let str= '';
+
+    for (let i in review_docs.docs){
+        if (review_docs.docs[i].data().review_category===category_name){
+            for (let j in user_docs.docs){
+                if (review_docs.docs[i] == undefined){
+                    console.log(user_docs.docs[i].id);
+                } else
+                    //Tìm cặp giá trị review và review_creator 
+                    if (review_docs.docs[i].data().review_creator_id===user_docs.docs[j].id){
+                    //Nối chuỗi
+                    str += component.reviewQueryoutput(review_docs.docs[i],user_docs.docs[j])
                 }
             }
         }
     }
-  
-
+    
+    //Hiển thị danh sách review tìm được
     document.getElementById('reviewQueryList').innerHTML = str;
 
+    //Cài đặt nút chuyển hướng trang
+    document.querySelectorAll('.imgScreen, .titleScreen').forEach(element=>{
+        element.style.cursor='pointer';
+        element.addEventListener('click', () => view.setScreen('reviewDetailScreen', element.getAttribute('id')));
+    });
+}
+
+//Tìm kiếm bài review theo tên
+controller.searchReviewByName = (review_docs,user_docs) => {
     document.getElementById('reviewQuerySearchbar').addEventListener('submit',(btn)=>{
         btn.preventDefault();
 
-        str= '';
+        //Khai báo chuỗi
+        let str= '';
 
+        //Lấy giá trị từ form
         let search_value = document.getElementById('review-Searchbar-input').value;
         
         for (let i in review_docs.docs){
             for (let j in user_docs.docs){
                 if (review_docs.docs[i] == undefined){
                     console.log(user_docs.docs[i].id);
-                } else if (review_docs.docs[i].data().review_creator_id===user_docs.docs[j].id){
-                    if (RegExp(search_value.trim().toLowerCase()).test(review_docs.docs[i].data().review_title.toLowerCase())){
-                        str += component.reviewQueryoutput(review_docs.docs[i],user_docs.docs[j])
-                    } else if (RegExp(search_value.trim().toLowerCase()).test(review_docs.docs[i].data().review_book_title.toLowerCase())){
-                        str += component.reviewQueryoutput(review_docs.docs[i],user_docs.docs[j])
-                    }   
+                } else 
+                    //Tìm cặp giá trị review và review_creator
+                    if (review_docs.docs[i].data().review_creator_id===user_docs.docs[j].id){
+                        //Tìm kiếm bài review theo tiêu đề bài review bằng bộ lọc cắt chuỗi
+                        if (RegExp(search_value.trim().toLowerCase()).test(review_docs.docs[i].data().review_title.toLowerCase())){
+                            str += component.reviewQueryoutput(review_docs.docs[i],user_docs.docs[j])
+                        } else 
+
+                        //Tìm kiếm bài review theo tiêu đề sách bằng bộ lọc cắt chuỗi
+                        if (RegExp(search_value.trim().toLowerCase()).test(review_docs.docs[i].data().review_book_title.toLowerCase())){
+                            str += component.reviewQueryoutput(review_docs.docs[i],user_docs.docs[j])
+                        }   
                 }
             }
         }
 
-
+        //Hiển thị danh sách review tìm được
         document.getElementById('reviewQueryList').innerHTML = str;
-         //Set redirect button
-         document.querySelectorAll('.imgScreen, .titleScreen').forEach(element=>{
+
+        //Cài đặt nút chuyển hướng trang
+        document.querySelectorAll('.imgScreen, .titleScreen').forEach(element=>{
             element.style.cursor='pointer';
             element.addEventListener('click', () => view.setScreen('reviewDetailScreen', element.getAttribute('id')));
         });
+
     })
 }
 
-////////////////////////////////// User Reviews ////////////////////////////////////
+////////////////////////////////// CURRENT USER REVIEW ////////////////////////////////////
 
+//Hiển thị các bài review đã tạo của người dùng hiện tại
 controller.showUserReviews = async () => {
     console.log(auth.currentUser);
+
+    //Lấy query của review của người dùng hiện tại
     let review_query = query(collection(db, 'Review'), where('review_creator_id', '==', auth.currentUser.uid))
-    let str=''; 
+    
+    //Khai báo chuỗi
+    let str='';
+    
+    //Lấy docs của review theo query
     let review_docs = await getDocs(review_query);
+
+    //Kiểm tra xem người dùng có bài review nào hay không
     if (review_docs.docs.length>0){
+
         for (let i in review_docs.docs){
         
             if (review_docs.docs[i] == undefined){
                 console.log(user_docs.docs[i].id);    
             } else {
+                //Nối chuỗi
                 str+=component.userReviewItem(review_docs.docs[i])
             }
             
         }
 
+        //Hiển thị danh sách bài review đã tạo của người dùng
         document.getElementById('user-review-list').innerHTML = str;
+
+        //Cài đặt nút xem thông tin chi tiết bài review
         document.querySelectorAll('.watch').forEach(ele => {
             ele.addEventListener('click', ()=>{
                 view.setScreen('reviewDetailScreen', ele.getAttribute('value'));
             })
         })
     
+        //Cài đặt nút chỉnh sửa bài review
         document.querySelectorAll('.edit').forEach(ele => {
             ele.addEventListener('click',async ()=>{
                 view.setScreen('reviewEditorScreen', ele.getAttribute('value'));
@@ -666,11 +754,15 @@ controller.showUserReviews = async () => {
 }
 
 
-////////////////////////////////// Editor /////////////////////////////////////////
+////////////////////////////////// REVIEW EDITOR SCREEN  /////////////////////////////////////////
 
+//
 controller.setEditorInfo = async (review_id) => {
+
+    //Lấy doc theo review_id
     let review_doc = await getDoc(doc(db,'Review', review_id));
-    console.log(review_doc.data());
+  
+    //Hiển thị các giá trị của bài review
     document.getElementById('editor-thumbnail').src = review_doc.data().review_book_thumbnail;
     document.getElementById('editor-book-title').value = review_doc.data().review_book_title;
     document.getElementById('editor-authors').value = review_doc.data().review_book_authors;
@@ -679,27 +771,38 @@ controller.setEditorInfo = async (review_id) => {
     document.getElementById('editor-title').value = review_doc.data().review_title;
     document.getElementById('editor-content').value = review_doc.data().review_content;
 
+    //Cài đặt nút lưu bài review đã thay đổi 
     document.getElementById('editor-save-btn').addEventListener('click',async (e) => {
         e.preventDefault();
+
+        //Cập nhật bài review
         await updateDoc(doc(db, 'Review', review_id), {
-            review_status:'update-pending',
+            review_status:'update-pendiang',
             review_category: document.getElementById('editor-category').value,
             review_title: document.getElementById('editor-title').value.trim(),
             review_content: document.getElementById('editor-content').value.trim()
-    }).then (()=>{
-        view.setScreen('reviewDetailScreen', review_id);
-    })
+        }).then (()=>{
+            view.setScreen('reviewDetailScreen', review_id);
+        })
     });
+
+    //Cài đặt nút hủy xóa review 
     document.getElementById('modal-control').innerHTML = component.deleteModal();
     document.getElementById('editor-delete-btn').addEventListener('click', async (e) => {
             e.preventDefault();
-            await deleteDoc(doc(db, "Review", review_id));
-            view.setScreen('homeScreen');
 
+            //Xóa bài review
+            await deleteDoc(doc(db, "Review", review_id));
+
+            //Chuyển hướng về trang chủ 
+            view.setScreen('homeScreen');
     })
 
+    //Cài đặt nút hủy thay đổi review 
     document.getElementById('editor-discard-btn').addEventListener('click', (e) =>{
         e.preventDefault();
+
+        //Chuyển hướng về trang chủ 
         view.setScreen('homeScreen');
     })
 }
