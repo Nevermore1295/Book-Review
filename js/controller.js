@@ -590,8 +590,10 @@ controller.showPendingReviews = async () => {
 ////////////////////////////////// SEARCH REVIEW SCREEN ///////////////////////////////////////
 //Tìm kiếm bài review
 controller.searchReview = async (category_name) =>{
+    let review_query = query(collection(db, 'Review'), where('review_status', '==', 'active'), orderBy('review_created_date','desc'))
+
     //Lấy docs của review
-    let review_docs = await getDocs(collection(db,'Review'));  
+    let review_docs = await getDocs(review_query);  
 
     //Lấy docs của user
     let user_docs = await getDocs(collection(db, 'User'));
