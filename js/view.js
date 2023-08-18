@@ -21,6 +21,7 @@ view.setScreen = async (screenName, review_id, collection_value) => {
             controller.Authentication();
             //Show review
             controller.showReviewList();
+            controller.searchReview();
             controller.showAuthorSetting();
             
             //Set redirect button

@@ -591,44 +591,45 @@ controller.searchReview = async (category_name) =>{
     //Lấy docs của review
     let review_docs = await getDocs(collection(db,'Review'));  
 
-
     //Lấy docs của user
     let user_docs = await getDocs(collection(db, 'User'));
 
-    //Kiểm tra xem có tìm kiếm theo category trước hay không
-    if (category_name==null){
-        //Khởi tạo chuỗi
-        let str = '';
+    switch (view.currentScreen){
+        case 'homeScreen':
+            console.log(document.getElementById('search-widget'))
+            document.getElementById('search-widget').addEventListener('submit',(btn)=>{
+                btn.preventDefault();
 
-        for (let i in review_docs.docs){
-            for (let j in user_docs.docs){
-                if (review_docs.docs[i] == undefined){
-                    console.log(user_docs.docs[i].id);
-                } else 
-                    //Tìm cặp giá trị review và review_creators
-                    if (review_docs.docs[i].data().review_creator_id===user_docs.docs[j].id){
-                    //Nối chuỗi
-                    str += component.reviewQueryoutput(review_docs.docs[i],user_docs.docs[j])
-                }
+                //Lấy giá trị từ form
+                let search_value = document.getElementById('search-widget-input').value;
+
+                view.setScreen('searchScreen');
+                controller.searchReviewByName(review_docs,user_docs,search_value);
+            })     
+        break;
+
+        case 'searchScreen':
+            //Kiểm tra xem có tìm kiếm theo category trước hay không
+            if (category_name==null){
+
+
+            } else {
+                //Tìm kiếm bài review theo đề mục
+                controller.searchReviewByCategory(review_docs,user_docs,category_name);
             }
-        }
 
-        //Hiển thị danh sách review tìm được
-        document.getElementById('reviewQueryList').innerHTML = str;
+            //Tìm kiếm bài review theo tên
+            document.getElementById('reviewQuerySearchbar').addEventListener('submit',(btn)=>{
+                btn.preventDefault();
 
-        //Cài đặt nút chuyển hướng trang
-        document.querySelectorAll('.imgScreen, .titleScreen').forEach(element=>{
-            element.style.cursor='pointer';
-            element.addEventListener('click', () => view.setScreen('reviewDetailScreen', element.getAttribute('id')));
-        });
+                //Lấy giá trị từ form
+                let search_value = document.getElementById('review-Searchbar-input').value;
 
-    } else {
-        //Tìm kiếm bài review theo đề mục
-        controller.searchReviewByCategory(review_docs,user_docs,category_name);
+                controller.searchReviewByName(review_docs,user_docs,search_value);
+            })     
+        break;
     }
 
-    //Tìm kiếm bài review theo tên
-    controller.searchReviewByName(review_docs,user_docs);
 }
 
 //Tìm kiếm bài review theo đề mục
@@ -662,46 +663,38 @@ controller.searchReviewByCategory = (review_docs,user_docs,category_name) =>{
 }
 
 //Tìm kiếm bài review theo tên
-controller.searchReviewByName = (review_docs,user_docs) => {
-    document.getElementById('reviewQuerySearchbar').addEventListener('submit',(btn)=>{
-        btn.preventDefault();
+controller.searchReviewByName = (review_docs,user_docs,search_value) => {
+    //Khai báo chuỗi
+    let str= '';
 
-        //Khai báo chuỗi
-        let str= '';
+    for (let i in review_docs.docs){
+        for (let j in user_docs.docs){
+            if (review_docs.docs[i] == undefined){
+                console.log(user_docs.docs[i].id);
+            } else 
+                //Tìm cặp giá trị review và review_creator
+                if (review_docs.docs[i].data().review_creator_id===user_docs.docs[j].id){
+                    //Tìm kiếm bài review theo tiêu đề bài review bằng bộ lọc cắt chuỗi
+                    if (RegExp(search_value.trim().toLowerCase()).test(review_docs.docs[i].data().review_title.toLowerCase())){
+                        str += component.reviewQueryoutput(review_docs.docs[i],user_docs.docs[j])
+                    } else 
 
-        //Lấy giá trị từ form
-        let search_value = document.getElementById('review-Searchbar-input').value;
-        
-        for (let i in review_docs.docs){
-            for (let j in user_docs.docs){
-                if (review_docs.docs[i] == undefined){
-                    console.log(user_docs.docs[i].id);
-                } else 
-                    //Tìm cặp giá trị review và review_creator
-                    if (review_docs.docs[i].data().review_creator_id===user_docs.docs[j].id){
-                        //Tìm kiếm bài review theo tiêu đề bài review bằng bộ lọc cắt chuỗi
-                        if (RegExp(search_value.trim().toLowerCase()).test(review_docs.docs[i].data().review_title.toLowerCase())){
-                            str += component.reviewQueryoutput(review_docs.docs[i],user_docs.docs[j])
-                        } else 
-
-                        //Tìm kiếm bài review theo tiêu đề sách bằng bộ lọc cắt chuỗi
-                        if (RegExp(search_value.trim().toLowerCase()).test(review_docs.docs[i].data().review_book_title.toLowerCase())){
-                            str += component.reviewQueryoutput(review_docs.docs[i],user_docs.docs[j])
-                        }   
-                }
+                    //Tìm kiếm bài review theo tiêu đề sách bằng bộ lọc cắt chuỗi
+                    if (RegExp(search_value.trim().toLowerCase()).test(review_docs.docs[i].data().review_book_title.toLowerCase())){
+                        str += component.reviewQueryoutput(review_docs.docs[i],user_docs.docs[j])
+                    }   
             }
         }
+    }
 
-        //Hiển thị danh sách review tìm được
-        document.getElementById('reviewQueryList').innerHTML = str;
+    //Hiển thị danh sách review tìm được
+    document.getElementById('reviewQueryList').innerHTML = str;
 
-        //Cài đặt nút chuyển hướng trang
-        document.querySelectorAll('.imgScreen, .titleScreen').forEach(element=>{
-            element.style.cursor='pointer';
-            element.addEventListener('click', () => view.setScreen('reviewDetailScreen', element.getAttribute('id')));
-        });
-
-    })
+    //Cài đặt nút chuyển hướng trang
+    document.querySelectorAll('.imgScreen, .titleScreen').forEach(element=>{
+        element.style.cursor='pointer';
+        element.addEventListener('click', () => view.setScreen('reviewDetailScreen', element.getAttribute('id')));
+    });
 }
 
 ////////////////////////////////// CURRENT USER REVIEW ////////////////////////////////////

@@ -105,7 +105,7 @@ component.navbar = () => {
                         </li>
                         <li class="dropdown">
                             <a class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                Collections
+                                Categories
                             </a>
                             <div class="dropdown-menu mt-lg-3" aria-labelledby="dropdownMenuButton1" style="width: 600px">
                                 <div class="d-flex flex-column flex-sm-row justify-content-between">
@@ -175,7 +175,7 @@ component.sideWidget = () => {
             <div class="card-body">
                 <form class="input-group" id="search-widget">
                     <input class="form-control" type="text" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search" id="search-widget-input" />
-                    <button class="btn btn-primary" id="button-search" type="button">Go!</button>
+                    <button class="btn btn-primary" id="button-search" type="submit">Go!</button>
                 </form>
             </div>
         </div>
