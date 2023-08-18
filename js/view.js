@@ -21,6 +21,8 @@ view.setScreen = async (screenName, review_id, collection_value) => {
             controller.Authentication();
             //Show review
             controller.showReviewList();
+            controller.showAuthorSetting();
+            
             //Set redirect button
 
             view.setScreenButtonByClassName('collection-1','searchScreen','','Action & Adventure');
@@ -61,24 +63,8 @@ view.setScreen = async (screenName, review_id, collection_value) => {
             document.getElementById('app').innerHTML = component.navbar() + component.reviewContent() + component.footer();
             controller.Authentication();
             
-            controller.showCurrentReviewDetail(review_id).then(()=>{
-                
-                //Show comment bar and button
-                controller.showCommentInput().then(()=>{
-                    document.getElementById('comment-input').addEventListener('submit', (cf) =>{
-                        cf.preventDefault();
-                        //Add data object to doc
-                        document.getElementById('comment-content').disabled = true; //prevent creating multiple comment from multi-clicking
-                        document.getElementById('comment-btn').disabled = true;      
-                        controller.addComment(review_id); 
-                                   
-                    })
-                });
-
-                //Load realtime-update comment
-                controller.showComment(review_id);
-            });
-
+            controller.showCurrentReviewDetail(review_id);
+            
             //Set redirect button
             view.setScreenButtonByID('home-btn','homeScreen');
             view.setScreenButtonByID('navbar-brand','homeScreen');

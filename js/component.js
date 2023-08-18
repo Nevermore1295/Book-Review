@@ -291,20 +291,39 @@ component.reviewInfo = (review_data, user_data) => {
 }
 
 
+// component.showComment = (comment_doc,user_doc) => {
+//     return `
+//     <div class="mb-3">
+//         <div class="d-flex">
+//             <div class="flex-shrink-0">
+//             <img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." />
+//             </div>
+//             <div class="ms-3">
+//                 <div class="fw-bold">${user_doc.data().user_name}</div>
+//                 <div style="word-break: break-all">${comment_doc.data().comment_content}</div>
+//             </div>
+//         </div>
+//         <div class="childComment">
+
+//         </div>
+//     </div>
+//     `
+// }
+
 component.showComment = (comment_doc,user_doc) => {
     return `
     <div class="mb-3">
-        <div class="d-flex">
-            <div class="flex-shrink-0">
-            <img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." />
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex">
+                <div class="flex-shrink-0">
+                <img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." />
+                </div>
+                <div class="ms-3">
+                    <div class="fw-bold">${user_doc.data().user_name}</div>
+                    <div style="word-break: break-all">${comment_doc.data().comment_content}</div>
+                </div>
             </div>
-            <div class="ms-3">
-                <div class="fw-bold">${user_doc.data().user_name}</div>
-                <div style="word-break: break-all">${comment_doc.data().comment_content}</div>
-            </div>
-        </div>
-        <div class="childComment">
-
+            <i class="btn btn-primary me-2 delete-comment"><i class="fa-solid fa-trash-can"></i></i>
         </div>
     </div>
     `
@@ -557,17 +576,17 @@ component.reviewSearchScreen = () => {
             <div class="card-body">
                 <div class="row">
                     <ul class="list-unstyled mb-0">
-                        <li><a class="collection-1" href="#">Action & adventure</a></li>
-                        <li><a class="collection-2" href="#">Biography/religion</a></li>
-                        <li><a class="collection-3" href="#">Bussiness</a></li>
-                        <li><a class="collection-4" href="#">Comics</a></li>
-                        <li><a class="collection-5" >Education</a></li>
-                        <li><a class="collection-6" href="#!">Entertainment</a></li>
-                        <li><a class="collection-7" href="#!">History</a></li>
-                        <li><a class="collection-8" href="#!">Medical & Lifestyle</a></li>
-                        <li><a class="collection-9" href="#!">Literature & fiction</a></li>
-                        <li><a class="collection-10" href="#!">Science</a></li>
-                        <li><a class="collection-11" href="#!">Sport</a></li>
+                        <li><a class="collection-1">Action & adventure</a></li>
+                        <li><a class="collection-2">Biography/religion</a></li>
+                        <li><a class="collection-3">Bussiness</a></li>
+                        <li><a class="collection-4">Comics</a></li>
+                        <li><a class="collection-5">Education</a></li>
+                        <li><a class="collection-6">Entertainment</a></li>
+                        <li><a class="collection-7">History</a></li>
+                        <li><a class="collection-8">Medical & Lifestyle</a></li>
+                        <li><a class="collection-9">Literature & fiction</a></li>
+                        <li><a class="collection-10">Science</a></li>
+                        <li><a class="collection-11">Sport</a></li>
                     </ul>
                 </div>
             </div>

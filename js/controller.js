@@ -60,14 +60,21 @@ controller.authCheck = async () => {
         view.setScreenButtonByID('review-btn','reviewCreatorScreen');
 }
 
+controller.showAuthorSetting = async (review_creator_id) =>{
+}
+
 //Auth check for comment
-controller.showCommentInput = async() => {
+controller.showCommentInput = async (user_id) => {
     await auth.onAuthStateChanged(()=>{
         console.log("Auth state changed");
         if (auth.currentUser!==null && view.currentScreen==='reviewDetailScreen') {
             document.getElementById("comment-input").style.display = 'block';
+
+            if (auth.currentUser.uid == user_id){
+                console.log('author');
+            }
+
         } else if (auth.currentUser===null && view.currentScreen==='reviewDetailScreen'){
-            console.log(document.getElementById("comment-input"));
             document.getElementById("comment-input").style.setProperty("display", "none", "important");
         }
     });
@@ -335,16 +342,28 @@ controller.showCurrentReviewList = async (review_docs,user_docs,page_number) => 
 
             
             document.querySelectorAll('.delete').forEach(ele => {
-                ele.addEventListener('click', async ()=>{
-                    await deleteDoc(doc(db, "Review", ele.getAttribute('value')));
+                ele.addEventListener('click', async ()=>{   
+
+                    let comment_docs = await getDocs(query(collection(db,"Comment"),where('comment_review_id',"==",ele.getAttribute('value'))));
+                    
+                    for (let i in comment_docs.docs){
+                        console.log(comment_docs.docs[i].data().comment_review_id);
+                        deleteDoc(doc(db, "Comment", comment_docs.docs[i].id));
+                    }
+
+                    deleteDoc(doc(db, "Review", ele.getAttribute('value')));
+            
+                    // await deleteDoc(doc(db, "Comment", e))
                 })
             })
+
         break;
     }
 }
 
 //Show review detail information at current review page
 controller.showCurrentReviewDetail = async (review_id) =>{
+    
     let review_docRef = await getDoc(doc(db, "Review", review_id));
     
     if (review_docRef.exists()) {
@@ -355,6 +374,21 @@ controller.showCurrentReviewDetail = async (review_id) =>{
         }
 
         document.getElementById('commentSection').innerHTML=component.commentSection();
+
+        //Show comment bar and button
+        controller.showCommentInput(user_docRef.id).then(()=>{
+            document.getElementById('comment-input').addEventListener('submit', (cf) =>{
+                cf.preventDefault();
+                //Add data object to doc
+                document.getElementById('comment-content').disabled = true; //prevent creating multiple comment from multi-clicking
+                document.getElementById('comment-btn').disabled = true;      
+                controller.addComment(review_id); 
+                            
+            })
+        });
+
+        //Load realtime-update comment
+        controller.showComment(review_id);
     } else {
     // docSnap.data() will be undefined in this case
         console.log("No such document!");
@@ -421,6 +455,14 @@ controller.showComment = async (review_id) => {
             document.querySelectorAll('.reply-btn').forEach(e =>{
                 e.style.cursor='pointer';
                 e.addEventListener('click', () => view.setScreen('reviewDetailScreen'));
+            })
+
+
+            document.querySelectorAll('.reply-btn').forEach(e =>{
+                e.style.cursor='pointer';
+                e.addEventListener('click', () => {
+                    
+                });
             })
         }
     });
