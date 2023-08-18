@@ -508,7 +508,7 @@ component.bookSearchContent = () => {
                             <textarea class="form-control review-forminput mb-2" id="Review-title" rows="1" disabled></textarea>
                             <h6>Review</h6>
                             <textarea class="form-control review-forminput mb-2" id="Review-content" rows="6" disabled></textarea>
-                            <button class="btn btn-lg btn-primary review-forminput float-end me-2" disabled> Submit </button>
+                            <button class="btn btn-lg btn-primary review-forminput float-end me-2" id="createreview-btn" disabled> Submit </button>
                         <form>
                     </div>
                 </div>
@@ -520,6 +520,7 @@ component.bookSearchContent = () => {
 component.imageCheck = (index) => {
     if (index === undefined) {
         return "../assets/Question_mark_(black).png";
+        
     } else {
         return index.thumbnail;
     };
@@ -533,8 +534,7 @@ component.bookSearchOutput = (bookResult) => {
         <div class="card bg-white m-2">
             <form class="card-body d-flex justify-content-between">
                 <div class="d-flex">
-                    <img class="mt-1" src="
-                    ${component.imageCheck(bookResult[index].imageLinks)}" height="120" width="90">
+                    <img class="mt-1" src="${component.imageCheck(bookResult[index].imageLinks)}" height="120" width="90">
                     <div class="resultBasic ms-3">
                         <h5>${bookResult[index].title}</h5>
                         <div><b>Author:</b> ${bookResult[index].authors}</div>

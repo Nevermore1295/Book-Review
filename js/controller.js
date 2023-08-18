@@ -206,45 +206,48 @@ controller.register = async () =>{
 
 ////////////////////////////////// REVIEW ///////////////////////////////////////
 //Add review to firestore
-controller.addReview = async () =>{   
+controller.addReview =  () =>{   
     //Create data object
-    const initialData = {
-        review_creator_id: auth.currentUser.uid,
-        review_created_date: Timestamp.now(),
-        review_title: document.getElementById('Review-title').value.trim(),
-        review_content: document.getElementById('Review-content').value.trim(),
-        review_category: document.getElementById('rv-category').value,
-        review_status: 'pending',
-        review_book_id: document.getElementById('rv-bid').value,
-        review_book_thumbnail: document.getElementById('rv-thumbnail').src,
-        review_book_title: document.getElementById('rv-title').value,
-        review_book_pd: document.getElementById('rv-pd').value,
-        review_book_authors: document.getElementById('rv-authors').value
-        // review_id: await getDoc();
-        //https://www.googleapis.com/books/v1/volumes/bVFPAAAAYAAJ
-    }
-
-    if (initialData.review_title === '' || initialData.review_content === '') {
-        alert('Title and content must not be blank');
-    } else if (document.getElementById('rv-category').value === 'Choose...'){
-        alert('Please choose one category');
-    } else {
-        await addDoc(collection(db, 'Review'),initialData).then(() => {
-        document.getElementById('review-funcscreen').innerHTML = 
-        `
-            <div class="card mt-3">
-                <div class="card-body">
-                    <h4>Your review has been saved!</h4>
-                    <p>Go to <a>homepage</a> or <a>Make another review</a></p>
+        const initialData = {
+            review_creator_id: auth.currentUser.uid,
+            review_created_date: Timestamp.now(),
+            review_title: document.getElementById('Review-title').value.trim(),
+            review_content: document.getElementById('Review-content').value.trim(),
+            review_category: document.getElementById('rv-category').value,
+            review_status: 'pending',
+            review_book_id: document.getElementById('rv-bid').value,
+            review_book_thumbnail: document.getElementById('rv-thumbnail').src,
+            review_book_title: document.getElementById('rv-title').value,
+            review_book_pd: document.getElementById('rv-pd').value,
+            review_book_authors: document.getElementById('rv-authors').value
+            // review_id: await getDoc();
+            //https://www.googleapis.com/books/v1/volumes/bVFPAAAAYAAJ
+        }
+    
+        if (initialData.review_title === '' || initialData.review_content === '') {
+            alert('Title and content must not be blank');
+        } else if (document.getElementById('rv-category').value === 'Choose...'){
+            alert('Please choose one category');
+        } else {
+            document.getElementById('createreview-btn').disabled = true;
+            addDoc(collection(db, 'Review'),initialData).then(() => {
+            document.getElementById('review-funcscreen').innerHTML = 
+            `
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <h4>Your review has been saved!</h4>
+                        <p>Go to <a>homepage</a> or <a>Make another review</a></p>
+                    </div>
                 </div>
-            </div>
-        `
-        //Reset form
-        }).catch(err => {
-            // Catch error
-            console.log(err.message)
-        })
-    }
+            `
+            //Reset form
+            }).catch(err => {
+                // Catch error
+                console.log(err.message)
+            })
+        }
+    
+    
 }
 
 controller.showReviewList = async () => {
@@ -254,7 +257,11 @@ controller.showReviewList = async () => {
 
     let user_docs = await getDocs(collection(db, 'User'));   
 
-    controller.showCurrentReviewList(review_docs.docs, user_docs ,0).then(()=>{
+    controller.showCurrentReviewList(review_docs.docs, user_docs ,0);
+    onSnapshot(review_query, async ()=>{
+        
+        let review_docs = await getDocs(review_query);
+
             // let review_active = await getDocs(collection(db,'Review'), where('review_status','==','active'), orderBy('review_created_date','desc'));
         controller.Pagination(review_docs.docs, user_docs);
     }) 
