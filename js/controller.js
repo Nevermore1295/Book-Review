@@ -445,8 +445,6 @@ controller.addComment = async (review_id) =>{
 
 //Show comment information
 controller.showComment = async (comment_query) => {
-
-
     onSnapshot(comment_query, async ()=>{
 
         let comment_docs = await getDocs(comment_query);
