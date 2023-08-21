@@ -634,7 +634,7 @@ component.reviewEditor = () => {
                         <i class="btn btn-danger review-forminput float-end me-2" id="delete-confirm-btn" data-bs-toggle="modal" data-bs-target="#DeleteModal" ><i class="fa-solid fa-trash-can"></i></i>
                     </div>
                 </div>
-                <div class="book-info col-lg-12">
+                <div class="book-info col-lg-10">
                     <div class="input-group input-group-sm mb-3 w-100">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1">Book title</span>
@@ -754,7 +754,7 @@ component.adminScreen = () => {
                 <div class="input-group w-50">
                     <input class="form-control" type="text" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search" />
                     <button class="btn btn-primary" id="button-search" type="button">Go!</button>
-                </form>
+                </div>
             </div>
             
             <div class="card-body" id="review-ctrl">
