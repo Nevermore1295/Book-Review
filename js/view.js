@@ -46,6 +46,7 @@ view.setScreen = async (screenName, review_id, collection_value) => {
                 //Show comment bar and button
                 controller.commentAuthCheck(review_id);
             });
+            controller.searchReview();
 
             //Set redirect button
             view.setSearchScreenByCollection();

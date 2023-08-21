@@ -249,11 +249,11 @@ controller.addReview =  () =>{
 controller.showReviewList = async () => {
     let review_query = await (query(collection(db,'Review') ,where('review_status','==','active'), orderBy('review_created_date','desc'))); 
 
-    let review_docs = await getDocs(review_query);
+    // let review_docs = await getDocs(review_query);
 
     let user_docs = await getDocs(collection(db, 'User'));   
 
-    controller.showCurrentReviewList(review_docs.docs, user_docs ,0);
+    
     onSnapshot(review_query, async ()=>{
         review_query = await (query(collection(db,'Review') ,where('review_status','==','active'), orderBy('review_created_date','desc')));
         let review_docs = await getDocs(review_query);
@@ -582,14 +582,29 @@ controller.showPendingReviews = async () => {
 ////////////////////////////////// SEARCH REVIEW SCREEN ///////////////////////////////////////
 //Tìm kiếm bài review
 controller.searchReview = async (category_name) =>{
+    let review_query = query(collection(db, 'Review'), where('review_status', '==', 'active'), orderBy('review_created_date','desc'))
+
     //Lấy docs của review
-    let review_docs = await getDocs(collection(db,'Review'));  
+    let review_docs = await getDocs(review_query);  
 
     //Lấy docs của user
     let user_docs = await getDocs(collection(db, 'User'));
 
     switch (view.currentScreen){
         case 'homeScreen':
+            console.log(document.getElementById('search-widget'))
+            document.getElementById('search-widget').addEventListener('submit',(btn)=>{
+                btn.preventDefault();
+
+                //Lấy giá trị từ form
+                let search_value = document.getElementById('search-widget-input').value;
+
+                view.setScreen('searchScreen');
+                controller.searchReviewByName(review_docs,user_docs,search_value);
+            })     
+        break;
+
+        case 'reviewDetailScreen':
             console.log(document.getElementById('search-widget'))
             document.getElementById('search-widget').addEventListener('submit',(btn)=>{
                 btn.preventDefault();
