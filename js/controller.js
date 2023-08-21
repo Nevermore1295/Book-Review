@@ -46,7 +46,7 @@ controller.authCheck = async () => {
         document.getElementById('admin-btn-li').style.display = 'block';
         document.getElementById('admin-btn-li').innerHTML = 
         `
-            <a id="admin-btn">Administration</a>
+            <a id="admin-btn"><i class="fa-solid fa-user-gear"></i> Administration</a>
         `;
         view.setScreenButtonByID('admin-btn','adminScreen');
     } else {
@@ -55,7 +55,7 @@ controller.authCheck = async () => {
     document.getElementById('review-btn-li').style.display = 'block';
         document.getElementById('review-btn-li').innerHTML = 
         `
-            <a id="review-btn">Make a review</a>
+            <a id="review-btn"><i class="fa-solid fa-circle-plus"></i> Make a review</a>
         `;
         view.setScreenButtonByID('review-btn','reviewCreatorScreen');
 }
@@ -235,15 +235,7 @@ controller.addReview =  () =>{
         } else {
             document.getElementById('createreview-btn').disabled = true;
             addDoc(collection(db, 'Review'),initialData).then(() => {
-            document.getElementById('review-funcscreen').innerHTML = 
-            `
-                <div class="card mt-3">
-                    <div class="card-body">
-                        <h4>Your review has been saved!</h4>
-                        <p>Go to <a>homepage</a> or <a>Make another review</a></p>
-                    </div>
-                </div>
-            `
+                view.setScreen('userReviewScreen');
             //Reset form
             }).catch(err => {
                 // Catch error
@@ -263,9 +255,11 @@ controller.showReviewList = async () => {
 
     controller.showCurrentReviewList(review_docs.docs, user_docs ,0);
     onSnapshot(review_query, async ()=>{
-        
+        review_query = await (query(collection(db,'Review') ,where('review_status','==','active'), orderBy('review_created_date','desc')));
         let review_docs = await getDocs(review_query);
+        let user_docs = await getDocs(collection(db, 'User'));   
 
+        controller.showCurrentReviewList(review_docs.docs, user_docs ,0);
             // let review_active = await getDocs(collection(db,'Review'), where('review_status','==','active'), orderBy('review_created_date','desc'));
         controller.Pagination(review_docs.docs, user_docs);
     }) 
@@ -770,7 +764,7 @@ controller.setEditorInfo = async (review_id) => {
 
         //Cập nhật bài review
         await updateDoc(doc(db, 'Review', review_id), {
-            review_status:'update-pendiang',
+            review_status:'pending',
             review_category: document.getElementById('editor-category').value,
             review_title: document.getElementById('editor-title').value.trim(),
             review_content: document.getElementById('editor-content').value.trim()

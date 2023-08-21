@@ -92,14 +92,15 @@ view.setScreen = async (screenName, review_id, collection_value) => {
                     // Reset form
                     document.getElementById('bookSearchbar').reset();
                     //Review Form
-                    document.getElementById('Review').addEventListener('submit', (e)=>{
-                        e.preventDefault();
-                        //Add data object to doc 
-                        controller.addReview();
-                       
-                    })
+                    
                 })
             });
+            document.getElementById('Review').addEventListener('submit', (e)=>{
+                e.preventDefault();
+                //Add data object to doc 
+                controller.addReview();
+               
+            })
             //Set redirect button
             view.setSearchScreenByCollection();
             view.setScreenButtonByID('navbar-brand','homeScreen');

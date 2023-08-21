@@ -5,22 +5,22 @@ export let component = {};
 component.Authentication = (isUserExist) => {
     if (isUserExist === true) {
         return ` 
-            <div class="d-flex align-content-center me-5">
+            <div class="d-flex align-content-center">
                 <div class="dropdown">
-                    <i class="navbar-nav ms-auto fa-solid fa-user" type="button" data-bs-toggle="dropdown" style="font-size:25px" >
+                    <i class="navbar-nav ms-auto fa-solid fa-user me-4" type="button" data-bs-toggle="dropdown" style="font-size:25px" >
                     </i>
                     <ul class="dropdown-menu account-dropdown ms-4 ms-lg-0">
-                        <li class="dropdown-item"><b>${auth.currentUser.displayName}</b></li>
-                        <li class="dropdown-item" style="cursor: pointer">Information</li>
-                        <li class="dropdown-item" id="user-review" style="cursor: pointer">Your Review</li>
-                        <li class="dropdown-item" id="log-out" style="cursor: pointer">Log Out</li>
+                        <li class="dropdown-item d-flex justify-content-between align-items-center"> <b>${auth.currentUser.displayName}</b></li>
+                        <li class="dropdown-item d-flex justify-content-between align-items-center" style="cursor: pointer">Information</li>
+                        <li class="dropdown-item d-flex justify-content-between align-items-center" id="user-review" style="cursor: pointer">Your Review <i class="fa-solid fa-bars"></i></li>
+                        <li class="dropdown-item d-flex justify-content-between align-items-center" id="log-out" style="cursor: pointer">Log Out <i class="fa-solid fa-right-from-bracket"></i></li>
                     </ul>
                 </div>
             </div>
         `
     } else {
         return `
-        <div class="d-flex align-content-center me-5">
+        <div class="d-flex align-content-center">
             <div class="dropdown">
             <!-- Button trigger modal -->
             <i type="button" id="login-modal" class="navbar-nav ms-auto fa-solid fa-user" data-bs-toggle="modal" data-bs-target="#LoginModal" style="font-size:25px"></i>
@@ -96,16 +96,16 @@ component.navbar = () => {
     return `
         <nav class="header navbar navbar-expand-lg sticky-top shadow navbar-light bg-white">
             <div class="container">
-                <a class="navbar-brand" id="navbar-brand">BookReview</a>
+                <a class="navbar-brand" id="navbar-brand" style="font-size: 30px"><i class="fa-solid fa-b"></i>ookReview</a>
                 <button class="navbar-toggler button-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto" id="navbtn">
                         <li class="dropdown">
-                            <a id="home-btn">Home</a>
+                            <a id="home-btn""><i class="fa-solid fa-house"></i> Home</a>
                         </li>
                         <li class="dropdown">
                             <a class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                Categories
+                                <i class="fa-solid fa-book-bookmark"></i> Categories
                             </a>
                             <div class="dropdown-menu mt-lg-3" aria-labelledby="dropdownMenuButton1" style="width: 600px">
                                 <div class="d-flex flex-column flex-sm-row justify-content-between">
@@ -131,16 +131,15 @@ component.navbar = () => {
                             </div>
                         </li>
                         <li class="dropdown">
-                            <a id="search-btn">Search</a>
+                            <a id="search-btn"><i class="fa-solid fa-magnifying-glass"></i> Search</a>
                         </li>  
                         
                         <li class="dropdown" id="review-btn-li" style="display: none">
-                            <a id="review-btn">Make a review</a>
                         </li>
                         <li class="dropdown" id="admin-btn-li" style="display: none">
                         </li>
                         <li class="dropdown">
-                            <a id="about-btn">About</a>
+                            <a id="about-btn"><i class="fa-solid fa-circle-info"></i> About</a>
                         </li>
                     </ul>
                     <a id="user-auth">
@@ -170,12 +169,12 @@ component.sideWidget = () => {
         <!-- Search widget-->
         <div class="card mb-4">
             <div class="card-header">
-                Search
+                Search 
             </div>
             <div class="card-body">
                 <form class="input-group" id="search-widget">
                     <input class="form-control" type="text" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search" id="search-widget-input" />
-                    <button class="btn btn-primary" id="button-search" type="submit">Go!</button>
+                    <button class="btn btn-primary" id="button-search" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
                 </form>
             </div>
         </div>
@@ -279,8 +278,12 @@ component.reviewInfo = (review_data, user_data) => {
                 <!-- Post meta content-->
                 <div class="text-muted fst-italic mb-2">${review_data.review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })} By ${user_data.user_name}</div>          
             </div>
-            <p class="fs-5 mb-1">Book: <span class="fw-bolder">${review_data.review_book_title}</span></p>
-            <p class="fs-5 mb-1">Authors: <span class="fw-bolder">${review_data.review_book_authors}</span></p>
+            <div class="d-flex justify-content-between">
+                <div class="review_book_infor">
+                    <p class="fs-5 mb-1">Book: <span class="fw-bolder">${review_data.review_book_title}</span></p>
+                    <p class="fs-5 mb-1">Authors: <span class="fw-bolder">${review_data.review_book_authors}</span></p>
+                </div>
+            </div>
         </header>
         
         <!-- Post content-->
@@ -290,6 +293,11 @@ component.reviewInfo = (review_data, user_data) => {
         </div>  
 `
 }
+
+/* <div id="like" class = "fs-5">
+                   <span> 300 </span> 
+                   <button class = "btn btn-primary"><i class="fa-solid fa-thumbs-up"></i></button>
+                </div> */
 
 
 // component.showComment = (comment_doc,user_doc) => {
@@ -392,7 +400,7 @@ component.registerContent = () => {
                                 </div>
 
                                 <div class="form-outline mb-2">
-                                    <label class="form-label" for="form3Example3cg">Your Email</label>
+                                    <label class="form-label" for="form3Example3cg">Email address</label>
                                     <input type="email" id="email" class="form-control" />
                                 </div>
 
@@ -444,7 +452,7 @@ component.bookSearchContent = () => {
             <form class="input-group input-group-lg p-4" id="bookSearchbar">
                 <input id="bookSearchinput" type="text" class="form-control" placeholder="ISBN / Book's title" ">
                 <div class="input-group-append">
-                    <button class="btn btn-primary btn-lg">Search</button>
+                    <button class="btn btn-primary btn-lg"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
                 </div>
             </form>
             <div id="bookSearchList">
@@ -506,7 +514,7 @@ component.bookSearchContent = () => {
                         <form id="Review">
                             <h6>Review Title</h6>
                             <textarea class="form-control review-forminput mb-2" id="Review-title" rows="1" disabled></textarea>
-                            <h6>Review</h6>
+                            <h6>Review Content</h6>
                             <textarea class="form-control review-forminput mb-2" id="Review-content" rows="6" disabled></textarea>
                             <button class="btn btn-lg btn-primary review-forminput float-end me-2" id="createreview-btn" disabled> Submit </button>
                         <form>
@@ -732,7 +740,7 @@ component.adminScreen = () => {
     <div class="container my-4">
         <div class="card mb-4">
             <div class="card-header">
-                Pending reviews
+                <i class="fa-solid fa-clock-rotate-left"></i> Pending reviews
             </div>
             <div class="card-body overflow-auto" style="max-height: 400px; min-height: 200px" id="pendingReviewoutput">
                 
@@ -740,7 +748,9 @@ component.adminScreen = () => {
         </div>
         <div class="card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
-                Reviews
+                <div>
+                <i class="fa-solid fa-server"></i> Reviews
+                </div>
                 <div class="input-group w-50">
                     <input class="form-control" type="text" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search" />
                     <button class="btn btn-primary" id="button-search" type="button">Go!</button>
