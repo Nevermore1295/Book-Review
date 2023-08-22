@@ -333,7 +333,9 @@ component.showComment = (comment_doc,user_doc) => {
                     <div style="word-break: break-all">${comment_doc.data().comment_content}</div>
                 </div>
             </div>
-            <i class="btn btn-primary me-2 delete-comment"><i class="fa-solid fa-trash-can"></i></i>
+            <div class="comment-button" id="${comment_doc.id}" value="${comment_doc.data().comment_creator_id}">
+            
+            </div>
         </div>
     </div>
     `
