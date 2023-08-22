@@ -227,12 +227,16 @@ controller.addReview =  () =>{
             // review_id: await getDoc();
             //https://www.googleapis.com/books/v1/volumes/bVFPAAAAYAAJ
         }
-    
+        console.log(initialData.review_title.split("").length);
         if (initialData.review_title === '' || initialData.review_content === '') {
             alert('Title and content must not be blank');
         } else if (document.getElementById('rv-category').value === 'Choose...'){
             alert('Please choose one category');
-        } else {
+        } else if (initialData.review_title.split("").length>=100)
+        {
+            alert('Title must be no longer than 100 characters!');
+        }
+        else {
             document.getElementById('createreview-btn').disabled = true;
             addDoc(collection(db, 'Review'),initialData).then(() => {
                 view.setScreen('userReviewScreen');
@@ -472,11 +476,13 @@ controller.showComment = async (comment_query) => {
                     if (comment_docs.docs[i].data().comment_creator_id===user_docs.docs[j].id){
                     //Nối chuỗi
                     str+=component.showComment(comment_docs.docs[i],user_docs.docs[j]); 
+                    
+
                 }
             }
         }
         document.getElementById('comment-output').innerHTML=str;
-
+        
     });
 }
 

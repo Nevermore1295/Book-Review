@@ -29,9 +29,7 @@ view.setScreen = async (screenName, review_id, collection_value) => {
             view.setScreenButtonByID('navbar-brand','homeScreen');
             view.setScreenButtonByID('home-btn','homeScreen');
             view.setScreenButtonByID('navbar-brand','homeScreen');
-            view.setScreenButtonByID('search-btn','searchScreen');;
-            view.setScreenButtonByID('review-btn','reviewCreatorScreen');
-            
+            view.setScreenButtonByID('search-btn','searchScreen');
             break;
 
 
@@ -54,7 +52,6 @@ view.setScreen = async (screenName, review_id, collection_value) => {
             view.setScreenButtonByID('home-btn','homeScreen');
             view.setScreenButtonByID('navbar-brand','homeScreen');
             view.setScreenButtonByID('search-btn','searchScreen');;
-            view.setScreenButtonByID('review-btn','reviewCreatorScreen');;
 
         break;
         
@@ -108,7 +105,6 @@ view.setScreen = async (screenName, review_id, collection_value) => {
             view.setScreenButtonByID('home-btn','homeScreen');
             view.setScreenButtonByID('navbar-brand','homeScreen');
             view.setScreenButtonByID('search-btn','searchScreen');;
-            view.setScreenButtonByID('review-btn','reviewCreatorScreen');
 
             break;
 
@@ -126,14 +122,13 @@ view.setScreen = async (screenName, review_id, collection_value) => {
             view.setScreenButtonByID('home-btn','homeScreen');
             view.setScreenButtonByID('navbar-brand','homeScreen');
             view.setScreenButtonByID('search-btn','searchScreen');;
-            view.setScreenButtonByID('review-btn','reviewCreatorScreen');
 
         break;
 
         case 'reviewEditorScreen':
             view.currentScreen='reviewEditor';
             //Khởi tạo component HTML
-            document.getElementById('app').innerHTML = component.navbar() + component.reviewEditor(review_id) + component.footer();
+            document.getElementById('app').innerHTML = component.navbar() + component.reviewEditor() + component.footer();
             //Xác minh user hiện tại
             controller.Authentication();
             //Lấy info của review hiện tại để edit
@@ -144,7 +139,7 @@ view.setScreen = async (screenName, review_id, collection_value) => {
             view.setScreenButtonByID('home-btn','homeScreen');
             view.setScreenButtonByID('navbar-brand','homeScreen');
             view.setScreenButtonByID('search-btn','searchScreen');
-            view.setScreenButtonByID('review-btn','reviewCreatorScreen');
+
         break;
 
         case 'userReviewScreen':
@@ -159,7 +154,6 @@ view.setScreen = async (screenName, review_id, collection_value) => {
             view.setScreenButtonByID('home-btn','homeScreen');
             view.setScreenButtonByID('navbar-brand','homeScreen');
             view.setScreenButtonByID('search-btn','searchScreen');
-            view.setScreenButtonByID('review-btn','reviewCreatorScreen');
             //Xuất các bài review thuộc sở hữu của user hiện tại
             controller.showUserReviews();
         break;
@@ -177,7 +171,6 @@ view.setScreen = async (screenName, review_id, collection_value) => {
             view.setScreenButtonByID('home-btn','homeScreen');
             view.setScreenButtonByID('navbar-brand','homeScreen');
             view.setScreenButtonByID('search-btn','searchScreen');
-            view.setScreenButtonByID('review-btn','reviewCreatorScreen');
             //Xuất review ở trạng thái pending
             controller.showPendingReviews();
             //Xuất review ở trạng thái active

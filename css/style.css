@@ -43,3 +43,12 @@ a {
 }
 
 /*# sourceMappingURL=style.css.map */
+
+.text-proc {
+  overflow: hidden !important;
+  word-wrap: break-word!important;
+  word-break: break-word!important;
+  text-overflow: ellipsis !important;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}

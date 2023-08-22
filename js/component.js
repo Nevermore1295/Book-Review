@@ -135,6 +135,7 @@ component.navbar = () => {
                         </li>  
                         
                         <li class="dropdown" id="review-btn-li" style="display: none">
+                            
                         </li>
                         <li class="dropdown" id="admin-btn-li" style="display: none">
                         </li>
@@ -215,7 +216,7 @@ component.blogEntries = (review_doc, user_doc) => {
             <div class="d-flex">
                 <a class="reviewScreen" value="${review_doc.id}"><img class="mt-2" src="${review_doc.data().review_book_thumbnail}" height="160" width="100"></a>
                 <div class="ms-3">
-                    <h2 class="card-title">${review_doc.data().review_title}</h2>
+                    <h2 class="card-title text-break">${review_doc.data().review_title}</h2>
                     <div><b>Book:</b>${review_doc.data().review_book_title}</div>
                     <span class="small text-muted">${user_doc.data().user_name}</span>
                     <span class="small text-muted">${review_doc.data().review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })}</span>
@@ -544,7 +545,7 @@ component.bookSearchOutput = (bookResult) => {
                 <div class="d-flex">
                     <img class="mt-1" src="${component.imageCheck(bookResult[index].imageLinks)}" height="120" width="90">
                     <div class="resultBasic ms-3">
-                        <h5>${bookResult[index].title}</h5>
+                        <h5 class="text-break ">${bookResult[index].title}</h5>
                         <div><b>Author:</b> ${bookResult[index].authors}</div>
                         <div><b>Date published:</b> ${bookResult[index].publishedDate}</div>
                     </div>
@@ -719,7 +720,7 @@ component.userReviewItem = (review_doc) => {
             <div class="d-flex">
                 <img class="mt-1" src="${review_doc.data().review_book_thumbnail}" height="120" width="90">
                 <div class="resultBasic ms-3">
-                    <h5>${review_doc.data().review_title}</h5>
+                    <h5 class="text-break ">${review_doc.data().review_title}</h5>
                     <div><b>Book: </b>${review_doc.data().review_book_title}</div>
                     <div><b>Author: </b>${review_doc.data().review_book_authors}</div>
                     <div><b>Date posted: </b>${review_doc.data().review_created_date.toDate().toLocaleString('en-GB', { timeZone: 'UTC' })}</div>
@@ -774,7 +775,7 @@ component.adminPendingReview = (review_doc, user_doc) => {
             <div class="d-flex">
                 <img class="mt-1" src="${review_doc.data().review_book_thumbnail}" height="120" width="90">
                 <div class="resultBasic ms-3">
-                    <h5>${review_doc.data().review_title}</h5>
+                    <h5 class="text-break ">${review_doc.data().review_title}</h5>
                     <div><b>Book: </b>${review_doc.data().review_book_title}</div>
                     <div><b>Author: </b>${review_doc.data().review_book_authors}</div>
                     <div><b>User:</b> ${user_doc.data().user_name}</div>
@@ -797,7 +798,7 @@ component.adminReview = (review_doc, user_doc) => {
             <div class="d-flex">
                 <img class="mt-1" src="${review_doc.data().review_book_thumbnail}" height="120" width="90">
                 <div class="resultBasic ms-3">
-                    <h5>${review_doc.data().review_title}</h5>
+                    <h5 class="text-break ">${review_doc.data().review_title}</h5>
                     <div><b>Book:</b>${review_doc.data().review_book_title}</div>
                     <div><b>Author:</b> ${review_doc.data().review_book_authors}</div>
                     <div><b>User:</b> ${user_doc.data().user_name}</div>
