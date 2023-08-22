@@ -67,10 +67,62 @@ controller.showAuthorSetting = async (review_creator_id) =>{
 controller.commentAuthCheck = async (review_id, author_id) => {
     await auth.onAuthStateChanged(async ()=>{
         let comment_query = query(collection(db,'Comment'),where('comment_review_id','==',review_id));
-        console.log(comment_query);
-        let comment_query_docs = await getDocs(comment_query);
+        let user_docs = await getDocs(collection(db, 'User'));
 
         if (view.currentScreen==='reviewDetailScreen'){
+            onSnapshot(comment_query,(qr)=>{
+                if (qr.docs.length!=0){
+                    console.log(qr.docs);
+                    if (auth.currentUser!==null) {
+                        document.getElementById('commentSection').innerHTML=component.commentSection();
+                        document.getElementById('comment-input').innerHTML =`
+                        <form class="mb-4 d-flex" id="comment-form">
+                            <input class="form-control" id="comment-content" rows="3" placeholder="Join the discussion and leave a comment!"></input>
+                            <button class="btn btn-block btn-lg btn-primary" id="comment-btn">Submit</button>
+                        </form>
+                        `
+                        document.getElementById('comment-form').addEventListener('submit', (cf) =>{
+                            cf.preventDefault();
+                            //Add data object to doc
+                            document.getElementById('comment-content').disabled = true; //prevent creating multiple comment from multi-clicking
+                            document.getElementById('comment-btn').disabled = true;      
+                            controller.addComment(review_id);                                    
+                        })
+
+                        controller.showComment(qr,user_docs);
+        
+                    } else {
+                        document.getElementById('commentSection').innerHTML=component.commentSection();
+                        controller.showComment(qr,user_docs);
+                    }
+                } else {
+                    if (auth.currentUser!==null) {
+                        document.getElementById('commentSection').innerHTML=component.commentSection();
+                        document.getElementById('comment-input').innerHTML =`
+                        <form class="mb-4 d-flex" id="comment-form">
+                            <input class="form-control" id="comment-content" rows="3" placeholder="Join the discussion and leave a comment!"></input>
+                            <button class="btn btn-block btn-lg btn-primary" id="comment-btn">Submit</button>
+                        </form>
+                        `
+                        document.getElementById('comment-form').addEventListener('submit', (cf) =>{
+                            cf.preventDefault();
+                            //Add data object to doc
+                            document.getElementById('comment-content').disabled = true; //prevent creating multiple comment from multi-clicking
+                            document.getElementById('comment-btn').disabled = true;      
+                            controller.addComment(review_id); 
+                                       
+                        })
+
+                        controller.showComment(qr,user_docs);
+        
+                    } else {
+                        document.getElementById('commentSection').innerHTML='';
+                    }
+                    
+                }
+
+            })
+
             if (auth.currentUser!==null) {
                 document.getElementById('commentSection').innerHTML=component.commentSection();
                 document.getElementById('comment-input').innerHTML =`
@@ -87,23 +139,12 @@ controller.commentAuthCheck = async (review_id, author_id) => {
                     controller.addComment(review_id); 
                                
                 })
+                   
 
-                controller.showComment(comment_query);
+                    controller.showComment(qr);
 
             } else {
-                if (comment_query_docs.size!=0){
-                    console.log(comment_query_docs.docs);
-                    document.getElementById('commentSection').innerHTML=component.commentSection();
-                    controller.showComment(comment_query);
-                } else {
-                    document.getElementById('commentSection').innerHTML='';
-                }
-                // console.log(document.getElementById("comment-input"));
-                // document.getElementById("comment-input").style.setProperty("display", "none", "important");
-                // if (document.getElementById('comment-output').innerHTML=='') {
-                //     document.getElementById('comment-card').style.setProperty("display","none","important");
-                // }
-
+          
             }
         }
     });
@@ -374,13 +415,17 @@ controller.showCurrentReviewList = async (review_docs,user_docs,page_number) => 
             document.querySelectorAll('.delete').forEach(ele => {
                 ele.addEventListener('click', async ()=>{   
 
+                    //Lấy comment docs có cùng review_id
                     let comment_docs = await getDocs(query(collection(db,"Comment"),where('comment_review_id',"==",ele.getAttribute('value'))));
                     
+
+                    //Xóa comment docs
                     for (let i in comment_docs.docs){
                         console.log(comment_docs.docs[i].data().comment_review_id);
                         deleteDoc(doc(db, "Comment", comment_docs.docs[i].id));
                     }
 
+                    //Xóa bài review
                     deleteDoc(doc(db, "Review", ele.getAttribute('value')));
             
                     // await deleteDoc(doc(db, "Comment", e))
@@ -446,37 +491,46 @@ controller.addComment = async (review_id) =>{
 
 
 //Hiển thị các comment
-controller.showComment = async (comment_query) => {
+controller.showComment = async (comment_query, user_docs) => {
 
-    //Đọc thay đổi query
-    onSnapshot(comment_query, async ()=>{
+    // //Lấy docs của comment 
+    // let comment_docs = await getDocs(comment_query);
 
-        //Lấy docs của comment 
-        let comment_docs = await getDocs(comment_query);
+    //Lấy docs của user
+   
 
-        //Lấy docs của user
-        let user_docs = await getDocs(collection(db, 'User'));
-
-        //Khai báo chuỗi
-        let str='';
+    //Khai báo chuỗi
+    let str='';
 
 
-        for (let i in comment_docs.docs){
-            for (let j in user_docs.docs){
-                if (comment_docs.docs[i] == undefined){
-                    console.log(user_docs.docs[i].id);
-                    
-                } else 
-
-                    //Tìm cặp giá trị comment và comment_creator 
-                    if (comment_docs.docs[i].data().comment_creator_id===user_docs.docs[j].id){
-                    //Nối chuỗi
-                    str+=component.showComment(comment_docs.docs[i],user_docs.docs[j]); 
-                }
+    for (let i in comment_query.docs){
+        for (let j in user_docs.docs){
+            if (comment_query.docs[i] == undefined){
+                console.log(user_docs.docs[i].id);
+                
+            } else 
+                //Tìm cặp giá trị comment và comment_creator 
+                if (comment_query.docs[i].data().comment_creator_id===user_docs.docs[j].id){
+                //Nối chuỗi
+                str+=component.showComment(comment_query.docs[i],user_docs.docs[j]);              
             }
         }
-        document.getElementById('comment-output').innerHTML=str;
+    }
 
+
+    document.getElementById('comment-output').innerHTML=str;
+    
+    document.querySelectorAll('.comment-button').forEach((ele)=>{
+
+        if (auth.currentUser.uid===ele.getAttribute('value')){
+            ele.innerHTML='<i class="btn btn-primary me-2 delete-comment"><i class="fa-solid fa-trash-can"></i></i>';
+
+            ele.addEventListener('click',()=>{
+                deleteDoc(doc(db,"Comment",ele.id));
+            })
+        } else {
+            ele.innerHTML='';
+        }
     });
 }
 
