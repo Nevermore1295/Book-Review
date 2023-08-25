@@ -157,7 +157,6 @@ component.header = () => {
         <div class="container">
             <div class="text-center my-5">
                 <h1 class="fw-bolder">Book Review</h1>
-                <p class="lead mb-0">A Bootstrap 5 starter layout for your next blog homepage</p>
             </div>
         </div>
     </header>
@@ -750,16 +749,9 @@ component.adminScreen = () => {
             </div>
         </div>
         <div class="card mb-4">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <div>
+            <div class="card-header">
                 <i class="fa-solid fa-server"></i> Reviews
-                </div>
-                <div class="input-group w-50">
-                    <input class="form-control" type="text" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search" />
-                    <button class="btn btn-primary" id="button-search" type="button">Go!</button>
-                </div>
             </div>
-            
             <div class="card-body" id="review-ctrl">
             </div>
 
